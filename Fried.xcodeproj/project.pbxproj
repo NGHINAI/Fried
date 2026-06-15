@@ -31,6 +31,7 @@
 		CEE27DD139D9171CC8128A7E /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA10FFFC8EFCAF849F556981 /* RootView.swift */; };
 		E0D28FABB1811DBEA625AFD0 /* ReactionGauntletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E295814FC3ACE9167408FA /* ReactionGauntletView.swift */; };
 		EB952560AA4A1929732D7794 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B28439CD4FD1208AB4D7298 /* SplashView.swift */; };
+		FBA36162EBBC63104462D95D /* AmbientBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = B72F844EDBC8F55F83E2AF77 /* AmbientBackground.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +65,7 @@
 		903AD44337D7E31E70550886 /* ScreenTimeOCRParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenTimeOCRParser.swift; sourceTree = "<group>"; };
 		95ECCF2C4069BFDE35381834 /* RevealView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RevealView.swift; sourceTree = "<group>"; };
 		9B28439CD4FD1208AB4D7298 /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
+		B72F844EDBC8F55F83E2AF77 /* AmbientBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmbientBackground.swift; sourceTree = "<group>"; };
 		BA10FFFC8EFCAF849F556981 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		D1F9F9A814141BCF188504C2 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		DAAF42CBE188005B86A885F4 /* FriedApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriedApp.swift; sourceTree = "<group>"; };
@@ -85,6 +87,7 @@
 		32D230BABDDDE0FD66976CE6 /* Design */ = {
 			isa = PBXGroup;
 			children = (
+				B72F844EDBC8F55F83E2AF77 /* AmbientBackground.swift */,
 				73DC7F78A98988FF7342B8BF /* Theme.swift */,
 				8FED6CD6836DBD5E1E9BA525 /* Components */,
 			);
@@ -299,6 +302,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FBA36162EBBC63104462D95D /* AmbientBackground.swift in Sources */,
 				3EABA77BEB877786660F6A77 /* AppState.swift in Sources */,
 				965148B80D8E8BF38F186365 /* CalculatingView.swift in Sources */,
 				4EC57E50C3D9A0669ABF6ADA /* FriedApp.swift in Sources */,

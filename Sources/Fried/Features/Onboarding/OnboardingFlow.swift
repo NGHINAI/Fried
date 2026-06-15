@@ -7,13 +7,16 @@ struct OnboardingFlow: View {
     @State private var showGauntlet = false
 
     var body: some View {
-        if showGauntlet {
-            ReactionGauntletView(
-                quiz: QuizResult(answerIndices: answers, maxIndex: QuizContent.maxIndex)
-            )
-        } else {
-            quiz
+        Group {
+            if showGauntlet {
+                ReactionGauntletView(
+                    quiz: QuizResult(answerIndices: answers.isEmpty ? [1, 1, 1, 1, 1, 1] : answers,
+                                     maxIndex: QuizContent.maxIndex))
+            } else {
+                quiz
+            }
         }
+        .onAppear { if app.jumpToGauntlet { showGauntlet = true } }
     }
 
     private var quiz: some View {
@@ -23,7 +26,7 @@ struct OnboardingFlow: View {
                 .padding(.top, 64)
             Spacer()
             Text(q.prompt)
-                .font(Theme.title(28))
+                .font(Theme.title(29))
                 .foregroundStyle(Theme.textPrimary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 26)
@@ -67,9 +70,14 @@ struct AnswerButton: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 20)
                 .padding(.vertical, 18)
-                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                .background(
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 18, style: .continuous).fill(.ultraThinMaterial)
+                        RoundedRectangle(cornerRadius: 18, style: .continuous)
+                            .fill(Color(red: 1, green: 0.96, blue: 0.92).opacity(0.04))
+                    })
                 .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .strokeBorder(.white.opacity(0.08), lineWidth: 1))
+                    .strokeBorder(Theme.hairline, lineWidth: 1))
         }
         .buttonStyle(.plain)
         .sensoryFeedback(.impact(weight: .light), trigger: trigger)

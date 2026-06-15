@@ -5,7 +5,7 @@ struct RootView: View {
 
     var body: some View {
         ZStack {
-            Theme.canvas.ignoresSafeArea()
+            AmbientBackground(tier: app.screen == .reveal ? app.result?.tier : nil)
             content
         }
         .environmentObject(app)

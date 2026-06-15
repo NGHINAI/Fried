@@ -9,10 +9,9 @@ final class AppState: ObservableObject {
     @Published var screen: Screen = .splash
     @Published var result: FriedScore? = nil
     @Published var reaction: ReactionResult? = nil
+    @Published var jumpToGauntlet = false
 
     init() {
-        // Dev convenience: jump straight to a screen for visual review via
-        //   SIMCTL_CHILD_FRIED_PREVIEW_SCREEN=reveal xcrun simctl launch …
         if let p = ProcessInfo.processInfo.environment["FRIED_PREVIEW_SCREEN"] {
             applyPreview(p)
         }
@@ -22,6 +21,7 @@ final class AppState: ObservableObject {
         switch name {
         case "splash":      screen = .splash
         case "onboarding", "quiz": screen = .onboarding
+        case "gauntlet":    screen = .onboarding; jumpToGauntlet = true
         case "calculating": screen = .calculating
         case "reveal":      result = FriedScore(value: 87, tier: .extraCrispy); screen = .reveal
         case "reveal_low":  result = FriedScore(value: 18, tier: .crispMind);  screen = .reveal
