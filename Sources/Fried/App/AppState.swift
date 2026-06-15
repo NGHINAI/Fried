@@ -11,6 +11,7 @@ final class AppState: ObservableObject {
     @Published var reaction: ReactionResult? = nil
     @Published var quiz: QuizResult? = nil
     @Published var jumpToGauntlet = false
+    @Published var paywallReturn: Screen = .reveal
 
     init() {
         if let p = ProcessInfo.processInfo.environment["FRIED_PREVIEW_SCREEN"] {

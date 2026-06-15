@@ -4,6 +4,7 @@ struct OnboardingFlow: View {
     @EnvironmentObject var app: AppState
     @State private var index = 0
     @State private var answers: [Int] = []
+    @State private var showInterstitial = false
     @State private var showGauntlet = false
 
     var body: some View {
@@ -12,6 +13,8 @@ struct OnboardingFlow: View {
                 ReactionGauntletView(
                     quiz: QuizResult(answerIndices: answers.isEmpty ? [1, 1, 1, 1, 1, 1] : answers,
                                      maxIndex: QuizContent.maxIndex))
+            } else if showInterstitial {
+                interstitial
             } else {
                 quiz
             }
@@ -23,6 +26,30 @@ struct OnboardingFlow: View {
                 app.jumpToGauntlet = false
             }
         }
+    }
+
+    /// Emotional gut-punch before the reflex test — the insecurity hook.
+    private var interstitial: some View {
+        VStack(spacing: 24) {
+            Spacer()
+            Text("📱").font(.system(size: 60))
+            Text("You check your phone\n~144 times a day.")
+                .font(Theme.title(30)).foregroundStyle(Theme.textPrimary)
+                .multilineTextAlignment(.center)
+            GlassCard {
+                Text("Most people can't go 10 minutes without a scroll. Your habits are in — now let's see what they did to your focus.")
+                    .font(Theme.body(17)).foregroundStyle(Theme.textPrimary)
+                    .multilineTextAlignment(.center).padding(22).frame(maxWidth: .infinity)
+            }
+            .padding(.horizontal, Theme.pad)
+            Spacer()
+            PrimaryButton(title: "I'm ready — test me") {
+                withAnimation(.spring(response: 0.5, dampingFraction: 0.85)) { showGauntlet = true }
+            }
+            .padding(.horizontal, Theme.pad)
+            Spacer().frame(height: 16)
+        }
+        .transition(.blurReplace)
     }
 
     private var quiz: some View {
@@ -64,7 +91,7 @@ struct OnboardingFlow: View {
         if index + 1 < QuizContent.questions.count {
             withAnimation(.smooth(duration: 0.35)) { index += 1 }
         } else {
-            withAnimation(.spring(response: 0.5, dampingFraction: 0.85)) { showGauntlet = true }
+            withAnimation(.spring(response: 0.5, dampingFraction: 0.85)) { showInterstitial = true }
         }
     }
 }

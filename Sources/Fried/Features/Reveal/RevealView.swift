@@ -39,6 +39,7 @@ struct RevealView: View {
                 } else {
                     PrimaryButton(title: "Unlock my full breakdown",
                                   subtitle: "\(store.priceText) once · no subscription") {
+                        app.paywallReturn = .reveal
                         withAnimation { app.screen = .paywall }
                     }
                 }

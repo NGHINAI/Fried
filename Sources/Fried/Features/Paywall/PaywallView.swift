@@ -68,7 +68,7 @@ struct PaywallView: View {
     }
 
     private var closeButton: some View {
-        Button { withAnimation { app.screen = .reveal } } label: {
+        Button { withAnimation { app.screen = app.paywallReturn } } label: {
             Image(systemName: "xmark")
                 .font(.system(size: 14, weight: .bold))
                 .foregroundStyle(Theme.textSecondary)

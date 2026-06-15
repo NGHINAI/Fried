@@ -22,7 +22,7 @@ struct RootView: View {
         case .onboarding:  OnboardingFlow()
         case .calculating: CalculatingView()
         case .reveal:      RevealView()
-        case .home:        HomeView()
+        case .home:        MainTabView()
         case .paywall:     PaywallView()
         }
     }
