@@ -7,15 +7,30 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0584A6BB8B57D8BD39321BB1 /* ScoreDial.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6F19A9C04137FF92E7CEDB1 /* ScoreDial.swift */; };
 		06773165ACB4C59D65DD585A /* ScoringEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E29F472C41E46A8E58910CC /* ScoringEngine.swift */; };
+		14FA68C99F696A808B2F8641 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DC7F78A98988FF7342B8BF /* Theme.swift */; };
+		2519FB0B27E6519DA4A16A58 /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF73E8D6BAE76260B8790EE /* PaywallView.swift */; };
+		3EABA77BEB877786660F6A77 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07B9F0BAEB7B0C53385DC810 /* AppState.swift */; };
+		4397C96D2137EFEDD47A4B35 /* PrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E14F7F4686A96824DA66F5CF /* PrimaryButton.swift */; };
 		44A13223E29909A2D0A8A77B /* ScreenTimeOCRParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48E1E8C8B87D368BB054D6B6 /* ScreenTimeOCRParserTests.swift */; };
 		4EC57E50C3D9A0669ABF6ADA /* FriedApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAAF42CBE188005B86A885F4 /* FriedApp.swift */; };
 		57885654011E33871BB93173 /* ScreenTimeOCRParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903AD44337D7E31E70550886 /* ScreenTimeOCRParser.swift */; };
+		5CB76C042035BAFE0DE5E72E /* RoastEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 593E34CA140E60FA797001AA /* RoastEngine.swift */; };
 		608473918A1E2EEECAAD667B /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1F9F9A814141BCF188504C2 /* Models.swift */; };
 		64E7E284E69CC1A0326F9031 /* RoastBankTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0F092B53D3869202AC98BE /* RoastBankTests.swift */; };
+		7442122DE1862D1FBD29D42B /* RevealView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95ECCF2C4069BFDE35381834 /* RevealView.swift */; };
+		814E731B787ECF4A3F8B52D7 /* QuizContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A5BB062D4F01F7E542FF951 /* QuizContent.swift */; };
+		90FAF466E473025A30BD699F /* GlassCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C1F585D3A9D40762858EBE /* GlassCard.swift */; };
+		937EDE32D78968DBF2C18932 /* OnboardingFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55011087D1BFFDA8F0DC4C2B /* OnboardingFlow.swift */; };
 		95B202002C7F3EE5FFA54383 /* TierTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A6719E15C3E512118C2165E /* TierTests.swift */; };
+		965148B80D8E8BF38F186365 /* CalculatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AAB16449C596D2831DD6138 /* CalculatingView.swift */; };
 		9BCD9C8C9C8476F7855714EE /* RoastBank.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC5E75B1C04760A79429729 /* RoastBank.swift */; };
 		AB4027F71F7B9DA679CCBFDC /* ScoringEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79C1763F15D365535BEC8927 /* ScoringEngineTests.swift */; };
+		B2564ECE58F284574D503A88 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27BA19E25CCB91A68A59DBB0 /* HomeView.swift */; };
+		CEE27DD139D9171CC8128A7E /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA10FFFC8EFCAF849F556981 /* RootView.swift */; };
+		E0D28FABB1811DBEA625AFD0 /* ReactionGauntletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E295814FC3ACE9167408FA /* ReactionGauntletView.swift */; };
+		EB952560AA4A1929732D7794 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B28439CD4FD1208AB4D7298 /* SplashView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,20 +44,53 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		07B9F0BAEB7B0C53385DC810 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		0A6719E15C3E512118C2165E /* TierTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TierTests.swift; sourceTree = "<group>"; };
+		0AAB16449C596D2831DD6138 /* CalculatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculatingView.swift; sourceTree = "<group>"; };
+		27BA19E25CCB91A68A59DBB0 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		38E295814FC3ACE9167408FA /* ReactionGauntletView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactionGauntletView.swift; sourceTree = "<group>"; };
 		3E29F472C41E46A8E58910CC /* ScoringEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoringEngine.swift; sourceTree = "<group>"; };
 		48E1E8C8B87D368BB054D6B6 /* ScreenTimeOCRParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenTimeOCRParserTests.swift; sourceTree = "<group>"; };
 		49FA370F0CDCD6839FBE510C /* FriedTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = FriedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4A5BB062D4F01F7E542FF951 /* QuizContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizContent.swift; sourceTree = "<group>"; };
 		4CC5E75B1C04760A79429729 /* RoastBank.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoastBank.swift; sourceTree = "<group>"; };
+		4CF73E8D6BAE76260B8790EE /* PaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallView.swift; sourceTree = "<group>"; };
+		55011087D1BFFDA8F0DC4C2B /* OnboardingFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFlow.swift; sourceTree = "<group>"; };
+		593E34CA140E60FA797001AA /* RoastEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoastEngine.swift; sourceTree = "<group>"; };
 		664AA6B1EC41D4532B098205 /* Fried.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Fried.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		73DC7F78A98988FF7342B8BF /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		79C1763F15D365535BEC8927 /* ScoringEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoringEngineTests.swift; sourceTree = "<group>"; };
 		7C0F092B53D3869202AC98BE /* RoastBankTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoastBankTests.swift; sourceTree = "<group>"; };
 		903AD44337D7E31E70550886 /* ScreenTimeOCRParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenTimeOCRParser.swift; sourceTree = "<group>"; };
+		95ECCF2C4069BFDE35381834 /* RevealView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RevealView.swift; sourceTree = "<group>"; };
+		9B28439CD4FD1208AB4D7298 /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
+		BA10FFFC8EFCAF849F556981 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		D1F9F9A814141BCF188504C2 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		DAAF42CBE188005B86A885F4 /* FriedApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriedApp.swift; sourceTree = "<group>"; };
+		E14F7F4686A96824DA66F5CF /* PrimaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryButton.swift; sourceTree = "<group>"; };
+		E6F19A9C04137FF92E7CEDB1 /* ScoreDial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreDial.swift; sourceTree = "<group>"; };
+		E7C1F585D3A9D40762858EBE /* GlassCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassCard.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
+		1B38FE3C9C1B48A09C3BF45D /* Reveal */ = {
+			isa = PBXGroup;
+			children = (
+				95ECCF2C4069BFDE35381834 /* RevealView.swift */,
+				593E34CA140E60FA797001AA /* RoastEngine.swift */,
+			);
+			path = Reveal;
+			sourceTree = "<group>";
+		};
+		32D230BABDDDE0FD66976CE6 /* Design */ = {
+			isa = PBXGroup;
+			children = (
+				73DC7F78A98988FF7342B8BF /* Theme.swift */,
+				8FED6CD6836DBD5E1E9BA525 /* Components */,
+			);
+			path = Design;
+			sourceTree = "<group>";
+		};
 		33610C78D51BBC1C6876A3E2 = {
 			isa = PBXGroup;
 			children = (
@@ -55,9 +103,19 @@
 		44657867D8CE9F4AAB86D50D /* App */ = {
 			isa = PBXGroup;
 			children = (
+				07B9F0BAEB7B0C53385DC810 /* AppState.swift */,
 				DAAF42CBE188005B86A885F4 /* FriedApp.swift */,
+				BA10FFFC8EFCAF849F556981 /* RootView.swift */,
 			);
 			path = App;
+			sourceTree = "<group>";
+		};
+		459A932FD6FE032B41906EAD /* Paywall */ = {
+			isa = PBXGroup;
+			children = (
+				4CF73E8D6BAE76260B8790EE /* PaywallView.swift */,
+			);
+			path = Paywall;
 			sourceTree = "<group>";
 		};
 		6CA1A7529F187DA21F101994 /* Sources */ = {
@@ -66,6 +124,14 @@
 				DBB2C8E9ABDB5AFDAC014ABC /* Fried */,
 			);
 			path = Sources;
+			sourceTree = "<group>";
+		};
+		754B03B76FA4C4522350E9BB /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				27BA19E25CCB91A68A59DBB0 /* HomeView.swift */,
+			);
+			path = Home;
 			sourceTree = "<group>";
 		};
 		8BAA66108E6DA96AC3A0284A /* Products */ = {
@@ -77,15 +143,37 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		8FED6CD6836DBD5E1E9BA525 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				E7C1F585D3A9D40762858EBE /* GlassCard.swift */,
+				E14F7F4686A96824DA66F5CF /* PrimaryButton.swift */,
+				E6F19A9C04137FF92E7CEDB1 /* ScoreDial.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
 		988AA9FC80575CD127946957 /* Core */ = {
 			isa = PBXGroup;
 			children = (
 				D1F9F9A814141BCF188504C2 /* Models.swift */,
+				4A5BB062D4F01F7E542FF951 /* QuizContent.swift */,
 				4CC5E75B1C04760A79429729 /* RoastBank.swift */,
 				3E29F472C41E46A8E58910CC /* ScoringEngine.swift */,
 				903AD44337D7E31E70550886 /* ScreenTimeOCRParser.swift */,
 			);
 			path = Core;
+			sourceTree = "<group>";
+		};
+		A7CC37693A36F7C715483380 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				0AAB16449C596D2831DD6138 /* CalculatingView.swift */,
+				55011087D1BFFDA8F0DC4C2B /* OnboardingFlow.swift */,
+				38E295814FC3ACE9167408FA /* ReactionGauntletView.swift */,
+				9B28439CD4FD1208AB4D7298 /* SplashView.swift */,
+			);
+			path = Onboarding;
 			sourceTree = "<group>";
 		};
 		D5809E54E1A7AB890CC0C544 /* Tests */ = {
@@ -101,6 +189,8 @@
 			children = (
 				44657867D8CE9F4AAB86D50D /* App */,
 				988AA9FC80575CD127946957 /* Core */,
+				32D230BABDDDE0FD66976CE6 /* Design */,
+				F09E0772C712B3019F463F0D /* Features */,
 			);
 			path = Fried;
 			sourceTree = "<group>";
@@ -114,6 +204,17 @@
 				0A6719E15C3E512118C2165E /* TierTests.swift */,
 			);
 			path = FriedTests;
+			sourceTree = "<group>";
+		};
+		F09E0772C712B3019F463F0D /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				754B03B76FA4C4522350E9BB /* Home */,
+				A7CC37693A36F7C715483380 /* Onboarding */,
+				459A932FD6FE032B41906EAD /* Paywall */,
+				1B38FE3C9C1B48A09C3BF45D /* Reveal */,
+			);
+			path = Features;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -198,11 +299,26 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3EABA77BEB877786660F6A77 /* AppState.swift in Sources */,
+				965148B80D8E8BF38F186365 /* CalculatingView.swift in Sources */,
 				4EC57E50C3D9A0669ABF6ADA /* FriedApp.swift in Sources */,
+				90FAF466E473025A30BD699F /* GlassCard.swift in Sources */,
+				B2564ECE58F284574D503A88 /* HomeView.swift in Sources */,
 				608473918A1E2EEECAAD667B /* Models.swift in Sources */,
+				937EDE32D78968DBF2C18932 /* OnboardingFlow.swift in Sources */,
+				2519FB0B27E6519DA4A16A58 /* PaywallView.swift in Sources */,
+				4397C96D2137EFEDD47A4B35 /* PrimaryButton.swift in Sources */,
+				814E731B787ECF4A3F8B52D7 /* QuizContent.swift in Sources */,
+				E0D28FABB1811DBEA625AFD0 /* ReactionGauntletView.swift in Sources */,
+				7442122DE1862D1FBD29D42B /* RevealView.swift in Sources */,
 				9BCD9C8C9C8476F7855714EE /* RoastBank.swift in Sources */,
+				5CB76C042035BAFE0DE5E72E /* RoastEngine.swift in Sources */,
+				CEE27DD139D9171CC8128A7E /* RootView.swift in Sources */,
+				0584A6BB8B57D8BD39321BB1 /* ScoreDial.swift in Sources */,
 				06773165ACB4C59D65DD585A /* ScoringEngine.swift in Sources */,
 				57885654011E33871BB93173 /* ScreenTimeOCRParser.swift in Sources */,
+				EB952560AA4A1929732D7794 /* SplashView.swift in Sources */,
+				14FA68C99F696A808B2F8641 /* Theme.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

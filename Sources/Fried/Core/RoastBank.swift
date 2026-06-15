@@ -14,9 +14,9 @@ enum RoastBank {
 
     static let bank: [FriedTier: [String]] = [
         .crispMind: [
-            "Look at you — an actual functioning attention span. Show-off.",
+            "Look at you — actually able to focus when you want. Show-off.",
             "Certified Not Fried. Touch grass to keep it that way.",
-            "Your focus is suspiciously intact. Who are you."
+            "Suspiciously locked in. Who are you."
         ],
         .lightlyToasted: [
             "Lightly toasted. A few too many “one more video”s, but you’ll live.",
@@ -30,7 +30,7 @@ enum RoastBank {
         ],
         .extraCrispy: [
             "Extra crispy. You opened this to avoid finishing something, didn’t you.",
-            "Attention span of a goldfish on espresso. Sizzling.",
+            "Focus of a goldfish on espresso. Sizzling.",
             "A full workday of 15-second clips. The fryer is full."
         ],
         .deepFried: [
