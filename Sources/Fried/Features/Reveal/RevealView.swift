@@ -5,6 +5,7 @@ struct RevealView: View {
     @EnvironmentObject var store: Store
     @State private var roast = ""
     @State private var showRoast = false
+    @State private var shareImage: Image?
 
     private var score: FriedScore { app.result ?? FriedScore(value: 0, tier: .crispMind) }
 
@@ -41,11 +42,16 @@ struct RevealView: View {
                         withAnimation { app.screen = .paywall }
                     }
                 }
-                ShareLink(item: URL(string: "https://fried.app")!,
-                          message: Text("How fried is your brain? I scored \(score.value) 🍳")) {
+                if let shareImage {
+                    ShareLink(item: shareImage,
+                              message: Text("How fried is your brain? I scored \(score.value) 🍳 fried.app"),
+                              preview: SharePreview("My Fried Score", image: shareImage)) {
+                        Label("Share my score", systemImage: "square.and.arrow.up")
+                            .font(Theme.body(16)).foregroundStyle(Theme.textSecondary)
+                    }
+                } else {
                     Label("Share my score", systemImage: "square.and.arrow.up")
-                        .font(Theme.body(16))
-                        .foregroundStyle(Theme.textSecondary)
+                        .font(Theme.body(16)).foregroundStyle(Theme.textSecondary.opacity(0.4))
                 }
             }
             .padding(.horizontal, Theme.pad)
@@ -58,6 +64,7 @@ struct RevealView: View {
         }
         .task {
             roast = await RoastEngine.roast(for: score)
+            shareImage = ShareCard.image(score: score, roast: roast)
             withAnimation(.easeOut(duration: 0.5).delay(0.9)) { showRoast = true }
         }
     }

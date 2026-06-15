@@ -9,8 +9,10 @@
 /* Begin PBXBuildFile section */
 		0584A6BB8B57D8BD39321BB1 /* ScoreDial.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6F19A9C04137FF92E7CEDB1 /* ScoreDial.swift */; };
 		06773165ACB4C59D65DD585A /* ScoringEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E29F472C41E46A8E58910CC /* ScoringEngine.swift */; };
+		0A74967468F0B4A7652D164D /* ShareCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB41FB11FFAE4034FB5EEF2D /* ShareCardView.swift */; };
 		14FA68C99F696A808B2F8641 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DC7F78A98988FF7342B8BF /* Theme.swift */; };
 		2519FB0B27E6519DA4A16A58 /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF73E8D6BAE76260B8790EE /* PaywallView.swift */; };
+		398301D5BCDBDBDF67CE8633 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C6D3F84A5EB42FBE3A0F1CA2 /* Assets.xcassets */; };
 		39A94F62D741594F08916F9A /* GlassModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A203513A02AEF6BD27C41E /* GlassModifier.swift */; };
 		3EABA77BEB877786660F6A77 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07B9F0BAEB7B0C53385DC810 /* AppState.swift */; };
 		4397C96D2137EFEDD47A4B35 /* PrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E14F7F4686A96824DA66F5CF /* PrimaryButton.swift */; };
@@ -30,6 +32,7 @@
 		9BCD9C8C9C8476F7855714EE /* RoastBank.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC5E75B1C04760A79429729 /* RoastBank.swift */; };
 		AB30768DC1EF69784D2AE923 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63398EF1A2454F55EB93FA65 /* Store.swift */; };
 		AB4027F71F7B9DA679CCBFDC /* ScoringEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79C1763F15D365535BEC8927 /* ScoringEngineTests.swift */; };
+		B05EEC50CBBAC9ADCAC5F191 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 778108B0C2F286E6588BEAF3 /* PrivacyInfo.xcprivacy */; };
 		B2564ECE58F284574D503A88 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27BA19E25CCB91A68A59DBB0 /* HomeView.swift */; };
 		CEE27DD139D9171CC8128A7E /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA10FFFC8EFCAF849F556981 /* RootView.swift */; };
 		E0D28FABB1811DBEA625AFD0 /* ReactionGauntletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E295814FC3ACE9167408FA /* ReactionGauntletView.swift */; };
@@ -64,6 +67,7 @@
 		63398EF1A2454F55EB93FA65 /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		664AA6B1EC41D4532B098205 /* Fried.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Fried.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		73DC7F78A98988FF7342B8BF /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		778108B0C2F286E6588BEAF3 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		79C1763F15D365535BEC8927 /* ScoringEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoringEngineTests.swift; sourceTree = "<group>"; };
 		7C0F092B53D3869202AC98BE /* RoastBankTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoastBankTests.swift; sourceTree = "<group>"; };
 		903AD44337D7E31E70550886 /* ScreenTimeOCRParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenTimeOCRParser.swift; sourceTree = "<group>"; };
@@ -73,11 +77,13 @@
 		9B28439CD4FD1208AB4D7298 /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
 		B72F844EDBC8F55F83E2AF77 /* AmbientBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmbientBackground.swift; sourceTree = "<group>"; };
 		BA10FFFC8EFCAF849F556981 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		C6D3F84A5EB42FBE3A0F1CA2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D1F9F9A814141BCF188504C2 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		DAAF42CBE188005B86A885F4 /* FriedApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriedApp.swift; sourceTree = "<group>"; };
 		E14F7F4686A96824DA66F5CF /* PrimaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryButton.swift; sourceTree = "<group>"; };
 		E6F19A9C04137FF92E7CEDB1 /* ScoreDial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreDial.swift; sourceTree = "<group>"; };
 		E7C1F585D3A9D40762858EBE /* GlassCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassCard.swift; sourceTree = "<group>"; };
+		FB41FB11FFAE4034FB5EEF2D /* ShareCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCardView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -167,6 +173,7 @@
 				E7C1F585D3A9D40762858EBE /* GlassCard.swift */,
 				E14F7F4686A96824DA66F5CF /* PrimaryButton.swift */,
 				E6F19A9C04137FF92E7CEDB1 /* ScoreDial.swift */,
+				FB41FB11FFAE4034FB5EEF2D /* ShareCardView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -206,6 +213,8 @@
 		DBB2C8E9ABDB5AFDAC014ABC /* Fried */ = {
 			isa = PBXGroup;
 			children = (
+				C6D3F84A5EB42FBE3A0F1CA2 /* Assets.xcassets */,
+				778108B0C2F286E6588BEAF3 /* PrivacyInfo.xcprivacy */,
 				44657867D8CE9F4AAB86D50D /* App */,
 				988AA9FC80575CD127946957 /* Core */,
 				32D230BABDDDE0FD66976CE6 /* Design */,
@@ -245,6 +254,7 @@
 			buildConfigurationList = 81A509644994D4FDB5E5718A /* Build configuration list for PBXNativeTarget "Fried" */;
 			buildPhases = (
 				98C66A0BB25C3C1749E21AC6 /* Sources */,
+				9EB5CDC61D3653F6FB1CF657 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -314,6 +324,18 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		9EB5CDC61D3653F6FB1CF657 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				398301D5BCDBDBDF67CE8633 /* Assets.xcassets in Resources */,
+				B05EEC50CBBAC9ADCAC5F191 /* PrivacyInfo.xcprivacy in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		98C66A0BB25C3C1749E21AC6 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -340,6 +362,7 @@
 				0584A6BB8B57D8BD39321BB1 /* ScoreDial.swift in Sources */,
 				06773165ACB4C59D65DD585A /* ScoringEngine.swift in Sources */,
 				57885654011E33871BB93173 /* ScreenTimeOCRParser.swift in Sources */,
+				0A74967468F0B4A7652D164D /* ShareCardView.swift in Sources */,
 				EB952560AA4A1929732D7794 /* SplashView.swift in Sources */,
 				AB30768DC1EF69784D2AE923 /* Store.swift in Sources */,
 				14FA68C99F696A808B2F8641 /* Theme.swift in Sources */,
