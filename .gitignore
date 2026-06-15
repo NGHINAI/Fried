@@ -6,3 +6,7 @@ build/
 *.xcarchive
 .build/
 PLANNING/appstore/raw/
+PLANNING/appstore/video/clips/
+PLANNING/appstore/video/proc/
+PLANNING/appstore/video/overlays/
+PLANNING/appstore/video/frame_*.png
