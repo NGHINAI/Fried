@@ -5,3 +5,4 @@ DerivedData/
 build/
 *.xcarchive
 .build/
+PLANNING/appstore/raw/
