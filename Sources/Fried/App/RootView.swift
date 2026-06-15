@@ -3,6 +3,7 @@ import SwiftUI
 struct RootView: View {
     @StateObject private var app = AppState()
     @StateObject private var store = Store()
+    @StateObject private var history = HistoryStore()
 
     var body: some View {
         ZStack {
@@ -11,6 +12,7 @@ struct RootView: View {
         }
         .environmentObject(app)
         .environmentObject(store)
+        .environmentObject(history)
         .preferredColorScheme(.dark)
     }
 

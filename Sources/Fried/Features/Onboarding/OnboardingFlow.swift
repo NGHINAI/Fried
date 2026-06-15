@@ -16,7 +16,13 @@ struct OnboardingFlow: View {
                 quiz
             }
         }
-        .onAppear { if app.jumpToGauntlet { showGauntlet = true } }
+        .onAppear {
+            if app.jumpToGauntlet {
+                if let q = app.quiz { answers = q.answerIndices }
+                showGauntlet = true
+                app.jumpToGauntlet = false
+            }
+        }
     }
 
     private var quiz: some View {

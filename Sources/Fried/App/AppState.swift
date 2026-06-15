@@ -9,6 +9,7 @@ final class AppState: ObservableObject {
     @Published var screen: Screen = .splash
     @Published var result: FriedScore? = nil
     @Published var reaction: ReactionResult? = nil
+    @Published var quiz: QuizResult? = nil
     @Published var jumpToGauntlet = false
 
     init() {
@@ -26,13 +27,18 @@ final class AppState: ObservableObject {
         case "reveal":      result = FriedScore(value: 87, tier: .extraCrispy); screen = .reveal
         case "reveal_low":  result = FriedScore(value: 18, tier: .crispMind);  screen = .reveal
         case "reveal_mid":  result = FriedScore(value: 64, tier: .wellDone);   screen = .reveal
-        case "home":        result = FriedScore(value: 73, tier: .wellDone);   screen = .home
+        case "home":
+            result = FriedScore(value: 73, tier: .wellDone)
+            quiz = QuizResult(answerIndices: [2, 2, 3, 2, 2, 3], maxIndex: 3)
+            reaction = ReactionResult(meanMillis: 360, lapseVariance: 0.42)
+            screen = .home
         case "paywall":     result = FriedScore(value: 87, tier: .extraCrispy); screen = .paywall
         default: break
         }
     }
 
     func finishOnboarding(quiz: QuizResult, reaction: ReactionResult) {
+        self.quiz = quiz
         self.reaction = reaction
         self.result = ScoringEngine.score(quiz: quiz, reaction: reaction, screenTime: nil)
         withAnimation(.spring(response: 0.5, dampingFraction: 0.85)) { screen = .calculating }
