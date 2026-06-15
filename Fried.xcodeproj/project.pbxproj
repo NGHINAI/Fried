@@ -17,6 +17,7 @@
 		39A94F62D741594F08916F9A /* GlassModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A203513A02AEF6BD27C41E /* GlassModifier.swift */; };
 		3EABA77BEB877786660F6A77 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07B9F0BAEB7B0C53385DC810 /* AppState.swift */; };
 		4397C96D2137EFEDD47A4B35 /* PrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E14F7F4686A96824DA66F5CF /* PrimaryButton.swift */; };
+		43CA3EA5416913534C64AF2F /* PlanEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03479D09636B2A5FC09ED708 /* PlanEngine.swift */; };
 		44A13223E29909A2D0A8A77B /* ScreenTimeOCRParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48E1E8C8B87D368BB054D6B6 /* ScreenTimeOCRParserTests.swift */; };
 		4EC57E50C3D9A0669ABF6ADA /* FriedApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAAF42CBE188005B86A885F4 /* FriedApp.swift */; };
 		57885654011E33871BB93173 /* ScreenTimeOCRParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903AD44337D7E31E70550886 /* ScreenTimeOCRParser.swift */; };
@@ -52,6 +53,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		03479D09636B2A5FC09ED708 /* PlanEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanEngine.swift; sourceTree = "<group>"; };
 		07B9F0BAEB7B0C53385DC810 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		0A6719E15C3E512118C2165E /* TierTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TierTests.swift; sourceTree = "<group>"; };
 		0AAB16449C596D2831DD6138 /* CalculatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculatingView.swift; sourceTree = "<group>"; };
@@ -186,6 +188,7 @@
 			children = (
 				932B1CA4EFEFF39E534A2DE4 /* HistoryStore.swift */,
 				D1F9F9A814141BCF188504C2 /* Models.swift */,
+				03479D09636B2A5FC09ED708 /* PlanEngine.swift */,
 				4A5BB062D4F01F7E542FF951 /* QuizContent.swift */,
 				4CC5E75B1C04760A79429729 /* RoastBank.swift */,
 				3E29F472C41E46A8E58910CC /* ScoringEngine.swift */,
@@ -356,6 +359,7 @@
 				608473918A1E2EEECAAD667B /* Models.swift in Sources */,
 				937EDE32D78968DBF2C18932 /* OnboardingFlow.swift in Sources */,
 				2519FB0B27E6519DA4A16A58 /* PaywallView.swift in Sources */,
+				43CA3EA5416913534C64AF2F /* PlanEngine.swift in Sources */,
 				4397C96D2137EFEDD47A4B35 /* PrimaryButton.swift in Sources */,
 				814E731B787ECF4A3F8B52D7 /* QuizContent.swift in Sources */,
 				E0D28FABB1811DBEA625AFD0 /* ReactionGauntletView.swift in Sources */,

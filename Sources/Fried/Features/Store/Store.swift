@@ -1,12 +1,40 @@
 import StoreKit
 import SwiftUI
 
-/// StoreKit 2 — a single non-consumable "Lifetime Unlock". Source of truth for
-/// access is `Transaction.currentEntitlements`. Also supports a local
-/// "invite to unlock" path (no payment), the viral alternative to buying.
+/// StoreKit 2 with a 3-tier discount ladder (full / 50% off / 80% off), all
+/// non-consumables that grant the same lifetime access. Source of truth is
+/// `Transaction.currentEntitlements`. Also supports a local invite-to-unlock.
 @MainActor
 final class Store: ObservableObject {
-    static let lifetimeID = "com.fried.app.lifetime"
+
+    enum Discount: Int, CaseIterable {
+        case full = 0, off50 = 1, off80 = 2
+
+        var id: String {
+            switch self {
+            case .full:  return "com.fried.app.lifetime"
+            case .off50: return "com.fried.app.lifetime.off50"
+            case .off80: return "com.fried.app.lifetime.off80"
+            }
+        }
+        var badge: String? {
+            switch self {
+            case .full:  return nil
+            case .off50: return "50% OFF"
+            case .off80: return "80% OFF — FINAL"
+            }
+        }
+        var defaultPrice: String {
+            switch self {
+            case .full:  return "$4.99"
+            case .off50: return "$2.49"
+            case .off80: return "$0.99"
+            }
+        }
+        var next: Discount? { Discount(rawValue: rawValue + 1) }
+    }
+
+    static let allIDs = Discount.allCases.map(\.id)
 
     @Published private(set) var products: [Product] = []
     @Published private(set) var isPurchased = false
@@ -17,23 +45,23 @@ final class Store: ObservableObject {
     init() {
         updatesTask = listenForTransactions()
         Task { await loadProducts(); await refresh() }
+        if ProcessInfo.processInfo.environment["FRIED_PREVIEW_UNLOCK"] == "1" { invitedUnlock = true }
     }
     deinit { updatesTask?.cancel() }
 
-    /// The single gate the rest of the app reads.
     var hasAccess: Bool { isPurchased || invitedUnlock }
 
-    var lifetime: Product? { products.first { $0.id == Self.lifetimeID } }
-    var priceText: String { lifetime?.displayPrice ?? "$4.99" }
+    func product(_ d: Discount) -> Product? { products.first { $0.id == d.id } }
+    func priceText(_ d: Discount) -> String { product(d)?.displayPrice ?? d.defaultPrice }
+    var fullPriceText: String { priceText(.full) }
 
     func loadProducts() async {
-        do { products = try await Product.products(for: [Self.lifetimeID]) }
-        catch { print("[Store] load failed: \(error)") }
+        products = (try? await Product.products(for: Self.allIDs)) ?? []
     }
 
     @discardableResult
-    func purchase() async -> Bool {
-        guard let product = lifetime else { return false }
+    func purchase(_ d: Discount) async -> Bool {
+        guard let product = product(d) else { return false }
         do {
             switch try await product.purchase() {
             case .success(let verification):
@@ -50,16 +78,13 @@ final class Store: ObservableObject {
         }
     }
 
-    func restore() async {
-        try? await AppStore.sync()
-        await refresh()
-    }
+    func restore() async { try? await AppStore.sync(); await refresh() }
 
     func refresh() async {
         var owned = false
         for await result in Transaction.currentEntitlements {
             if let t = try? checkVerified(result),
-               t.productID == Self.lifetimeID, t.revocationDate == nil {
+               Self.allIDs.contains(t.productID), t.revocationDate == nil {
                 owned = true
             }
         }

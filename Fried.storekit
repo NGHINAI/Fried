@@ -5,25 +5,38 @@
     {
       "displayPrice" : "4.99",
       "familyShareable" : false,
-      "internalID" : "fried-lifetime-001",
+      "internalID" : "fried-lifetime-full",
       "localizations" : [
-        {
-          "description" : "Unlock the full Fried experience forever — one time, no subscription.",
-          "displayName" : "Fried Lifetime Unlock",
-          "locale" : "en_US"
-        }
+        { "description" : "Unlock Fried forever — your full report + de-fry plan.", "displayName" : "Fried Lifetime", "locale" : "en_US" }
       ],
       "productID" : "com.fried.app.lifetime",
       "referenceName" : "Lifetime Unlock",
       "type" : "NonConsumable"
+    },
+    {
+      "displayPrice" : "2.49",
+      "familyShareable" : false,
+      "internalID" : "fried-lifetime-off50",
+      "localizations" : [
+        { "description" : "Unlock Fried forever — 50% off.", "displayName" : "Fried Lifetime (50% off)", "locale" : "en_US" }
+      ],
+      "productID" : "com.fried.app.lifetime.off50",
+      "referenceName" : "Lifetime Unlock 50% off",
+      "type" : "NonConsumable"
+    },
+    {
+      "displayPrice" : "0.99",
+      "familyShareable" : false,
+      "internalID" : "fried-lifetime-off80",
+      "localizations" : [
+        { "description" : "Unlock Fried forever — 80% off, final offer.", "displayName" : "Fried Lifetime (80% off)", "locale" : "en_US" }
+      ],
+      "productID" : "com.fried.app.lifetime.off80",
+      "referenceName" : "Lifetime Unlock 80% off",
+      "type" : "NonConsumable"
     }
   ],
-  "settings" : {
-    "_failTransactionsEnabled" : false
-  },
+  "settings" : { "_failTransactionsEnabled" : false },
   "subscriptionGroups" : [],
-  "version" : {
-    "major" : 3,
-    "minor" : 0
-  }
+  "version" : { "major" : 3, "minor" : 0 }
 }
