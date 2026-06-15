@@ -1,0 +1,463 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		06773165ACB4C59D65DD585A /* ScoringEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E29F472C41E46A8E58910CC /* ScoringEngine.swift */; };
+		44A13223E29909A2D0A8A77B /* ScreenTimeOCRParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48E1E8C8B87D368BB054D6B6 /* ScreenTimeOCRParserTests.swift */; };
+		4EC57E50C3D9A0669ABF6ADA /* FriedApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAAF42CBE188005B86A885F4 /* FriedApp.swift */; };
+		57885654011E33871BB93173 /* ScreenTimeOCRParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903AD44337D7E31E70550886 /* ScreenTimeOCRParser.swift */; };
+		608473918A1E2EEECAAD667B /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1F9F9A814141BCF188504C2 /* Models.swift */; };
+		64E7E284E69CC1A0326F9031 /* RoastBankTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0F092B53D3869202AC98BE /* RoastBankTests.swift */; };
+		95B202002C7F3EE5FFA54383 /* TierTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A6719E15C3E512118C2165E /* TierTests.swift */; };
+		9BCD9C8C9C8476F7855714EE /* RoastBank.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC5E75B1C04760A79429729 /* RoastBank.swift */; };
+		AB4027F71F7B9DA679CCBFDC /* ScoringEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79C1763F15D365535BEC8927 /* ScoringEngineTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		492B437618F5CF9261D84CCE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 214BB128BB938738FB506F20 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4A34361B01335DE5F05F8D54;
+			remoteInfo = Fried;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		0A6719E15C3E512118C2165E /* TierTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TierTests.swift; sourceTree = "<group>"; };
+		3E29F472C41E46A8E58910CC /* ScoringEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoringEngine.swift; sourceTree = "<group>"; };
+		48E1E8C8B87D368BB054D6B6 /* ScreenTimeOCRParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenTimeOCRParserTests.swift; sourceTree = "<group>"; };
+		49FA370F0CDCD6839FBE510C /* FriedTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = FriedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4CC5E75B1C04760A79429729 /* RoastBank.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoastBank.swift; sourceTree = "<group>"; };
+		664AA6B1EC41D4532B098205 /* Fried.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Fried.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		79C1763F15D365535BEC8927 /* ScoringEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoringEngineTests.swift; sourceTree = "<group>"; };
+		7C0F092B53D3869202AC98BE /* RoastBankTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoastBankTests.swift; sourceTree = "<group>"; };
+		903AD44337D7E31E70550886 /* ScreenTimeOCRParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenTimeOCRParser.swift; sourceTree = "<group>"; };
+		D1F9F9A814141BCF188504C2 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		DAAF42CBE188005B86A885F4 /* FriedApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriedApp.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		33610C78D51BBC1C6876A3E2 = {
+			isa = PBXGroup;
+			children = (
+				6CA1A7529F187DA21F101994 /* Sources */,
+				D5809E54E1A7AB890CC0C544 /* Tests */,
+				8BAA66108E6DA96AC3A0284A /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		44657867D8CE9F4AAB86D50D /* App */ = {
+			isa = PBXGroup;
+			children = (
+				DAAF42CBE188005B86A885F4 /* FriedApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		6CA1A7529F187DA21F101994 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				DBB2C8E9ABDB5AFDAC014ABC /* Fried */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		8BAA66108E6DA96AC3A0284A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				664AA6B1EC41D4532B098205 /* Fried.app */,
+				49FA370F0CDCD6839FBE510C /* FriedTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		988AA9FC80575CD127946957 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				D1F9F9A814141BCF188504C2 /* Models.swift */,
+				4CC5E75B1C04760A79429729 /* RoastBank.swift */,
+				3E29F472C41E46A8E58910CC /* ScoringEngine.swift */,
+				903AD44337D7E31E70550886 /* ScreenTimeOCRParser.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		D5809E54E1A7AB890CC0C544 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				EBAC423E9849C82381B150B0 /* FriedTests */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		DBB2C8E9ABDB5AFDAC014ABC /* Fried */ = {
+			isa = PBXGroup;
+			children = (
+				44657867D8CE9F4AAB86D50D /* App */,
+				988AA9FC80575CD127946957 /* Core */,
+			);
+			path = Fried;
+			sourceTree = "<group>";
+		};
+		EBAC423E9849C82381B150B0 /* FriedTests */ = {
+			isa = PBXGroup;
+			children = (
+				7C0F092B53D3869202AC98BE /* RoastBankTests.swift */,
+				79C1763F15D365535BEC8927 /* ScoringEngineTests.swift */,
+				48E1E8C8B87D368BB054D6B6 /* ScreenTimeOCRParserTests.swift */,
+				0A6719E15C3E512118C2165E /* TierTests.swift */,
+			);
+			path = FriedTests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		4A34361B01335DE5F05F8D54 /* Fried */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 81A509644994D4FDB5E5718A /* Build configuration list for PBXNativeTarget "Fried" */;
+			buildPhases = (
+				98C66A0BB25C3C1749E21AC6 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Fried;
+			packageProductDependencies = (
+			);
+			productName = Fried;
+			productReference = 664AA6B1EC41D4532B098205 /* Fried.app */;
+			productType = "com.apple.product-type.application";
+		};
+		582E4EFAB771084A658172DD /* FriedTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FAD0C9E194854983822276AE /* Build configuration list for PBXNativeTarget "FriedTests" */;
+			buildPhases = (
+				B48C9D03C6909595AEF70CEA /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CF87067A9EC14F119C77BFAF /* PBXTargetDependency */,
+			);
+			name = FriedTests;
+			packageProductDependencies = (
+			);
+			productName = FriedTests;
+			productReference = 49FA370F0CDCD6839FBE510C /* FriedTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		214BB128BB938738FB506F20 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					4A34361B01335DE5F05F8D54 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+					582E4EFAB771084A658172DD = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = C20CFAA40554B2F74CB0DB8B /* Build configuration list for PBXProject "Fried" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 33610C78D51BBC1C6876A3E2;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 8BAA66108E6DA96AC3A0284A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				4A34361B01335DE5F05F8D54 /* Fried */,
+				582E4EFAB771084A658172DD /* FriedTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		98C66A0BB25C3C1749E21AC6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4EC57E50C3D9A0669ABF6ADA /* FriedApp.swift in Sources */,
+				608473918A1E2EEECAAD667B /* Models.swift in Sources */,
+				9BCD9C8C9C8476F7855714EE /* RoastBank.swift in Sources */,
+				06773165ACB4C59D65DD585A /* ScoringEngine.swift in Sources */,
+				57885654011E33871BB93173 /* ScreenTimeOCRParser.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B48C9D03C6909595AEF70CEA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				64E7E284E69CC1A0326F9031 /* RoastBankTests.swift in Sources */,
+				AB4027F71F7B9DA679CCBFDC /* ScoringEngineTests.swift in Sources */,
+				44A13223E29909A2D0A8A77B /* ScreenTimeOCRParserTests.swift in Sources */,
+				95B202002C7F3EE5FFA54383 /* TierTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		CF87067A9EC14F119C77BFAF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4A34361B01335DE5F05F8D54 /* Fried */;
+			targetProxy = 492B437618F5CF9261D84CCE /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		63B5255A1328C6D0218AC6B7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		696C0897F06EF68944BC9162 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.fried.app.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Fried.app/Fried";
+			};
+			name = Release;
+		};
+		910517E34FBF9364033229EC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		AC8C59FE677B5F06EDC8EEA7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.fried.app.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Fried.app/Fried";
+			};
+			name = Debug;
+		};
+		B8B60F6ED9DA673745114FED /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_KEY_CFBundleDisplayName = Fried;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.fried.app;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		D18B4FC5B8777493A1C66A18 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_KEY_CFBundleDisplayName = Fried;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.fried.app;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		81A509644994D4FDB5E5718A /* Build configuration list for PBXNativeTarget "Fried" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B8B60F6ED9DA673745114FED /* Debug */,
+				D18B4FC5B8777493A1C66A18 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		C20CFAA40554B2F74CB0DB8B /* Build configuration list for PBXProject "Fried" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				63B5255A1328C6D0218AC6B7 /* Debug */,
+				910517E34FBF9364033229EC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		FAD0C9E194854983822276AE /* Build configuration list for PBXNativeTarget "FriedTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AC8C59FE677B5F06EDC8EEA7 /* Debug */,
+				696C0897F06EF68944BC9162 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 214BB128BB938738FB506F20 /* Project object */;
+}
