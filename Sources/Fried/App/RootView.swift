@@ -4,6 +4,7 @@ struct RootView: View {
     @StateObject private var app = AppState()
     @StateObject private var store = Store()
     @StateObject private var history = HistoryStore()
+    @StateObject private var challenge = ChallengeStore()
 
     var body: some View {
         ZStack {
@@ -13,6 +14,7 @@ struct RootView: View {
         .environmentObject(app)
         .environmentObject(store)
         .environmentObject(history)
+        .environmentObject(challenge)
         .preferredColorScheme(.dark)
     }
 

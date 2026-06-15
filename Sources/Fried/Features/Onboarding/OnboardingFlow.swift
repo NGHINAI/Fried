@@ -28,16 +28,16 @@ struct OnboardingFlow: View {
         }
     }
 
-    /// Emotional gut-punch before the reflex test — the insecurity hook.
+    /// Personalized gut-punch before the reflex test — reflects THEIR answers.
     private var interstitial: some View {
         VStack(spacing: 24) {
             Spacer()
             EggMascot(mood: .worried, size: 104)
-            Text("You check your phone\n~144 times a day.")
+            Text(interstitialHeadline)
                 .font(Theme.title(30)).foregroundStyle(Theme.textPrimary)
-                .multilineTextAlignment(.center)
+                .multilineTextAlignment(.center).padding(.horizontal, 20)
             GlassCard {
-                Text("Most people can't go 10 minutes without a scroll. Your habits are in — now let's see what they did to your focus.")
+                Text(interstitialBody)
                     .font(Theme.body(17)).foregroundStyle(Theme.textPrimary)
                     .multilineTextAlignment(.center).padding(22).frame(maxWidth: .infinity)
             }
@@ -50,6 +50,27 @@ struct OnboardingFlow: View {
             Spacer().frame(height: 16)
         }
         .transition(.blurReplace)
+    }
+
+    private var interstitialHeadline: String {
+        let total = answers.reduce(0, +)
+        let maxTotal = QuizContent.maxIndex * max(answers.count, 1)
+        let ratio = maxTotal > 0 ? Double(total) / Double(maxTotal) : 0.5
+        switch ratio {
+        case 0.66...:       return "Oof. You might be cooked."
+        case 0.33..<0.66:   return "You're more fried than you think."
+        default:            return "Not bad… but the feed still wants you."
+        }
+    }
+
+    private var interstitialBody: String {
+        guard let worst = answers.enumerated().max(by: { $0.element < $1.element }),
+              worst.offset < QuizContent.questions.count else {
+            return "Your habits are in — now let's see what they did to your focus."
+        }
+        let q = QuizContent.questions[worst.offset]
+        let ans = q.answers[min(worst.element, q.answers.count - 1)]
+        return "You said “\(ans).” Honest. Now let's see what your habits did to your reflexes."
     }
 
     private var quiz: some View {

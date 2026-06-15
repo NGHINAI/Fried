@@ -38,10 +38,12 @@
 		AB4027F71F7B9DA679CCBFDC /* ScoringEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79C1763F15D365535BEC8927 /* ScoringEngineTests.swift */; };
 		B05EEC50CBBAC9ADCAC5F191 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 778108B0C2F286E6588BEAF3 /* PrivacyInfo.xcprivacy */; };
 		B2564ECE58F284574D503A88 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27BA19E25CCB91A68A59DBB0 /* HomeView.swift */; };
+		C1AFF0B7E6E6390083800241 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB3D8A131C93AF66995D2B5 /* NotificationManager.swift */; };
 		CEE27DD139D9171CC8128A7E /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA10FFFC8EFCAF849F556981 /* RootView.swift */; };
 		E0D28FABB1811DBEA625AFD0 /* ReactionGauntletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E295814FC3ACE9167408FA /* ReactionGauntletView.swift */; };
 		EB952560AA4A1929732D7794 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B28439CD4FD1208AB4D7298 /* SplashView.swift */; };
 		FBA36162EBBC63104462D95D /* AmbientBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = B72F844EDBC8F55F83E2AF77 /* AmbientBackground.swift */; };
+		FC8C70875FC61F77DFCDE3B7 /* ChallengeStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAA384CD662096B802C63BF1 /* ChallengeStore.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -85,6 +87,8 @@
 		B72F844EDBC8F55F83E2AF77 /* AmbientBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmbientBackground.swift; sourceTree = "<group>"; };
 		BA10FFFC8EFCAF849F556981 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		C6D3F84A5EB42FBE3A0F1CA2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		CAA384CD662096B802C63BF1 /* ChallengeStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeStore.swift; sourceTree = "<group>"; };
+		CEB3D8A131C93AF66995D2B5 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		D1F9F9A814141BCF188504C2 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		DAAF42CBE188005B86A885F4 /* FriedApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriedApp.swift; sourceTree = "<group>"; };
 		E14F7F4686A96824DA66F5CF /* PrimaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryButton.swift; sourceTree = "<group>"; };
@@ -192,8 +196,10 @@
 		988AA9FC80575CD127946957 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				CAA384CD662096B802C63BF1 /* ChallengeStore.swift */,
 				932B1CA4EFEFF39E534A2DE4 /* HistoryStore.swift */,
 				D1F9F9A814141BCF188504C2 /* Models.swift */,
+				CEB3D8A131C93AF66995D2B5 /* NotificationManager.swift */,
 				03479D09636B2A5FC09ED708 /* PlanEngine.swift */,
 				4A5BB062D4F01F7E542FF951 /* QuizContent.swift */,
 				4CC5E75B1C04760A79429729 /* RoastBank.swift */,
@@ -357,6 +363,7 @@
 				08233B0D825ED8078BAF4E88 /* AnalysisEngine.swift in Sources */,
 				3EABA77BEB877786660F6A77 /* AppState.swift in Sources */,
 				965148B80D8E8BF38F186365 /* CalculatingView.swift in Sources */,
+				FC8C70875FC61F77DFCDE3B7 /* ChallengeStore.swift in Sources */,
 				5683CD5D5D289AFD8D2BF421 /* ConfettiView.swift in Sources */,
 				202D85F8EE7186C119931D7C /* EggMascot.swift in Sources */,
 				4EC57E50C3D9A0669ABF6ADA /* FriedApp.swift in Sources */,
@@ -365,6 +372,7 @@
 				771A3A1D6A4C7EC04199FD7D /* HistoryStore.swift in Sources */,
 				B2564ECE58F284574D503A88 /* HomeView.swift in Sources */,
 				608473918A1E2EEECAAD667B /* Models.swift in Sources */,
+				C1AFF0B7E6E6390083800241 /* NotificationManager.swift in Sources */,
 				937EDE32D78968DBF2C18932 /* OnboardingFlow.swift in Sources */,
 				2519FB0B27E6519DA4A16A58 /* PaywallView.swift in Sources */,
 				43CA3EA5416913534C64AF2F /* PlanEngine.swift in Sources */,

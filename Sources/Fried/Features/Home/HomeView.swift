@@ -28,6 +28,7 @@ struct TodayView: View {
     @EnvironmentObject var app: AppState
     @EnvironmentObject var history: HistoryStore
     @EnvironmentObject var store: Store
+    @EnvironmentObject var challenge: ChallengeStore
     @State private var roast = ""
     @State private var analysis: FriedAnalysis?
     @State private var plan: DefryPlan?
@@ -92,17 +93,29 @@ struct TodayView: View {
                 HStack(spacing: 7) {
                     Image(systemName: "checklist").font(.system(size: 13, weight: .bold)).foregroundStyle(Theme.amber)
                     Text("YOUR DE-FRY PLAN").font(Theme.label(12)).tracking(1.3).foregroundStyle(Theme.textSecondary)
+                    Spacer()
+                    if let plan {
+                        Text("\(challenge.completed(of: plan.steps.count))/\(plan.steps.count) today")
+                            .font(Theme.label(12)).foregroundStyle(Theme.amber)
+                    }
                 }
                 if let plan {
                     Text(plan.diagnosis).font(Theme.body(16)).foregroundStyle(Theme.textPrimary)
-                    VStack(alignment: .leading, spacing: 11) {
+                    VStack(spacing: 10) {
                         ForEach(Array(plan.steps.enumerated()), id: \.offset) { i, step in
-                            HStack(alignment: .top, spacing: 11) {
-                                Text("\(i + 1)").font(Theme.label(13)).foregroundStyle(.black)
-                                    .frame(width: 24, height: 24).background(Theme.heatGradient, in: Circle())
-                                Text(step).font(Theme.body(15)).foregroundStyle(Theme.textPrimary)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            Button { challenge.toggle(i) } label: {
+                                HStack(alignment: .top, spacing: 11) {
+                                    Image(systemName: challenge.isDone(i) ? "checkmark.circle.fill" : "circle")
+                                        .font(.system(size: 21))
+                                        .foregroundStyle(challenge.isDone(i) ? Theme.amber : Theme.textSecondary.opacity(0.55))
+                                    Text(step).font(Theme.body(15))
+                                        .foregroundStyle(challenge.isDone(i) ? Theme.textSecondary : Theme.textPrimary)
+                                        .strikethrough(challenge.isDone(i))
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                }
                             }
+                            .buttonStyle(.plain)
+                            .sensoryFeedback(.impact(weight: .light), trigger: challenge.isDone(i))
                         }
                     }
                     Text(plan.challenge)
@@ -289,6 +302,7 @@ struct TrendsView: View {
 struct ProfileView: View {
     @EnvironmentObject var app: AppState
     @EnvironmentObject var store: Store
+    @AppStorage("fried.notif.on") private var notifOn = false
 
     var body: some View {
         ScrollView {
@@ -318,11 +332,36 @@ struct ProfileView: View {
                                 Text("🔓 Unlock Fried").font(Theme.title(22)).foregroundStyle(Theme.textPrimary)
                                 Text("Full breakdown, daily roasts, share cards & more").font(Theme.label(13))
                                     .foregroundStyle(Theme.textSecondary).multilineTextAlignment(.center)
-                                Text("\(store.priceText) once · no subscription").font(Theme.body(15)).fontWeight(.bold)
+                                Text("\(store.fullPriceText) once · no subscription").font(Theme.body(15)).fontWeight(.bold)
                                     .foregroundStyle(Theme.amber).padding(.top, 4)
                             }.padding(22).frame(maxWidth: .infinity)
                         }
                     }.buttonStyle(.plain)
+                }
+
+                GlassCard {
+                    Toggle(isOn: $notifOn) {
+                        HStack(spacing: 14) {
+                            Image(systemName: "bell.fill").font(.system(size: 15, weight: .semibold))
+                                .foregroundStyle(Theme.amber).frame(width: 24)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Daily reminder").font(Theme.body(16)).foregroundStyle(Theme.textPrimary)
+                                Text("A nudge to check your score").font(Theme.label(12)).foregroundStyle(Theme.textSecondary)
+                            }
+                        }
+                    }
+                    .tint(Theme.amber)
+                    .padding(.horizontal, 18).padding(.vertical, 12)
+                    .onChange(of: notifOn) { _, on in
+                        Task {
+                            if on {
+                                let ok = await NotificationManager.requestAndSchedule()
+                                if !ok { notifOn = false }
+                            } else {
+                                NotificationManager.cancel()
+                            }
+                        }
+                    }
                 }
 
                 GlassCard {
