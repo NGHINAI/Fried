@@ -20,6 +20,7 @@
 		43CA3EA5416913534C64AF2F /* PlanEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03479D09636B2A5FC09ED708 /* PlanEngine.swift */; };
 		44A13223E29909A2D0A8A77B /* ScreenTimeOCRParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48E1E8C8B87D368BB054D6B6 /* ScreenTimeOCRParserTests.swift */; };
 		4EC57E50C3D9A0669ABF6ADA /* FriedApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAAF42CBE188005B86A885F4 /* FriedApp.swift */; };
+		5683CD5D5D289AFD8D2BF421 /* ConfettiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2A576696984EF4F11084C5 /* ConfettiView.swift */; };
 		57885654011E33871BB93173 /* ScreenTimeOCRParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903AD44337D7E31E70550886 /* ScreenTimeOCRParser.swift */; };
 		5CB76C042035BAFE0DE5E72E /* RoastEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 593E34CA140E60FA797001AA /* RoastEngine.swift */; };
 		608473918A1E2EEECAAD667B /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1F9F9A814141BCF188504C2 /* Models.swift */; };
@@ -59,6 +60,7 @@
 		0AAB16449C596D2831DD6138 /* CalculatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculatingView.swift; sourceTree = "<group>"; };
 		27BA19E25CCB91A68A59DBB0 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		38E295814FC3ACE9167408FA /* ReactionGauntletView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactionGauntletView.swift; sourceTree = "<group>"; };
+		3A2A576696984EF4F11084C5 /* ConfettiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfettiView.swift; sourceTree = "<group>"; };
 		3E29F472C41E46A8E58910CC /* ScoringEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoringEngine.swift; sourceTree = "<group>"; };
 		42C47F93B7E6A1B603C9B26F /* AnalysisEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalysisEngine.swift; sourceTree = "<group>"; };
 		48E1E8C8B87D368BB054D6B6 /* ScreenTimeOCRParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenTimeOCRParserTests.swift; sourceTree = "<group>"; };
@@ -175,6 +177,7 @@
 		8FED6CD6836DBD5E1E9BA525 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				3A2A576696984EF4F11084C5 /* ConfettiView.swift */,
 				E7C1F585D3A9D40762858EBE /* GlassCard.swift */,
 				E14F7F4686A96824DA66F5CF /* PrimaryButton.swift */,
 				E6F19A9C04137FF92E7CEDB1 /* ScoreDial.swift */,
@@ -351,6 +354,7 @@
 				08233B0D825ED8078BAF4E88 /* AnalysisEngine.swift in Sources */,
 				3EABA77BEB877786660F6A77 /* AppState.swift in Sources */,
 				965148B80D8E8BF38F186365 /* CalculatingView.swift in Sources */,
+				5683CD5D5D289AFD8D2BF421 /* ConfettiView.swift in Sources */,
 				4EC57E50C3D9A0669ABF6ADA /* FriedApp.swift in Sources */,
 				90FAF466E473025A30BD699F /* GlassCard.swift in Sources */,
 				39A94F62D741594F08916F9A /* GlassModifier.swift in Sources */,

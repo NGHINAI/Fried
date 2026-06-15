@@ -61,7 +61,16 @@ final class Store: ObservableObject {
 
     @discardableResult
     func purchase(_ d: Discount) async -> Bool {
-        guard let product = product(d) else { return false }
+        guard let product = product(d) else {
+            #if DEBUG
+            // No StoreKit config loaded (e.g. launched outside Xcode) — grant
+            // access so the flow is testable in the Simulator.
+            invitedUnlock = true
+            return true
+            #else
+            return false
+            #endif
+        }
         do {
             switch try await product.purchase() {
             case .success(let verification):

@@ -141,11 +141,10 @@ struct TodayView: View {
                         .stroke(Theme.gradient(for: score.tier), style: StrokeStyle(lineWidth: 10, lineCap: .round))
                         .rotationEffect(.degrees(-90))
                     Text("\(score.value)").font(Theme.score(34)).foregroundStyle(Theme.gradient(for: score.tier))
-                        .blur(radius: store.hasAccess ? 0 : 11)
                 }
                 .frame(width: 92, height: 92)
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(store.hasAccess ? "\(score.tier.emoji) \(score.tier.title)" : "🔒 Locked")
+                    Text("\(score.tier.emoji) \(score.tier.title)")
                         .font(Theme.title(22)).foregroundStyle(Theme.textPrimary)
                     Text("Today's fried score").font(Theme.label(13)).foregroundStyle(Theme.textSecondary)
                 }
