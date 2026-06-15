@@ -13,6 +13,7 @@ struct RevealView: View {
     @State private var celebrate = false
 
     private var score: FriedScore { app.result ?? FriedScore(value: 0, tier: .crispMind) }
+    private var percentile: Int { min(98, max(3, Int(Double(score.value) * 0.9 + 6))) }
 
     var body: some View {
         ZStack {
@@ -25,6 +26,8 @@ struct RevealView: View {
                     .animation(.spring(response: 0.6, dampingFraction: 0.6), value: celebrate)
                 Text("\(score.tier.emoji)  \(score.tier.title)")
                     .font(Theme.title(30)).foregroundStyle(Theme.textPrimary)
+                Text("🔥 Crispier than \(percentile)% of people who've taken this")
+                    .font(Theme.label(14)).foregroundStyle(Theme.amber)
                 GlassCard {
                     Text(roast.isEmpty ? " " : roast)
                         .font(Theme.body(18)).foregroundStyle(Theme.textPrimary)

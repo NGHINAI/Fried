@@ -116,7 +116,8 @@ struct TodayView: View {
     }
 
     private var header: some View {
-        HStack(alignment: .center) {
+        HStack(alignment: .center, spacing: 12) {
+            EggMascot(mood: .forTier(score.tier), size: 46)
             VStack(alignment: .leading, spacing: 2) {
                 Text("Your brain today").font(Theme.title(26)).foregroundStyle(Theme.textPrimary)
                 Text(Date().formatted(.dateTime.weekday(.wide).month().day()))

@@ -15,10 +15,9 @@ struct CalculatingView: View {
     var body: some View {
         VStack(spacing: 26) {
             Spacer()
-            Text("🍳")
-                .font(.system(size: 64))
-                .rotationEffect(.degrees(spin ? 360 : 0))
-                .animation(.linear(duration: 2).repeatForever(autoreverses: false), value: spin)
+            EggMascot(mood: .curious, size: 96)
+                .rotationEffect(.degrees(spin ? 8 : -8))
+                .animation(.easeInOut(duration: 0.6).repeatForever(autoreverses: true), value: spin)
             Text(lines[min(i, lines.count - 1)])
                 .font(Theme.body(18))
                 .foregroundStyle(Theme.textSecondary)

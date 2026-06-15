@@ -5,10 +5,9 @@ struct SplashView: View {
     @State private var appear = false
 
     var body: some View {
-        VStack(spacing: 14) {
+        VStack(spacing: 16) {
             Spacer()
-            Text("🍳")
-                .font(.system(size: 70))
+            EggMascot(mood: .curious, size: 124)
                 .scaleEffect(appear ? 1 : 0.5)
                 .opacity(appear ? 1 : 0)
             Text("fried")

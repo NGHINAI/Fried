@@ -32,7 +32,7 @@ struct OnboardingFlow: View {
     private var interstitial: some View {
         VStack(spacing: 24) {
             Spacer()
-            Text("📱").font(.system(size: 60))
+            EggMascot(mood: .worried, size: 104)
             Text("You check your phone\n~144 times a day.")
                 .font(Theme.title(30)).foregroundStyle(Theme.textPrimary)
                 .multilineTextAlignment(.center)

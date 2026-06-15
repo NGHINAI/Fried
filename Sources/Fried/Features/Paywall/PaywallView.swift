@@ -28,6 +28,7 @@ struct PaywallView: View {
                     }
                     .padding(22).frame(maxWidth: .infinity)
                 }
+                planPeek
             }
             .padding(.horizontal, Theme.pad).padding(.top, 56).padding(.bottom, 230)
         }
@@ -47,6 +48,39 @@ struct PaywallView: View {
                 .font(Theme.title(31)).foregroundStyle(Theme.textPrimary).multilineTextAlignment(.center)
             Text("Unlock your full report **and** a personalized de-fry plan built from your answers.")
                 .font(Theme.body(15)).foregroundStyle(Theme.textSecondary).multilineTextAlignment(.center)
+        }
+    }
+
+    private var planPeek: some View {
+        GlassCard {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack(spacing: 7) {
+                    Image(systemName: "checklist").font(.system(size: 13, weight: .bold)).foregroundStyle(Theme.amber)
+                    Text("A PEEK AT YOUR PLAN").font(Theme.label(12)).tracking(1.3).foregroundStyle(Theme.textSecondary)
+                }
+                let plan = PlanEngine.plan(score: score, quiz: app.quiz, reaction: app.reaction)
+                Text(plan.diagnosis).font(Theme.body(15)).foregroundStyle(Theme.textPrimary)
+                ZStack {
+                    VStack(alignment: .leading, spacing: 9) {
+                        ForEach(Array(plan.steps.prefix(3).enumerated()), id: \.offset) { i, step in
+                            HStack(alignment: .top, spacing: 10) {
+                                Text("\(i + 1)").font(Theme.label(12)).foregroundStyle(.black)
+                                    .frame(width: 22, height: 22).background(Theme.heatGradient, in: Circle())
+                                Text(step).font(Theme.body(14)).foregroundStyle(Theme.textPrimary)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            }
+                        }
+                    }
+                    .blur(radius: 6)
+                    .overlay(
+                        VStack(spacing: 4) {
+                            Image(systemName: "lock.fill").foregroundStyle(Theme.amber)
+                            Text("Unlock to see your full plan").font(Theme.label(13)).foregroundStyle(Theme.textPrimary)
+                        }
+                    )
+                }
+            }
+            .padding(20).frame(maxWidth: .infinity, alignment: .leading)
         }
     }
 

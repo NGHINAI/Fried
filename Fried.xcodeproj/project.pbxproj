@@ -12,6 +12,7 @@
 		08233B0D825ED8078BAF4E88 /* AnalysisEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C47F93B7E6A1B603C9B26F /* AnalysisEngine.swift */; };
 		0A74967468F0B4A7652D164D /* ShareCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB41FB11FFAE4034FB5EEF2D /* ShareCardView.swift */; };
 		14FA68C99F696A808B2F8641 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DC7F78A98988FF7342B8BF /* Theme.swift */; };
+		202D85F8EE7186C119931D7C /* EggMascot.swift in Sources */ = {isa = PBXBuildFile; fileRef = F41B236F5A822522289EFC67 /* EggMascot.swift */; };
 		2519FB0B27E6519DA4A16A58 /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF73E8D6BAE76260B8790EE /* PaywallView.swift */; };
 		398301D5BCDBDBDF67CE8633 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C6D3F84A5EB42FBE3A0F1CA2 /* Assets.xcassets */; };
 		39A94F62D741594F08916F9A /* GlassModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A203513A02AEF6BD27C41E /* GlassModifier.swift */; };
@@ -89,6 +90,7 @@
 		E14F7F4686A96824DA66F5CF /* PrimaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryButton.swift; sourceTree = "<group>"; };
 		E6F19A9C04137FF92E7CEDB1 /* ScoreDial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreDial.swift; sourceTree = "<group>"; };
 		E7C1F585D3A9D40762858EBE /* GlassCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassCard.swift; sourceTree = "<group>"; };
+		F41B236F5A822522289EFC67 /* EggMascot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EggMascot.swift; sourceTree = "<group>"; };
 		FB41FB11FFAE4034FB5EEF2D /* ShareCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCardView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -178,6 +180,7 @@
 			isa = PBXGroup;
 			children = (
 				3A2A576696984EF4F11084C5 /* ConfettiView.swift */,
+				F41B236F5A822522289EFC67 /* EggMascot.swift */,
 				E7C1F585D3A9D40762858EBE /* GlassCard.swift */,
 				E14F7F4686A96824DA66F5CF /* PrimaryButton.swift */,
 				E6F19A9C04137FF92E7CEDB1 /* ScoreDial.swift */,
@@ -355,6 +358,7 @@
 				3EABA77BEB877786660F6A77 /* AppState.swift in Sources */,
 				965148B80D8E8BF38F186365 /* CalculatingView.swift in Sources */,
 				5683CD5D5D289AFD8D2BF421 /* ConfettiView.swift in Sources */,
+				202D85F8EE7186C119931D7C /* EggMascot.swift in Sources */,
 				4EC57E50C3D9A0669ABF6ADA /* FriedApp.swift in Sources */,
 				90FAF466E473025A30BD699F /* GlassCard.swift in Sources */,
 				39A94F62D741594F08916F9A /* GlassModifier.swift in Sources */,
