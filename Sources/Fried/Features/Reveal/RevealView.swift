@@ -2,13 +2,14 @@ import SwiftUI
 
 struct RevealView: View {
     @EnvironmentObject var app: AppState
+    @EnvironmentObject var store: Store
     @State private var roast = ""
     @State private var showRoast = false
 
     private var score: FriedScore { app.result ?? FriedScore(value: 0, tier: .crispMind) }
 
     var body: some View {
-        VStack(spacing: 22) {
+        VStack(spacing: 20) {
             Spacer(minLength: 8)
             Text("YOUR FRIED SCORE")
                 .font(Theme.label(14)).tracking(2.5)
@@ -30,15 +31,18 @@ struct RevealView: View {
             .offset(y: showRoast ? 0 : 12)
             Spacer(minLength: 8)
             VStack(spacing: 12) {
-                PrimaryButton(title: "Unlock my full breakdown",
-                              subtitle: "$4.99 once · no subscription") {
-                    withAnimation(.spring(response: 0.5, dampingFraction: 0.85)) {
-                        app.screen = .paywall
+                if store.hasAccess {
+                    PrimaryButton(title: "See my full breakdown") {
+                        withAnimation { app.screen = .home }
+                    }
+                } else {
+                    PrimaryButton(title: "Unlock my full breakdown",
+                                  subtitle: "\(store.priceText) once · no subscription") {
+                        withAnimation { app.screen = .paywall }
                     }
                 }
-                Button {
-                    // ShareCard export wired in Task 10
-                } label: {
+                ShareLink(item: URL(string: "https://fried.app")!,
+                          message: Text("How fried is your brain? I scored \(score.value) 🍳")) {
                     Label("Share my score", systemImage: "square.and.arrow.up")
                         .font(Theme.body(16))
                         .foregroundStyle(Theme.textSecondary)

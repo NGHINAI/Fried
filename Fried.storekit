@@ -1,0 +1,29 @@
+{
+  "identifier" : "FRIED_SK_CONFIG",
+  "nonRenewingSubscriptions" : [],
+  "products" : [
+    {
+      "displayPrice" : "4.99",
+      "familyShareable" : false,
+      "internalID" : "fried-lifetime-001",
+      "localizations" : [
+        {
+          "description" : "Unlock the full Fried experience forever — one time, no subscription.",
+          "displayName" : "Fried Lifetime Unlock",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.fried.app.lifetime",
+      "referenceName" : "Lifetime Unlock",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false
+  },
+  "subscriptionGroups" : [],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}

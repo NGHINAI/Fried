@@ -40,3 +40,18 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.fried.app.tests
+
+schemes:
+  Fried:
+    build:
+      targets:
+        Fried: all
+    run:
+      config: Debug
+      storeKitConfiguration: Fried.storekit
+    test:
+      config: Debug
+      targets:
+        - FriedTests
+    archive:
+      config: Release

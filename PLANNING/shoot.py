@@ -14,7 +14,7 @@ sh("xcrun", "simctl", "install", UDID, app)
 outdir = os.path.expanduser("~/Desktop/Fried/PLANNING/screenshots")
 os.makedirs(outdir, exist_ok=True)
 
-screens = ["splash", "onboarding", "gauntlet", "reveal", "reveal_low", "reveal_mid"]
+screens = ["paywall", "reveal", "reveal_low", "splash"]
 for s in screens:
     sh("xcrun", "simctl", "terminate", UDID, "com.fried.app")
     env = dict(os.environ, SIMCTL_CHILD_FRIED_PREVIEW_SCREEN=s)
