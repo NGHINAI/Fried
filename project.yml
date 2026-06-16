@@ -23,7 +23,7 @@ targets:
       - path: Sources/Fried
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.fried.app
+        PRODUCT_BUNDLE_IDENTIFIER: com.nghinai.fried
         TARGETED_DEVICE_FAMILY: "1"
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
@@ -39,7 +39,7 @@ targets:
       - target: Fried
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.fried.app.tests
+        PRODUCT_BUNDLE_IDENTIFIER: com.nghinai.fried.tests
 
 schemes:
   Fried:
