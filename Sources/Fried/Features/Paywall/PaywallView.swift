@@ -16,10 +16,10 @@ struct PaywallView: View {
     }
 
     private var perks: [(String, String, String)] {
-        [("chart.bar.xaxis", "Your 5-axis breakdown", "Exactly how fried your focus, scroll pull, sleep, reflexes & consistency each are"),
-         ("scope", "Your #1 leak — named & explained", "The single biggest thing frying you, and why it's happening"),
-         ("target", "Your recovery plan + goal", "Specific steps to claw back \(breakdown.gap) points, built from your own answers"),
-         ("chart.line.uptrend.xyaxis", "Track it daily", "Your score, streak & 7-day trend as you de-fry")]
+        [("chart.bar.xaxis", "Your 5-axis breakdown", "How fried your focus, scroll, sleep & reflexes each are"),
+         ("scope", "Your #1 leak, named", "The biggest thing frying you — and why"),
+         ("target", "Your recovery plan", "Steps to claw back \(breakdown.gap) points"),
+         ("chart.line.uptrend.xyaxis", "Daily tracking", "Your score, streak & trend as you de-fry")]
     }
 
     var body: some View {
@@ -32,9 +32,14 @@ struct PaywallView: View {
                     }
                     .padding(22).frame(maxWidth: .infinity)
                 }
-                planPeek
+                Text("Just \(store.fullPriceText) — about the price of a coffee, once. Yours forever.")
+                    .font(Theme.body(14)).foregroundStyle(Theme.textSecondary)
+                    .multilineTextAlignment(.center).padding(.horizontal, 8)
+                Text("Entertainment only — a playful vibe check, not a measurement of health, focus, or intelligence.")
+                    .font(.system(size: 11)).foregroundStyle(Theme.textSecondary.opacity(0.55))
+                    .multilineTextAlignment(.center).padding(.horizontal, 18)
             }
-            .padding(.horizontal, Theme.pad).padding(.top, 56).padding(.bottom, 230)
+            .padding(.horizontal, Theme.pad).padding(.top, 56).padding(.bottom, 200)
         }
         .scrollIndicators(.hidden)
         .safeAreaInset(edge: .bottom) { bottomBar }
@@ -46,48 +51,15 @@ struct PaywallView: View {
     }
 
     private var header: some View {
-        VStack(spacing: 12) {
-            Text("ANALYSIS COMPLETE · 1 STEP TO VIEW")
-                .font(Theme.label(12)).tracking(1.5).foregroundStyle(Theme.amber)
+        VStack(spacing: 10) {
+            Text("1 STEP TO VIEW")
+                .font(Theme.label(12)).tracking(2).foregroundStyle(Theme.amber)
             Text("You're sitting on a \(breakdown.gap)-point loss.")
                 .font(Theme.title(30)).foregroundStyle(Theme.textPrimary).multilineTextAlignment(.center)
-            (Text("You're more fried than ")
-             + Text("\(breakdown.percentile)% of people your age").foregroundColor(Theme.danger).bold()
-             + Text(". Unlock exactly what's frying you — and the plan to claw those \(breakdown.gap) points back."))
+            (Text("More fried than ")
+             + Text("\(breakdown.percentile)%").foregroundColor(Theme.danger).bold()
+             + Text(" of people your age. Here's what's frying you."))
                 .font(Theme.body(15)).foregroundStyle(Theme.textSecondary).multilineTextAlignment(.center)
-        }
-    }
-
-    private var planPeek: some View {
-        GlassCard {
-            VStack(alignment: .leading, spacing: 12) {
-                HStack(spacing: 7) {
-                    Image(systemName: "checklist").font(.system(size: 13, weight: .bold)).foregroundStyle(Theme.amber)
-                    Text("A PEEK AT YOUR PLAN").font(Theme.label(12)).tracking(1.3).foregroundStyle(Theme.textSecondary)
-                }
-                let plan = PlanEngine.plan(score: score, quiz: app.quiz, reaction: app.reaction)
-                Text(plan.diagnosis).font(Theme.body(15)).foregroundStyle(Theme.textPrimary)
-                ZStack {
-                    VStack(alignment: .leading, spacing: 9) {
-                        ForEach(Array(plan.steps.prefix(3).enumerated()), id: \.offset) { i, step in
-                            HStack(alignment: .top, spacing: 10) {
-                                Text("\(i + 1)").font(Theme.label(12)).foregroundStyle(.black)
-                                    .frame(width: 22, height: 22).background(Theme.heatGradient, in: Circle())
-                                Text(step).font(Theme.body(14)).foregroundStyle(Theme.textPrimary)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                            }
-                        }
-                    }
-                    .blur(radius: 6)
-                    .overlay(
-                        VStack(spacing: 4) {
-                            Image(systemName: "lock.fill").foregroundStyle(Theme.amber)
-                            Text("Unlock to see your full plan").font(Theme.label(13)).foregroundStyle(Theme.textPrimary)
-                        }
-                    )
-                }
-            }
-            .padding(20).frame(maxWidth: .infinity, alignment: .leading)
         }
     }
 
@@ -122,7 +94,7 @@ struct PaywallView: View {
     private var bottomBar: some View {
         VStack(spacing: 12) {
             PrimaryButton(title: working ? "…" : "Unlock everything",
-                          subtitle: "\(store.fullPriceText) once · less than a coffee · no subscription") {
+                          subtitle: "\(store.fullPriceText) · one-time · no subscription") {
                 Task {
                     working = true
                     _ = await store.purchase(.full)
@@ -144,9 +116,6 @@ struct PaywallView: View {
                 Link("Privacy", destination: URL(string: "https://fried.app/privacy")!)
             }
             .font(Theme.label(12)).foregroundStyle(Theme.textSecondary)
-            Text("Entertainment only — a playful vibe check, not a measurement of health, focus, or intelligence.")
-                .font(.system(size: 10, weight: .regular, design: .rounded))
-                .foregroundStyle(Theme.textSecondary.opacity(0.6)).multilineTextAlignment(.center).padding(.horizontal, 12)
         }
         .padding(.horizontal, Theme.pad).padding(.top, 16).padding(.bottom, 8)
         .background(.ultraThinMaterial)

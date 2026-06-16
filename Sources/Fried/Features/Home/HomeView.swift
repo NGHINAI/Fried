@@ -38,6 +38,7 @@ struct TodayView: View {
     @State private var thudTick = 0                    // heavy-haptic trigger (the damage)
     @State private var successTick = 0                 // success-haptic trigger (the repair)
     @State private var showNotifPrime = false          // one-time benefit-first notif priming
+    @State private var dismissedMilestone = false      // hide the streak-milestone share banner
 
     private var isPreview: Bool { ProcessInfo.processInfo.environment["FRIED_PREVIEW_SCREEN"] != nil }
 
@@ -62,9 +63,11 @@ struct TodayView: View {
         ScrollView {
             VStack(spacing: 16) {
                 header
+                milestoneBanner
                 if showDamage { damageBanner }
                 brainHero
                 brainAgeCard
+                headroomCard
                 reportCard
                 if store.hasAccess {
                     tasksCard
@@ -266,6 +269,67 @@ struct TodayView: View {
         }
     }
 
+    // #2 "Potential you" — the recoverable headroom, the daily aspiration (FREE).
+    // Uses the brain state's fried% so it matches the hero number exactly (clarity).
+    private var headroomGap: Int { max(0, brain.friedPercent - 18) }
+    private var headroomCard: some View {
+        GlassCard {
+            HStack(spacing: 16) {
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("HEADROOM").font(Theme.label(12)).tracking(1.3).foregroundStyle(Theme.textSecondary)
+                    Text("\(headroomGap)").font(Theme.score(46)).foregroundStyle(Theme.recovery)
+                }
+                Rectangle().fill(Theme.hairline).frame(width: 1, height: 52)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("points you can claw back").font(Theme.body(15)).foregroundStyle(Theme.textPrimary)
+                    Text("A fresh brain sits near 18% fried — you're at \(brain.friedPercent)%.")
+                        .font(Theme.label(13)).foregroundStyle(Theme.textSecondary)
+                }
+                Spacer(minLength: 0)
+            }
+            .padding(20).frame(maxWidth: .infinity)
+        }
+    }
+
+    // #3 Share at a pride moment — streak milestones only, once each (the viral loop).
+    private var milestone: Int? {
+        let s = history.streak
+        guard [3, 7, 14, 30, 60, 100].contains(s), !dismissedMilestone,
+              !UserDefaults.standard.bool(forKey: "fried.shared.\(s)") else { return nil }
+        return s
+    }
+    @ViewBuilder private var milestoneBanner: some View {
+        if let m = milestone {
+            GlassCard {
+                HStack(spacing: 12) {
+                    Text("🔥").font(.system(size: 26))
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("\(m)-day streak!").font(Theme.title(17)).foregroundStyle(Theme.textPrimary)
+                        Text("You've out-lasted most people. Flex it.")
+                            .font(Theme.label(13)).foregroundStyle(Theme.textSecondary)
+                    }
+                    Spacer(minLength: 0)
+                    ShareLink(item: URL(string: "https://fried.app")!,
+                              message: Text("🔥 \(m)-day streak on Fried. How fried is your brain?")) {
+                        Text("Share").font(Theme.label(13)).fontWeight(.semibold).foregroundStyle(.black)
+                            .padding(.horizontal, 14).padding(.vertical, 8)
+                            .background(Theme.amber, in: Capsule())
+                    }
+                    .simultaneousGesture(TapGesture().onEnded {
+                        UserDefaults.standard.set(true, forKey: "fried.shared.\(m)")
+                    })
+                    Button { withAnimation { dismissedMilestone = true } } label: {
+                        Image(systemName: "xmark").font(.system(size: 12, weight: .bold))
+                            .foregroundStyle(Theme.textSecondary)
+                    }
+                }
+                .padding(16)
+            }
+            .overlay(RoundedRectangle(cornerRadius: Theme.radius).stroke(Theme.amber.opacity(0.4), lineWidth: 1))
+            .transition(.move(edge: .top).combined(with: .opacity))
+        }
+    }
+
     // Daily Brain Report — the AI dopamine. Headline+risk free, full report paid.
     private var reportCard: some View {
         GlassCard {
@@ -456,34 +520,15 @@ struct TrendsView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
-                Text("Your trend")
+                Text("Your progress")
                     .font(Theme.title(28)).foregroundStyle(Theme.textPrimary)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                GlassCard {
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("LAST 7 DAYS").font(Theme.label(12)).tracking(1.5).foregroundStyle(Theme.textSecondary)
-                        Chart(history.last7) { d in
-                            BarMark(x: .value("Day", d.date, unit: .day),
-                                    y: .value("Score", d.value), width: .ratio(0.55))
-                                .foregroundStyle(Theme.heatGradient).cornerRadius(5)
-                        }
-                        .chartYScale(domain: 0...100)
-                        .chartXAxis { AxisMarks(values: .stride(by: .day)) {
-                            AxisValueLabel(format: .dateTime.weekday(.narrow)).foregroundStyle(Theme.textSecondary)
-                        } }
-                        .chartYAxis(.hidden)
-                        .frame(height: 150)
-                        if let delta = weekDelta {
-                            Text(delta.text).font(Theme.body(14)).fontWeight(.semibold)
-                                .foregroundStyle(delta.good ? Theme.mint : Theme.amber)
-                        }
-                    }
-                    .padding(20).frame(maxWidth: .infinity, alignment: .leading)
-                }
-                if history.days.isEmpty {
-                    Text("Take the test daily to build your trend.")
-                        .font(Theme.body(15)).foregroundStyle(Theme.textSecondary).padding(.top, 8)
-                }
+                progressHero
+                chartCard
+                recordStrip
+                Text("Your streak holds your progress — miss a day and the trend resets.")
+                    .font(Theme.label(13)).foregroundStyle(Theme.textSecondary)
+                    .multilineTextAlignment(.center).padding(.horizontal, 20).padding(.top, 2)
             }
             .padding(.horizontal, Theme.pad).padding(.top, 64).padding(.bottom, 40)
         }
@@ -491,12 +536,73 @@ struct TrendsView: View {
         .task { if ProcessInfo.processInfo.environment["FRIED_PREVIEW_SCREEN"] == "home" { history.seedSampleIfEmpty() } }
     }
 
-    private var weekDelta: (text: String, good: Bool)? {
-        let d = history.last7
-        guard d.count >= 2, let first = d.first, let last = d.last else { return nil }
-        let diff = last.value - first.value
-        if diff == 0 { return ("No change this week", true) }
-        return diff < 0 ? ("↓ \(abs(diff)) less fried this week", true) : ("↑ \(diff) more fried this week", false)
+    // Loss aversion + endowment + goal-gradient: make banked progress felt so they protect it.
+    private var progressHero: some View {
+        let p = progress
+        return GlassCard {
+            VStack(spacing: 8) {
+                Text(p.label).font(Theme.label(12)).tracking(1.5).foregroundStyle(Theme.textSecondary)
+                Text(p.big).font(Theme.hero(60)).foregroundStyle(p.good ? Theme.recovery : Theme.danger)
+                Text(p.sub).font(Theme.body(15)).foregroundStyle(Theme.textPrimary)
+                    .multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
+            }
+            .padding(24).frame(maxWidth: .infinity)
+        }
+    }
+
+    private var chartCard: some View {
+        GlassCard {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("LAST 7 DAYS").font(Theme.label(12)).tracking(1.5).foregroundStyle(Theme.textSecondary)
+                Chart(history.last7) { d in
+                    BarMark(x: .value("Day", d.date, unit: .day),
+                            y: .value("Score", d.value), width: .ratio(0.55))
+                        .foregroundStyle(Theme.heatGradient).cornerRadius(5)
+                }
+                .chartYScale(domain: 0...100)
+                .chartXAxis { AxisMarks(values: .stride(by: .day)) {
+                    AxisValueLabel(format: .dateTime.weekday(.narrow)).foregroundStyle(Theme.textSecondary)
+                } }
+                .chartYAxis(.hidden)
+                .frame(height: 150)
+            }
+            .padding(20).frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
+    private var recordStrip: some View {
+        HStack(spacing: 12) {
+            miniStat("🏆 RECORD", history.days.map(\.value).min().map { "\($0)" } ?? "—", Theme.recovery)
+            miniStat("🔥 STREAK", "\(history.streak)", Theme.amber)
+        }
+    }
+    private func miniStat(_ tag: String, _ value: String, _ color: Color) -> some View {
+        GlassCard {
+            VStack(spacing: 4) {
+                Text(tag).font(Theme.label(11)).tracking(1).foregroundStyle(Theme.textSecondary)
+                Text(value).font(Theme.hero(34)).foregroundStyle(color)
+            }
+            .padding(.vertical, 16).frame(maxWidth: .infinity)
+        }
+    }
+
+    /// The progress story — lower fried = better, so improvement is "clawed back".
+    private var progress: (label: String, big: String, sub: String, good: Bool) {
+        let vals = history.days.map(\.value)
+        guard let current = vals.last else {
+            return ("YOUR PROGRESS", "—", "Take the test daily to build your trend.", true)
+        }
+        let best = vals.min() ?? current
+        let start = vals.first ?? current
+        let clawed = start - current
+        if vals.count >= 2 && current <= best {
+            return ("SHARPEST YOU'VE BEEN", "\(current)", "Your lowest fried score yet. Don't lose it.", true)
+        } else if clawed > 0 {
+            return ("CLAWED BACK", "\(clawed)", "points since you started. \(best) is your record — beat it.", true)
+        } else if clawed < 0 {
+            return ("TRENDING UP", "+\(-clawed)", "more fried than when you started. Reverse it before it sticks.", false)
+        }
+        return ("HOLDING STEADY", "\(current)", "Keep the streak alive to start clawing it back.", true)
     }
 }
 
