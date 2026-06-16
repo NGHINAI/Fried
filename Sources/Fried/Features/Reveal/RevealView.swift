@@ -55,12 +55,18 @@ struct RevealView: View {
             }
             .scrollIndicators(.hidden)
             ConfettiView(burst: confetti).ignoresSafeArea().allowsHitTesting(false)
+            #if DEBUG
+            if ProcessInfo.processInfo.environment["FRIED_PREVIEW_SHARECARD"] == "1", let shareImage {
+                Color.black.ignoresSafeArea()
+                shareImage.resizable().aspectRatio(contentMode: .fit).ignoresSafeArea()
+            }
+            #endif
         }
         .safeAreaInset(edge: .bottom) { ctaBar }
         .task {
             brain.registerScore(score.value)
             roast = await RoastEngine.roast(for: score)
-            shareImage = ShareCard.image(score: score, roast: roast)
+            shareImage = ShareCard.image(score: score, breakdown: breakdown, roast: roast)
             withAnimation(.easeOut(duration: 0.5).delay(0.9)) { showRoast = true }
             withAnimation(.spring(response: 0.6, dampingFraction: 0.85).delay(1.3)) { revealThreat = true }
         }

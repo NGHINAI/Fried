@@ -122,7 +122,7 @@ struct PaywallView: View {
     private var bottomBar: some View {
         VStack(spacing: 12) {
             PrimaryButton(title: working ? "…" : "Unlock everything",
-                          subtitle: "\(store.fullPriceText) once · no subscription, ever") {
+                          subtitle: "\(store.fullPriceText) once · less than a coffee · no subscription") {
                 Task {
                     working = true
                     _ = await store.purchase(.full)
@@ -166,8 +166,11 @@ struct PaywallView: View {
                     Text(store.fullPriceText).font(Theme.body(18)).strikethrough().foregroundStyle(Theme.textSecondary)
                     Text(store.priceText(offerTier)).font(Theme.score(40)).foregroundStyle(Theme.gradient(for: .lightlyToasted))
                 }
-                Text("Unlock everything, forever. No subscription.")
+                Text(exitStage == 1
+                     ? "That's less than a coffee — once, and yours forever."
+                     : "Under a dollar. One time. No subscription, ever.")
                     .font(Theme.body(14)).foregroundStyle(Theme.textSecondary)
+                    .multilineTextAlignment(.center)
                 PrimaryButton(title: working ? "…" : "Claim \(exitStage == 1 ? "50" : "80")% off",
                               subtitle: "\(store.priceText(offerTier)) once") {
                     Task {
