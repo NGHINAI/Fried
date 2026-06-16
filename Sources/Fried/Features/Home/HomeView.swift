@@ -41,6 +41,7 @@ struct TodayView: View {
     @State private var dismissedMilestone = false      // hide the streak-milestone share banner
     @State private var showGoalSheet = false           // one-time first-session goal pick
     @State private var goalSel = 30
+    @State private var showAsk = false                 // "Ask your brain" AI chat cover
 
     private var isPreview: Bool { ProcessInfo.processInfo.environment["FRIED_PREVIEW_SCREEN"] != nil }
 
@@ -70,6 +71,7 @@ struct TodayView: View {
                 brainHero
                 brainAgeCard
                 headroomCard
+                askCard
                 reportCard
                 if store.hasAccess {
                     tasksCard
@@ -112,9 +114,15 @@ struct TodayView: View {
             analysis = await AnalysisEngine.analyze(score: score, quiz: app.quiz, reaction: app.reaction)
             await maybeShowGoal()
             await maybePrimeNotifications()
+            #if DEBUG
+            if ProcessInfo.processInfo.environment["FRIED_PREVIEW_ASK"] != nil {
+                try? await Task.sleep(for: .seconds(0.3)); showAsk = true
+            }
+            #endif
         }
         .sheet(isPresented: $showGoalSheet) { goalSheet }
         .sheet(isPresented: $showNotifPrime) { notifPrimeSheet }
+        .fullScreenCover(isPresented: $showAsk) { AskView() }
     }
 
     private func reportContext() -> ReportContext {
@@ -299,6 +307,31 @@ struct TodayView: View {
             }
             .padding(20).frame(maxWidth: .infinity)
         }
+    }
+
+    // "Ask your brain" — the conversational AI entry (curiosity + insecurity bait).
+    private var askCard: some View {
+        Button { showAsk = true } label: {
+            GlassCard {
+                HStack(spacing: 14) {
+                    ZStack {
+                        Circle().fill(Theme.heatGradient).frame(width: 40, height: 40)
+                        Image(systemName: "sparkles").font(.system(size: 17, weight: .bold)).foregroundStyle(.black)
+                    }
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Ask your brain").font(Theme.title(18)).foregroundStyle(Theme.textPrimary)
+                        Text("Why am I fried? What do I fix? — ask Yolkie anything.")
+                            .font(Theme.label(13)).foregroundStyle(Theme.textSecondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    Spacer(minLength: 0)
+                    Image(systemName: "chevron.right").font(.system(size: 13, weight: .bold))
+                        .foregroundStyle(Theme.textSecondary.opacity(0.5))
+                }
+                .padding(18).frame(maxWidth: .infinity)
+            }
+        }
+        .buttonStyle(.plain)
     }
 
     // #3 Share at a pride moment — streak milestones only, once each (the viral loop).
