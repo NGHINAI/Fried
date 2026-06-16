@@ -8,27 +8,31 @@ os.makedirs(OUT, exist_ok=True)
 W, H = 1320, 2868
 
 def font(size):
-    for p in ["/System/Library/Fonts/SFNSRounded.ttf", "/System/Library/Fonts/SFNS.ttf",
-              "/System/Library/Fonts/Helvetica.ttc"]:
+    for p in ["/System/Library/Fonts/SFNS.ttf", "/System/Library/Fonts/Helvetica.ttc"]:
         try: return ImageFont.truetype(p, size)
         except Exception: continue
     return ImageFont.load_default()
 
-CAP = font(116)
+CAP = font(112)
 
 def background():
-    img = Image.new("RGB", (W, H), (16, 11, 9))
-    glow = Image.new("RGB", (W, H), (16, 11, 9))
-    gd = ImageDraw.Draw(glow)
-    gd.ellipse([W * 0.08, -H * 0.06, W * 0.92, H * 0.34], fill=(255, 150, 56))
-    glow = glow.filter(ImageFilter.GaussianBlur(170))
-    return Image.blend(img, glow, 0.5).convert("RGBA")
+    # neutral near-black gradient + a faint copper glow up top (Reticla-style)
+    img = Image.new("RGB", (W, H), (16, 16, 18))
+    top, bot = (26, 22, 24), (9, 9, 11)
+    px = img.load()
+    for y in range(H):
+        t = y / H
+        c = tuple(int(top[i] * (1 - t) + bot[i] * t) for i in range(3))
+        for x in range(W): px[x, y] = c
+    glow = Image.new("RGB", (W, H), (0, 0, 0))
+    ImageDraw.Draw(glow).ellipse([W * 0.18, -H * 0.06, W * 0.82, H * 0.30], fill=(217, 140, 92))
+    glow = glow.filter(ImageFilter.GaussianBlur(180))
+    return Image.blend(img, glow, 0.22).convert("RGBA")
 
 def rounded(im, rad):
     mask = Image.new("L", im.size, 0)
     ImageDraw.Draw(mask).rounded_rectangle([0, 0, im.size[0], im.size[1]], rad, fill=255)
-    out = im.copy()
-    out.putalpha(mask)
+    out = im.copy(); out.putalpha(mask)
     return out
 
 SHOTS = [
@@ -42,24 +46,22 @@ SHOTS = [
 for name, lines in SHOTS:
     canvas = background()
     draw = ImageDraw.Draw(canvas)
-    y = 210
+    y = 215
     for line in lines:
         w = draw.textlength(line, font=CAP)
-        # subtle shadow then text
-        draw.text(((W - w) / 2 + 3, y + 3), line, font=CAP, fill=(0, 0, 0, 120))
-        draw.text(((W - w) / 2, y), line, font=CAP, fill=(245, 237, 233))
-        y += 138
+        draw.text(((W - w) / 2, y), line, font=CAP, fill=(237, 237, 241))
+        y += 132
 
     shot = Image.open(os.path.join(RAW, f"{name}.png")).convert("RGBA")
     sw = 1015
     sh = int(shot.size[1] * sw / shot.size[0])
-    shot = rounded(shot.resize((sw, sh), Image.LANCZOS), 60)
-    sx, sy = (W - sw) // 2, 580
+    shot = rounded(shot.resize((sw, sh), Image.LANCZOS), 62)
+    sx, sy = (W - sw) // 2, 600
 
     shadow = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    ImageDraw.Draw(shadow).rounded_rectangle([sx, sy + 14, sx + sw, sy + sh + 14], 60, fill=(0, 0, 0, 150))
-    shadow = shadow.filter(ImageFilter.GaussianBlur(45))
+    ImageDraw.Draw(shadow).rounded_rectangle([sx, sy + 16, sx + sw, sy + sh + 16], 62, fill=(0, 0, 0, 140))
+    shadow = shadow.filter(ImageFilter.GaussianBlur(48))
     canvas = Image.alpha_composite(canvas, shadow)
     canvas.alpha_composite(shot, (sx, sy))
     canvas.convert("RGB").save(os.path.join(OUT, f"{name}.png"), "PNG")
-    print("wrote", name, canvas.size)
+    print("wrote", name)
