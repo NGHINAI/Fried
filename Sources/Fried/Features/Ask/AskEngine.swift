@@ -75,48 +75,68 @@ enum AskEngine {
         #if canImport(FoundationModels)
         let model = SystemLanguageModel.default
         guard case .available = model.availability else { return nil }
-        let session = LanguageModelSession { systemPrompt(c) }
-        let opts = GenerationOptions(temperature: 1.0, maximumResponseTokens: 200)
-        var prompt = ""
-        for m in history.suffix(6) {
-            prompt += (m.role == .user ? "User: " : "Yolkie: ") + m.text + "\n"
+        var instructions = systemPrompt(c)
+        if !history.isEmpty {                                  // recap goes in INSTRUCTIONS, not the prompt,
+            let recap = history.suffix(4)                      // so the model never echoes a turn label
+                .map { ($0.role == .user ? "They said: " : "You replied: ") + $0.text }
+                .joined(separator: "\n")
+            instructions += "\n\nThe chat so far:\n\(recap)"
         }
-        prompt += "User: \(question)\nYolkie:"
+        let session = LanguageModelSession { instructions }
+        let opts = GenerationOptions(temperature: 0.8, maximumResponseTokens: 90)   // short = forced brevity
         do {
-            let text = try await session.respond(to: prompt, options: opts).content
-                .trimmingCharacters(in: CharacterSet(charactersIn: " \n\"'"))
-            return text.isEmpty ? nil : text
+            let cleaned = clean(try await session.respond(to: question, options: opts).content)
+            return cleaned.isEmpty ? nil : cleaned
         } catch { return nil }
         #else
         return nil
         #endif
     }
 
+    /// Sanitize the small on-device model's output: strip any "Yolkie:" label it
+    /// echoes, markdown emphasis, and heading/bullet markers. (internal = unit-tested)
+    static func clean(_ raw: String) -> String {
+        var s = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        if let r = s.range(of: #"^\**\s*yolkie\s*:\**\s*"#, options: [.regularExpression, .caseInsensitive]) {
+            s.removeSubrange(r)
+        }
+        s = s.replacingOccurrences(of: "**", with: "")
+            .replacingOccurrences(of: "__", with: "")
+            .replacingOccurrences(of: "###", with: "")
+            .replacingOccurrences(of: "## ", with: "")
+            .replacingOccurrences(of: "# ", with: "")
+        // flatten any list the model sneaks in: drop "1. " / "- " / "* " markers, join lines
+        let lines = s.components(separatedBy: .newlines).map { line -> String in
+            var l = line.trimmingCharacters(in: .whitespaces)
+            if let r = l.range(of: #"^(\d+[.)]|[-*•])\s+"#, options: .regularExpression) { l.removeSubrange(r) }
+            return l
+        }.filter { !$0.isEmpty }
+        s = lines.joined(separator: " ")
+        return s.trimmingCharacters(in: CharacterSet(charactersIn: " \n\"'"))
+    }
+
     @available(iOS 26.0, *)
     private static func systemPrompt(_ c: AskContext) -> String {
-        let goalLine = c.goal > 0 ? ", their goal is \(c.goal)% fried or lower" : ""
+        let goalLine = c.goal > 0 ? "; goal \(c.goal)% or lower" : ""
         return """
-        You are Yolkie — the user's brutally honest but caring brain coach inside Fried, \
-        a playful "how fried is your brain" app. You can answer ANYTHING they ask, but you \
-        ALWAYS make it about THEIR brain and THEIR real numbers, and you ALWAYS end by pushing \
-        them toward ONE concrete action right now.
+        You are Yolkie — a blunt, witty, caring brain coach in the Fried app. Talk like a text \
+        from a sharp friend: 2 to 3 SHORT sentences, plain spoken English, nothing else.
 
-        THE USER'S REAL DATA (cite it, make it personal):
-        - Fried score \(c.score)/100 (\(c.tier))
-        - Brain age \(c.brainAge) vs real age \(c.realAge)
-        - \(c.friedPercent)% fried, more fried than \(c.percentile)% of people their age
-        - Biggest leak: \(c.topLeak)
-        - \(c.streak)-day streak\(goalLine)
+        ABSOLUTE STYLE RULES:
+        • NEVER use lists, numbered steps, bullet points, headings, markdown, or asterisks.
+        • NEVER write your own name or a "Yolkie:" prefix. Just speak.
+        • Keep it under ~45 words. Short and punchy beats thorough.
 
-        YOUR JOB:
-        1. Make them FEEL the cost of their habits — honestly, using the numbers above. Name their specific weak spot.
-        2. Frame it as a LOSS: what they're losing now, what gets worse if they wait, what they could reclaim.
-        3. ALWAYS end with ONE specific, doable action ("do today's mission", "re-test tonight", "lock in a goal", "phone in another room for an hour"). Make them feel they need to act NOW.
-        4. Be vivid and a little alarming, but never cruel — you want them to win.
+        WHAT YOU DO: answer anything, but always tie it to THEIR brain using their numbers below, \
+        frame the cost as a LOSS, and END with ONE concrete action (e.g. "do one mission now", \
+        "re-test tonight", "phone in another room for an hour"). A little dramatic, never cruel.
 
-        STYLE: 2–4 short sentences. Second person, present tense. Punchy, warm, a little dramatic. PG-13.
+        THEIR DATA: \(c.score)/100 fried (\(c.tier)); brain age \(c.brainAge) vs real age \(c.realAge); \
+        \(c.friedPercent)% fried, more than \(c.percentile)% of people their age; biggest leak \(c.topLeak); \
+        \(c.streak)-day streak\(goalLine).
 
-        HARD RULES: Never claim medical or scientific facts. Never mention real cognition, IQ, ADHD, dopamine-as-medicine, attention spans, or any health condition. Never diagnose. This is a playful vibe check, not a measurement. If they ask something off-topic, answer briefly in character, then pivot back to their brain and an action.
+        NEVER claim medical or scientific facts; never mention real cognition, IQ, ADHD, attention \
+        spans, or health conditions; never diagnose. It's a playful vibe check, not a measurement.
         """
     }
 
