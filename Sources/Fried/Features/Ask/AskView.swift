@@ -30,6 +30,7 @@ struct AskView: View {
             AmbientBackground()
             VStack(spacing: 0) {
                 topBar
+                aiStatusLine
                 messages
                 inputArea
             }
@@ -45,6 +46,7 @@ struct AskView: View {
                     AskMessage(role: .user, text: "How do I fix it?"),
                     AskMessage(role: .brain, text: "Start with your biggest leak: scroll pull. Do one de-fry mission today and re-test tonight. Small and daily beats heroic and never — that's how you claw the years back. Lock in a goal so you've got a finish line.")
                 ]
+                ask.lastReplyWasAI = false
             }
             #endif
         }
@@ -79,6 +81,19 @@ struct AskView: View {
         .padding(.horizontal, Theme.pad).padding(.top, embedded ? 14 : 10).padding(.bottom, 10)
     }
 
+    // The honest, definitive signal: only known AFTER a real call. availability can
+    // say "available" while respond() still fails (Simulator, model still downloading).
+    @ViewBuilder private var aiStatusLine: some View {
+        if let wasAI = ask.lastReplyWasAI {
+            Label(wasAI ? "Live on-device AI" : "Templated reply · live AI isn't running on this device",
+                  systemImage: wasAI ? "bolt.fill" : "exclamationmark.triangle.fill")
+                .font(Theme.label(11)).foregroundStyle(wasAI ? Theme.mint : Theme.amber)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, Theme.pad).padding(.bottom, 8)
+                .frame(maxWidth: .infinity)
+        }
+    }
+
     private var messages: some View {
         ScrollViewReader { proxy in
             ScrollView {
@@ -104,6 +119,11 @@ struct AskView: View {
             Text("I've seen your numbers. Ask me anything about your brain — I'll give it to you straight.")
                 .font(Theme.body(15)).foregroundStyle(Theme.textSecondary)
                 .multilineTextAlignment(.center).padding(.horizontal, 24)
+            Label(AIStatus.line, systemImage: AIStatus.isAvailable ? "bolt.fill" : "exclamationmark.circle.fill")
+                .font(Theme.label(12)).foregroundStyle(AIStatus.isAvailable ? Theme.mint : Theme.amber)
+                .padding(.horizontal, 12).padding(.vertical, 6)
+                .background((AIStatus.isAvailable ? Theme.mint : Theme.amber).opacity(0.12), in: Capsule())
+                .multilineTextAlignment(.center)
             VStack(spacing: 9) {
                 ForEach(suggestions, id: \.self) { s in
                     Button { send(s) } label: {

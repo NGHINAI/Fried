@@ -32,6 +32,7 @@ struct AskContext {
 final class AskStore: ObservableObject {
     @Published var messages: [AskMessage] = []
     @Published var thinking = false
+    @Published var lastReplyWasAI: Bool?               // nil until first reply; truth about THIS device
     @Published private(set) var freeUsed = UserDefaults.standard.integer(forKey: "fried.ask.used")
     let freeLimit = 5
 
@@ -51,18 +52,21 @@ final class AskStore: ObservableObject {
             UserDefaults.standard.set(freeUsed, forKey: "fried.ask.used")
         }
         thinking = true
-        let answer = await AskEngine.answer(q, context: context, history: history)
-        messages.append(AskMessage(role: .brain, text: answer))
+        let result = await AskEngine.answer(q, context: context, history: history)
+        messages.append(AskMessage(role: .brain, text: result.text))
+        lastReplyWasAI = result.fromAI
         thinking = false
     }
 }
 
 enum AskEngine {
-    static func answer(_ question: String, context: AskContext, history: [AskMessage]) async -> String {
+    /// Returns the reply AND whether it came from the live on-device model (true) or
+    /// the templated fallback (false) — so the UI can tell the user the truth.
+    static func answer(_ question: String, context: AskContext, history: [AskMessage]) async -> (text: String, fromAI: Bool) {
         if #available(iOS 26.0, *), let ai = await aiAnswer(question, context: context, history: history) {
-            return ai
+            return (ai, true)
         }
-        return fallback(question, context: context, turn: history.count)
+        return (fallback(question, context: context, turn: history.count), false)
     }
 
     // MARK: On-device AI — the persuasion engine

@@ -47,6 +47,7 @@
 		B2564ECE58F284574D503A88 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27BA19E25CCB91A68A59DBB0 /* HomeView.swift */; };
 		C1AFF0B7E6E6390083800241 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB3D8A131C93AF66995D2B5 /* NotificationManager.swift */; };
 		CEE27DD139D9171CC8128A7E /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA10FFFC8EFCAF849F556981 /* RootView.swift */; };
+		CF033150F708F54B8924ACE4 /* AIStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3599B7503F9296FD292B5371 /* AIStatus.swift */; };
 		D8FE24855F37BFB5BF26478E /* ArchetypeEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE2B28F4938C3068588107E /* ArchetypeEngine.swift */; };
 		E0D28FABB1811DBEA625AFD0 /* ReactionGauntletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E295814FC3ACE9167408FA /* ReactionGauntletView.swift */; };
 		EB952560AA4A1929732D7794 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B28439CD4FD1208AB4D7298 /* SplashView.swift */; };
@@ -71,6 +72,7 @@
 		0AAB16449C596D2831DD6138 /* CalculatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculatingView.swift; sourceTree = "<group>"; };
 		1288459F99AE5A33BC4C9462 /* AskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AskView.swift; sourceTree = "<group>"; };
 		27BA19E25CCB91A68A59DBB0 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		3599B7503F9296FD292B5371 /* AIStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIStatus.swift; sourceTree = "<group>"; };
 		38E295814FC3ACE9167408FA /* ReactionGauntletView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactionGauntletView.swift; sourceTree = "<group>"; };
 		3A2A576696984EF4F11084C5 /* ConfettiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfettiView.swift; sourceTree = "<group>"; };
 		3E29F472C41E46A8E58910CC /* ScoringEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoringEngine.swift; sourceTree = "<group>"; };
@@ -220,6 +222,7 @@
 		988AA9FC80575CD127946957 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				3599B7503F9296FD292B5371 /* AIStatus.swift */,
 				4078167E173B701514D656AD /* BrainAge.swift */,
 				AA8C7D453A1182D81A9C82A3 /* BrainBreakdown.swift */,
 				CD9F0CED2FD16E313FF742C4 /* BrainState.swift */,
@@ -407,6 +410,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CF033150F708F54B8924ACE4 /* AIStatus.swift in Sources */,
 				FBA36162EBBC63104462D95D /* AmbientBackground.swift in Sources */,
 				08233B0D825ED8078BAF4E88 /* AnalysisEngine.swift in Sources */,
 				3EABA77BEB877786660F6A77 /* AppState.swift in Sources */,
