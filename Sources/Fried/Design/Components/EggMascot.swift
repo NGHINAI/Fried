@@ -37,14 +37,13 @@ struct EggMascot: View {
 
     private var eggWhite: some View {
         ZStack {
-            Circle().frame(width: size * 0.9, height: size * 0.9)
-            Circle().frame(width: size * 0.46, height: size * 0.46).offset(x: -size * 0.4, y: size * 0.06)
-            Circle().frame(width: size * 0.4, height: size * 0.4).offset(x: size * 0.4, y: -size * 0.1)
-            Circle().frame(width: size * 0.42, height: size * 0.42).offset(x: size * 0.12, y: size * 0.4)
-            Circle().frame(width: size * 0.34, height: size * 0.34).offset(x: -size * 0.22, y: size * 0.36)
+            Ellipse().frame(width: size * 0.98, height: size * 0.80)
+            Circle().frame(width: size * 0.5, height: size * 0.5).offset(x: -size * 0.33, y: size * 0.17)
+            Circle().frame(width: size * 0.42, height: size * 0.42).offset(x: size * 0.36, y: -size * 0.05)
+            Circle().frame(width: size * 0.34, height: size * 0.34).offset(x: size * 0.14, y: size * 0.32)
         }
-        .foregroundStyle(Color(red: 0.98, green: 0.97, blue: 0.95))
-        .shadow(color: .black.opacity(0.35), radius: size * 0.08, y: size * 0.03)
+        .foregroundStyle(Color(red: 0.965, green: 0.96, blue: 0.95))
+        .shadow(color: .black.opacity(0.32), radius: size * 0.07, y: size * 0.025)
     }
 
     private var yolk: some View {

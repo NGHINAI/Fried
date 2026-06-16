@@ -1,56 +1,55 @@
 import SwiftUI
 
-/// Single source of truth. Premium "fried" look: warm near-black surfaces,
-/// ONE disciplined amber accent (desaturated for dark so it glows, not screams),
-/// ambient heat-glow behind frosted glass. Never pure black behind text.
+/// Refined, premium aesthetic (Reticla-inspired): neutral near-black surfaces,
+/// elegant light-weight SF Pro typography, a single muted-copper accent used
+/// sparingly, dark subtle glass, generous negative space.
 enum Theme {
-    // Surfaces — warm near-black, layered for elevation
-    static let void     = Color(red: 0.039, green: 0.031, blue: 0.027) // #0A0807 (behind glass)
-    static let canvas   = Color(red: 0.063, green: 0.047, blue: 0.039) // #100C0A
-    static let surface1 = Color(red: 0.094, green: 0.075, blue: 0.067) // #181311
-    static let surface2 = Color(red: 0.129, green: 0.098, blue: 0.082) // #211915
-    static let hairline = Color(red: 1.0, green: 0.94, blue: 0.90).opacity(0.12)
+    // Surfaces — neutral near-black
+    static let void     = Color(red: 0.039, green: 0.039, blue: 0.047) // #0A0A0C
+    static let canvas   = Color(red: 0.059, green: 0.059, blue: 0.067) // #0F0F11
+    static let surface1 = Color(red: 0.086, green: 0.086, blue: 0.098) // #161619
+    static let surface2 = Color(red: 0.118, green: 0.118, blue: 0.133) // #1E1E22
+    static let hairline = Color.white.opacity(0.10)
 
-    // Text — warm off-white (avoids halation)
-    static let textPrimary   = Color(red: 0.949, green: 0.929, blue: 0.914) // #F2EDE9
-    static let textSecondary = Color(red: 0.949, green: 0.929, blue: 0.914).opacity(0.62)
+    // Text — refined off-white + muted gray
+    static let textPrimary   = Color(red: 0.929, green: 0.929, blue: 0.945) // #EDEDF1
+    static let textSecondary = Color(red: 0.560, green: 0.560, blue: 0.600) // #8F8F99
 
-    // Heat accent system (slightly desaturated for dark)
-    static let amber    = Color(red: 0.961, green: 0.647, blue: 0.141) // #F5A524 — PRIMARY
-    static let ember    = Color(red: 0.886, green: 0.376, blue: 0.165) // #E2602A
-    static let deepHeat = Color(red: 0.698, green: 0.227, blue: 0.118) // #B23A1E
-    static let glow     = Color(red: 1.0, green: 0.722, blue: 0.302)   // #FFB84D — light only
-    static let mint     = Color(red: 0.35, green: 0.85, blue: 0.74)    // refined cool tier accent
-    static let goGreen  = Color(red: 0.20, green: 0.85, blue: 0.52)    // reaction "TAP!" state
+    // Accent — muted copper (premium, used sparingly)
+    static let amber    = Color(red: 0.851, green: 0.549, blue: 0.361) // #D98C5C primary
+    static let ember    = Color(red: 0.761, green: 0.420, blue: 0.290) // #C26B4A
+    static let deepHeat = Color(red: 0.620, green: 0.310, blue: 0.212) // #9E4F36
+    static let glow     = Color(red: 0.902, green: 0.627, blue: 0.455) // #E6A074 (light only)
+    static let mint     = Color(red: 0.435, green: 0.749, blue: 0.690) // #6FBFB0 muted teal
+    static let goGreen  = Color(red: 0.40, green: 0.78, blue: 0.58)
 
     // Back-compat aliases
     static var heatTop: Color { amber }
     static var heatMid: Color { ember }
     static var heatBottom: Color { deepHeat }
 
-    static let heatGradient  = LinearGradient(colors: [amber, ember, deepHeat], startPoint: .top, endPoint: .bottom)
+    static let heatGradient  = LinearGradient(colors: [glow, amber, ember], startPoint: .top, endPoint: .bottom)
     static let heatGradientH = LinearGradient(colors: [amber, ember], startPoint: .leading, endPoint: .trailing)
 
     static func color(for tier: FriedTier) -> Color {
         switch tier {
         case .crispMind:      return mint
-        case .lightlyToasted: return amber
-        case .wellDone:       return ember
-        case .extraCrispy:    return deepHeat
-        case .deepFried:      return Color(red: 0.85, green: 0.20, blue: 0.10)
+        case .lightlyToasted: return glow
+        case .wellDone:       return amber
+        case .extraCrispy:    return ember
+        case .deepFried:      return deepHeat
         }
     }
     static func gradient(for tier: FriedTier) -> LinearGradient {
         switch tier {
         case .crispMind:
-            return LinearGradient(colors: [mint, Color(red: 0.18, green: 0.65, blue: 0.80)],
-                                  startPoint: .top, endPoint: .bottom)
+            return LinearGradient(colors: [mint, Color(red: 0.30, green: 0.62, blue: 0.66)], startPoint: .top, endPoint: .bottom)
         case .lightlyToasted:
             return LinearGradient(colors: [glow, amber], startPoint: .top, endPoint: .bottom)
         case .wellDone:
             return LinearGradient(colors: [amber, ember], startPoint: .top, endPoint: .bottom)
         default:
-            return heatGradient
+            return LinearGradient(colors: [amber, ember, deepHeat], startPoint: .top, endPoint: .bottom)
         }
     }
     static func glowColor(for tier: FriedTier) -> Color {
@@ -58,12 +57,13 @@ enum Theme {
     }
 
     // Spacing & shape
-    static let pad: CGFloat = 20
-    static let radius: CGFloat = 24
+    static let pad: CGFloat = 22
+    static let radius: CGFloat = 22
 
-    // Type (SF Pro Rounded)
-    static func score(_ s: CGFloat) -> Font { .system(size: s, weight: .heavy, design: .rounded) }
-    static func title(_ s: CGFloat = 30) -> Font { .system(size: s, weight: .bold, design: .rounded) }
-    static func body(_ s: CGFloat = 17) -> Font { .system(size: s, weight: .medium, design: .rounded) }
-    static func label(_ s: CGFloat = 14) -> Font { .system(size: s, weight: .semibold, design: .rounded) }
+    // Type — refined SF Pro (NOT rounded), lighter weights, generous
+    static func display(_ s: CGFloat) -> Font { .system(size: s, weight: .regular, design: .default) }
+    static func score(_ s: CGFloat) -> Font { .system(size: s, weight: .medium, design: .default) }
+    static func title(_ s: CGFloat = 28) -> Font { .system(size: s, weight: .semibold, design: .default) }
+    static func body(_ s: CGFloat = 17) -> Font { .system(size: s, weight: .regular, design: .default) }
+    static func label(_ s: CGFloat = 13) -> Font { .system(size: s, weight: .medium, design: .default) }
 }
