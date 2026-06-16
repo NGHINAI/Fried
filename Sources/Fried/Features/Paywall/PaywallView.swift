@@ -10,13 +10,17 @@ struct PaywallView: View {
     @State private var exitStage = 0   // 0 none · 1 = 50% offer · 2 = 80% offer
 
     private var score: FriedScore { app.result ?? FriedScore(value: 0, tier: .crispMind) }
+    private var breakdown: BrainBreakdown {
+        BrainBreakdownEngine.make(quiz: app.quiz, reaction: app.reaction, screenTime: nil,
+                                  overall: score.value, age: app.age)
+    }
 
-    private let perks = [
-        ("doc.text.magnifyingglass", "Your full report", "Clear score, breakdown & the AI's read on you"),
-        ("checklist", "A personalized de-fry plan", "Specific steps built from your own answers"),
-        ("chart.line.downtrend.xyaxis", "Watch it drop", "Daily score, streak & your 7-day trend"),
-        ("flame.fill", "Daily roasts + share cards", "Fresh verdicts & flex cards for friends")
-    ]
+    private var perks: [(String, String, String)] {
+        [("chart.bar.xaxis", "Your 5-axis breakdown", "Exactly how fried your focus, scroll pull, sleep, reflexes & consistency each are"),
+         ("scope", "Your #1 leak — named & explained", "The single biggest thing frying you, and why it's happening"),
+         ("target", "Your recovery plan + goal", "Specific steps to claw back \(breakdown.gap) points, built from your own answers"),
+         ("chart.line.uptrend.xyaxis", "Track it daily", "Your score, streak & 7-day trend as you de-fry")]
+    }
 
     var body: some View {
         ScrollView {
@@ -43,10 +47,13 @@ struct PaywallView: View {
 
     private var header: some View {
         VStack(spacing: 12) {
-            Text(score.tier.emoji).font(.system(size: 50))
-            Text("Your focus is fixable.")
-                .font(Theme.title(31)).foregroundStyle(Theme.textPrimary).multilineTextAlignment(.center)
-            Text("Unlock your full report **and** a personalized de-fry plan built from your answers.")
+            Text("ANALYSIS COMPLETE · 1 STEP TO VIEW")
+                .font(Theme.label(12)).tracking(1.5).foregroundStyle(Theme.amber)
+            Text("You're sitting on a \(breakdown.gap)-point loss.")
+                .font(Theme.title(30)).foregroundStyle(Theme.textPrimary).multilineTextAlignment(.center)
+            (Text("You're more fried than ")
+             + Text("\(breakdown.percentile)% of people your age").foregroundColor(Theme.danger).bold()
+             + Text(". Unlock exactly what's frying you — and the plan to claw those \(breakdown.gap) points back."))
                 .font(Theme.body(15)).foregroundStyle(Theme.textSecondary).multilineTextAlignment(.center)
         }
     }

@@ -23,6 +23,10 @@ enum Theme {
     static let mint     = Color(red: 0.435, green: 0.749, blue: 0.690) // #6FBFB0 muted teal
     static let goGreen  = Color(red: 0.40, green: 0.78, blue: 0.58)
 
+    // Semantic state — red signals DECLINE / LOSS only (used sparingly = stays urgent)
+    static let danger   = Color(red: 0.898, green: 0.337, blue: 0.310) // #E5564F desaturated alarm
+    static let recovery = goGreen                                       // gains / the way out
+
     // Back-compat aliases
     static var heatTop: Color { amber }
     static var heatMid: Color { ember }
@@ -60,9 +64,13 @@ enum Theme {
     static let pad: CGFloat = 22
     static let radius: CGFloat = 22
 
-    // Type — refined SF Pro (NOT rounded), lighter weights, generous
+    // Type — refined SF Pro (NOT rounded), lighter weights, generous.
+    // Numerals are TABULAR (monospacedDigit) so a score reads as a measured
+    // instrument value, not a designed graphic — credibility = the insecurity bites.
     static func display(_ s: CGFloat) -> Font { .system(size: s, weight: .regular, design: .default) }
-    static func score(_ s: CGFloat) -> Font { .system(size: s, weight: .medium, design: .default) }
+    static func score(_ s: CGFloat) -> Font { .system(size: s, weight: .medium, design: .default).monospacedDigit() }
+    /// The enormous verdict number on the reveal — heavy, tabular, tight.
+    static func hero(_ s: CGFloat) -> Font { .system(size: s, weight: .bold, design: .default).monospacedDigit() }
     static func title(_ s: CGFloat = 28) -> Font { .system(size: s, weight: .semibold, design: .default) }
     static func body(_ s: CGFloat = 17) -> Font { .system(size: s, weight: .regular, design: .default) }
     static func label(_ s: CGFloat = 13) -> Font { .system(size: s, weight: .medium, design: .default) }

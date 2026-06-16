@@ -14,13 +14,28 @@ enum NotificationManager {
         return granted
     }
 
-    static func schedule() {
+    /// Re-schedule with the user's CURRENT state so the 7pm nudge is personal —
+    /// the streak they're about to lose hits far harder than a generic ping.
+    static func refresh(streak: Int, friedPercent: Int) async {
+        guard await isAuthorized() else { return }
+        schedule(streak: streak, friedPercent: friedPercent)
+    }
+
+    static func schedule(streak: Int = 0, friedPercent: Int = 0) {
         let center = UNUserNotificationCenter.current()
         center.removePendingNotificationRequests(withIdentifiers: [id])
 
         let content = UNMutableNotificationContent()
-        content.title = "Your brain is frying 🍳"
-        content.body = "It got crispier overnight. Take 60s to cool it down."
+        if streak >= 2 {
+            content.title = "🔥 Your \(streak)-day streak ends tonight"
+            content.body = "Your brain's frying again. One 60-second check keeps the streak alive."
+        } else if friedPercent >= 60 {
+            content.title = "Your brain is \(friedPercent)% fried 🍳"
+            content.body = "It got crispier today. Take 60s to cool it down before bed."
+        } else {
+            content.title = "Your brain is frying 🍳"
+            content.body = "It got crispier overnight. Take 60s to cool it down."
+        }
         content.sound = .default
 
         var when = DateComponents()

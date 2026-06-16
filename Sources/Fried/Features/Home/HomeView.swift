@@ -100,6 +100,7 @@ struct TodayView: View {
                 #endif
             }
             history.record(score.value)
+            await NotificationManager.refresh(streak: history.streak, friedPercent: brain.friedPercent)
             plan = PlanEngine.plan(score: score, quiz: app.quiz, reaction: app.reaction)
             await reportStore.ensure(reportContext())
             analysis = await AnalysisEngine.analyze(score: score, quiz: app.quiz, reaction: app.reaction)
@@ -123,12 +124,20 @@ struct TodayView: View {
                     .font(Theme.label(13)).foregroundStyle(Theme.textSecondary)
             }
             Spacer()
-            HStack(spacing: 5) {
-                Text("🔥").font(.system(size: 15))
-                Text("\(history.streak)").font(Theme.body(17)).fontWeight(.semibold).foregroundStyle(Theme.textPrimary)
-            }
-            .padding(.horizontal, 14).padding(.vertical, 9).friedGlass(cornerRadius: 16)
+            streakChip
         }
+    }
+
+    // Streak-as-loss: the number you fear losing. Red + dimmed when today isn't secured.
+    private var streakSecured: Bool { challenge.completed(of: plan?.steps.count ?? 6) > 0 }
+    private var streakAtRisk: Bool { history.streak >= 1 && !streakSecured }
+    private var streakChip: some View {
+        HStack(spacing: 5) {
+            Text("🔥").font(.system(size: 15)).grayscale(streakAtRisk ? 0.85 : 0).opacity(streakAtRisk ? 0.7 : 1)
+            Text("\(history.streak)").font(Theme.body(17)).fontWeight(.semibold)
+                .foregroundStyle(streakAtRisk ? Theme.danger : Theme.textPrimary)
+        }
+        .padding(.horizontal, 14).padding(.vertical, 9).friedGlass(cornerRadius: 16)
     }
 
     // The living brain — FREE (the insecurity hook). Everything reads
@@ -329,8 +338,15 @@ struct TodayView: View {
                         .buttonStyle(.plain)
                     }
                 }
-                Text("Each one cools your brain. Skip a day and it fries again.")
-                    .font(Theme.label(12)).foregroundStyle(Theme.textSecondary)
+                if streakAtRisk {
+                    (Text("🔥 Complete 1 to keep your ")
+                     + Text("\(history.streak)-day streak").foregroundColor(Theme.danger).bold()
+                     + Text(" — it resets at midnight."))
+                        .font(Theme.label(12)).foregroundStyle(Theme.textSecondary)
+                } else {
+                    Text("Each one cools your brain. Skip a day and it fries again.")
+                        .font(Theme.label(12)).foregroundStyle(Theme.textSecondary)
+                }
             }
             .padding(20).frame(maxWidth: .infinity, alignment: .leading)
         }

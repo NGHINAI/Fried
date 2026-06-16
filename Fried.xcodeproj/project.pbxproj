@@ -37,6 +37,7 @@
 		95B202002C7F3EE5FFA54383 /* TierTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A6719E15C3E512118C2165E /* TierTests.swift */; };
 		965148B80D8E8BF38F186365 /* CalculatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AAB16449C596D2831DD6138 /* CalculatingView.swift */; };
 		9BCD9C8C9C8476F7855714EE /* RoastBank.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC5E75B1C04760A79429729 /* RoastBank.swift */; };
+		A2D318E032BF56E377700A88 /* BrainBreakdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8C7D453A1182D81A9C82A3 /* BrainBreakdown.swift */; };
 		AB30768DC1EF69784D2AE923 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63398EF1A2454F55EB93FA65 /* Store.swift */; };
 		AB4027F71F7B9DA679CCBFDC /* ScoringEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79C1763F15D365535BEC8927 /* ScoringEngineTests.swift */; };
 		B05EEC50CBBAC9ADCAC5F191 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 778108B0C2F286E6588BEAF3 /* PrivacyInfo.xcprivacy */; };
@@ -88,6 +89,7 @@
 		95A203513A02AEF6BD27C41E /* GlassModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassModifier.swift; sourceTree = "<group>"; };
 		95ECCF2C4069BFDE35381834 /* RevealView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RevealView.swift; sourceTree = "<group>"; };
 		9B28439CD4FD1208AB4D7298 /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
+		AA8C7D453A1182D81A9C82A3 /* BrainBreakdown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrainBreakdown.swift; sourceTree = "<group>"; };
 		B72F844EDBC8F55F83E2AF77 /* AmbientBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmbientBackground.swift; sourceTree = "<group>"; };
 		BA10FFFC8EFCAF849F556981 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		C6D3F84A5EB42FBE3A0F1CA2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -203,6 +205,7 @@
 			isa = PBXGroup;
 			children = (
 				4078167E173B701514D656AD /* BrainAge.swift */,
+				AA8C7D453A1182D81A9C82A3 /* BrainBreakdown.swift */,
 				CD9F0CED2FD16E313FF742C4 /* BrainState.swift */,
 				CAA384CD662096B802C63BF1 /* ChallengeStore.swift */,
 				932B1CA4EFEFF39E534A2DE4 /* HistoryStore.swift */,
@@ -380,6 +383,7 @@
 				08233B0D825ED8078BAF4E88 /* AnalysisEngine.swift in Sources */,
 				3EABA77BEB877786660F6A77 /* AppState.swift in Sources */,
 				81D7014275AF1D36FC2F54AB /* BrainAge.swift in Sources */,
+				A2D318E032BF56E377700A88 /* BrainBreakdown.swift in Sources */,
 				5AEAD0B7B5F7EA1D10BA1DB2 /* BrainState.swift in Sources */,
 				965148B80D8E8BF38F186365 /* CalculatingView.swift in Sources */,
 				FC8C70875FC61F77DFCDE3B7 /* ChallengeStore.swift in Sources */,
