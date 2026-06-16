@@ -54,6 +54,7 @@ struct AskView: View {
                 ask.lastReplyWasAI = false
             }
             #endif
+            Task { await ask.ensureDailyCheckIn(context: makeContext()) }
         }
     }
 
@@ -230,13 +231,13 @@ struct AskView: View {
         Task { await ask.ask(q, hasAccess: store.hasAccess) }
     }
 
-    private func syncContext() {
-        ask.context = AskContext(
-            score: score.value, tier: score.tier.title,
-            brainAge: brainAge, realAge: app.age,
-            friedPercent: brain.friedPercent, percentile: breakdown.percentile,
-            topLeak: breakdown.topLeak.label, streak: history.streak, goal: app.goal)
+    private func makeContext() -> AskContext {
+        AskContext(score: score.value, tier: score.tier.title,
+                   brainAge: brainAge, realAge: app.age,
+                   friedPercent: brain.friedPercent, percentile: breakdown.percentile,
+                   topLeak: breakdown.topLeak.label, streak: history.streak, goal: app.goal)
     }
+    private func syncContext() { ask.context = makeContext() }
 }
 
 /// A cartoonish, always-alive Yolkie — a gentle bob + wobble (snappier when active).

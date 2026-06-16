@@ -43,6 +43,29 @@ final class AskStore: ObservableObject {
     func canAsk(hasAccess: Bool) -> Bool { hasAccess || freeUsed < freeLimit }
     func clear() { messages = []; typingId = nil }
 
+    /// Yolkie greets an empty chat with today's check-in (generated once/day, cached).
+    /// Free — Yolkie is opening the conversation, not the user spending a question.
+    func ensureDailyCheckIn(context ctx: AskContext) async {
+        guard messages.isEmpty, !thinking else { return }
+        context = ctx
+        let d = UserDefaults.standard
+        let f = DateFormatter(); f.dateFormat = "yyyy-MM-dd"
+        let today = f.string(from: Date())
+        var text = d.string(forKey: "fried.checkin.text") ?? ""
+        if d.string(forKey: "fried.checkin.day") != today || text.isEmpty {
+            thinking = true
+            let seed = Calendar.current.ordinality(of: .day, in: .era, for: Date()) ?? 0
+            text = await AskEngine.dailyCheckIn(context: ctx, daySeed: seed)
+            thinking = false
+            d.set(today, forKey: "fried.checkin.day")
+            d.set(text, forKey: "fried.checkin.text")
+        }
+        guard messages.isEmpty else { return }   // user may have typed during the await
+        let msg = AskMessage(role: .brain, text: text)
+        messages.append(msg)
+        typingId = msg.id
+    }
+
     func ask(_ question: String, hasAccess: Bool) async {
         let q = question.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !q.isEmpty, !thinking, canAsk(hasAccess: hasAccess) else { return }
@@ -70,6 +93,41 @@ enum AskEngine {
             return (ai, true)
         }
         return (fallback(question, context: context, turn: history.count), false)
+    }
+
+    // MARK: Daily check-in — Yolkie opens the conversation, once a day
+    static func dailyCheckIn(context c: AskContext, daySeed: Int) async -> String {
+        if #available(iOS 26.0, *), let ai = await aiCheckIn(c) { return ai }
+        return fallbackCheckIn(c, daySeed: daySeed)
+    }
+
+    @available(iOS 26.0, *)
+    private static func aiCheckIn(_ c: AskContext) async -> String? {
+        #if canImport(FoundationModels)
+        let model = SystemLanguageModel.default
+        guard case .available = model.availability else { return nil }
+        let session = LanguageModelSession {
+            systemPrompt(c) + "\n\nThis is YOU opening today's check-in. Greet them in one breath and ask ONE sharp question about their brain today. Keep it to one or two short sentences."
+        }
+        let opts = GenerationOptions(temperature: 0.9, maximumResponseTokens: 60)
+        do {
+            let cleaned = clean(try await session.respond(to: "Start today's check-in.", options: opts).content)
+            return cleaned.isEmpty ? nil : cleaned
+        } catch { return nil }
+        #else
+        return nil
+        #endif
+    }
+
+    private static func fallbackCheckIn(_ c: AskContext, daySeed: Int) -> String {
+        let leak = c.topLeak.lowercased()
+        let lines = [
+            "Back again. You're \(c.friedPercent)% fried and your \(leak) is still the leak — did yesterday's mission stick, or did the feed win?",
+            "Hey. Brain age \(c.brainAge) vs your real \(c.realAge) — that gap won't close on its own. What's the move today?",
+            "You're more fried than \(c.percentile)% of people your age right now. Here to fix it, or just chatting?",
+            "\(max(1, c.streak))-day streak on the line. Straight question: are you cooling your brain down today, yes or no?",
+        ]
+        return lines[abs(daySeed) % lines.count]
     }
 
     // MARK: On-device AI — the persuasion engine
