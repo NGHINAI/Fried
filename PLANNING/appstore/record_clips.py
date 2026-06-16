@@ -14,7 +14,7 @@ clips = [
 ]
 
 for name, env, dur in clips:
-    sh("xcrun", "simctl", "terminate", MAX, "com.fried.app")
+    sh("xcrun", "simctl", "terminate", MAX, "com.nghinai.fried")
     out = f"{OUT}/{name}.mp4"
     if os.path.exists(out):
         os.remove(out)
@@ -22,7 +22,7 @@ for name, env, dur in clips:
                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     time.sleep(0.6)
     childenv = {f"SIMCTL_CHILD_{k}": v for k, v in env.items()}
-    subprocess.run(["xcrun", "simctl", "launch", MAX, "com.fried.app"],
+    subprocess.run(["xcrun", "simctl", "launch", MAX, "com.nghinai.fried"],
                    env={**os.environ, **childenv}, capture_output=True)
     time.sleep(dur)
     rec.send_signal(signal.SIGINT)

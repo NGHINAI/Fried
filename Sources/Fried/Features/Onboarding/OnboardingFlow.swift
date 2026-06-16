@@ -4,6 +4,8 @@ struct OnboardingFlow: View {
     @EnvironmentObject var app: AppState
     @State private var index = 0
     @State private var answers: [Int] = []
+    @State private var askedAge = false
+    @State private var ageSel = 24
     @State private var showInterstitial = false
     @State private var showGauntlet = false
 
@@ -15,16 +17,46 @@ struct OnboardingFlow: View {
                                      maxIndex: QuizContent.maxIndex))
             } else if showInterstitial {
                 interstitial
-            } else {
+            } else if askedAge {
                 quiz
+            } else {
+                ageStep
             }
         }
         .onAppear {
+            ageSel = app.age
             if app.jumpToGauntlet {
                 if let q = app.quiz { answers = q.answerIndices }
+                askedAge = true
                 showGauntlet = true
                 app.jumpToGauntlet = false
             }
+        }
+    }
+
+    private var ageStep: some View {
+        VStack(spacing: 22) {
+            ProgressBar(progress: 1.0 / 8.0)
+                .padding(.top, 60).padding(.horizontal, Theme.pad)
+            Spacer()
+            EggMascot(mood: .curious, size: 96)
+            Text("First — how old are you?")
+                .font(Theme.title(28)).foregroundStyle(Theme.textPrimary)
+            Text("So we can compare your brain age to your real age.")
+                .font(Theme.body(15)).foregroundStyle(Theme.textSecondary)
+                .multilineTextAlignment(.center).padding(.horizontal, 36)
+            Picker("Age", selection: $ageSel) {
+                ForEach(13...80, id: \.self) { Text("\($0)").tag($0) }
+            }
+            .pickerStyle(.wheel)
+            .frame(height: 170)
+            Spacer()
+            PrimaryButton(title: "Continue") {
+                app.setAge(ageSel)
+                withAnimation(.spring(response: 0.45, dampingFraction: 0.85)) { askedAge = true }
+            }
+            .padding(.horizontal, Theme.pad)
+            Spacer().frame(height: 16)
         }
     }
 

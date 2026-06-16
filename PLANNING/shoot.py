@@ -16,9 +16,9 @@ os.makedirs(outdir, exist_ok=True)
 
 screens = ["paywall", "reveal", "reveal_low", "splash"]
 for s in screens:
-    sh("xcrun", "simctl", "terminate", UDID, "com.fried.app")
+    sh("xcrun", "simctl", "terminate", UDID, "com.nghinai.fried")
     env = dict(os.environ, SIMCTL_CHILD_FRIED_PREVIEW_SCREEN=s)
-    subprocess.run(["xcrun", "simctl", "launch", UDID, "com.fried.app"],
+    subprocess.run(["xcrun", "simctl", "launch", UDID, "com.nghinai.fried"],
                    env=env, capture_output=True, text=True)
     time.sleep(3.4)
     sh("xcrun", "simctl", "io", UDID, "screenshot", f"{outdir}/{s}.png")

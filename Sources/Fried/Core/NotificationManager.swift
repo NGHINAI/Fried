@@ -19,8 +19,8 @@ enum NotificationManager {
         center.removePendingNotificationRequests(withIdentifiers: [id])
 
         let content = UNMutableNotificationContent()
-        content.title = "How fried are you today? 🍳"
-        content.body = "Take 60 seconds and check your fried score."
+        content.title = "Your brain is frying 🍳"
+        content.body = "It got crispier overnight. Take 60s to cool it down."
         content.sound = .default
 
         var when = DateComponents()

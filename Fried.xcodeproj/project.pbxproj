@@ -14,6 +14,7 @@
 		14FA68C99F696A808B2F8641 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DC7F78A98988FF7342B8BF /* Theme.swift */; };
 		202D85F8EE7186C119931D7C /* EggMascot.swift in Sources */ = {isa = PBXBuildFile; fileRef = F41B236F5A822522289EFC67 /* EggMascot.swift */; };
 		2519FB0B27E6519DA4A16A58 /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF73E8D6BAE76260B8790EE /* PaywallView.swift */; };
+		34321896354690099B00495B /* ReportEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2620B66C4B3EF67AEA3ECE /* ReportEngine.swift */; };
 		398301D5BCDBDBDF67CE8633 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C6D3F84A5EB42FBE3A0F1CA2 /* Assets.xcassets */; };
 		39A94F62D741594F08916F9A /* GlassModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A203513A02AEF6BD27C41E /* GlassModifier.swift */; };
 		3EABA77BEB877786660F6A77 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07B9F0BAEB7B0C53385DC810 /* AppState.swift */; };
@@ -23,12 +24,14 @@
 		4EC57E50C3D9A0669ABF6ADA /* FriedApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAAF42CBE188005B86A885F4 /* FriedApp.swift */; };
 		5683CD5D5D289AFD8D2BF421 /* ConfettiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2A576696984EF4F11084C5 /* ConfettiView.swift */; };
 		57885654011E33871BB93173 /* ScreenTimeOCRParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903AD44337D7E31E70550886 /* ScreenTimeOCRParser.swift */; };
+		5AEAD0B7B5F7EA1D10BA1DB2 /* BrainState.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9F0CED2FD16E313FF742C4 /* BrainState.swift */; };
 		5CB76C042035BAFE0DE5E72E /* RoastEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 593E34CA140E60FA797001AA /* RoastEngine.swift */; };
 		608473918A1E2EEECAAD667B /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1F9F9A814141BCF188504C2 /* Models.swift */; };
 		64E7E284E69CC1A0326F9031 /* RoastBankTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0F092B53D3869202AC98BE /* RoastBankTests.swift */; };
 		7442122DE1862D1FBD29D42B /* RevealView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95ECCF2C4069BFDE35381834 /* RevealView.swift */; };
 		771A3A1D6A4C7EC04199FD7D /* HistoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 932B1CA4EFEFF39E534A2DE4 /* HistoryStore.swift */; };
 		814E731B787ECF4A3F8B52D7 /* QuizContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A5BB062D4F01F7E542FF951 /* QuizContent.swift */; };
+		81D7014275AF1D36FC2F54AB /* BrainAge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4078167E173B701514D656AD /* BrainAge.swift */; };
 		90FAF466E473025A30BD699F /* GlassCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C1F585D3A9D40762858EBE /* GlassCard.swift */; };
 		937EDE32D78968DBF2C18932 /* OnboardingFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55011087D1BFFDA8F0DC4C2B /* OnboardingFlow.swift */; };
 		95B202002C7F3EE5FFA54383 /* TierTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A6719E15C3E512118C2165E /* TierTests.swift */; };
@@ -65,6 +68,7 @@
 		38E295814FC3ACE9167408FA /* ReactionGauntletView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactionGauntletView.swift; sourceTree = "<group>"; };
 		3A2A576696984EF4F11084C5 /* ConfettiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfettiView.swift; sourceTree = "<group>"; };
 		3E29F472C41E46A8E58910CC /* ScoringEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoringEngine.swift; sourceTree = "<group>"; };
+		4078167E173B701514D656AD /* BrainAge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrainAge.swift; sourceTree = "<group>"; };
 		42C47F93B7E6A1B603C9B26F /* AnalysisEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalysisEngine.swift; sourceTree = "<group>"; };
 		48E1E8C8B87D368BB054D6B6 /* ScreenTimeOCRParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenTimeOCRParserTests.swift; sourceTree = "<group>"; };
 		49FA370F0CDCD6839FBE510C /* FriedTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = FriedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -88,6 +92,7 @@
 		BA10FFFC8EFCAF849F556981 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		C6D3F84A5EB42FBE3A0F1CA2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CAA384CD662096B802C63BF1 /* ChallengeStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeStore.swift; sourceTree = "<group>"; };
+		CD9F0CED2FD16E313FF742C4 /* BrainState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrainState.swift; sourceTree = "<group>"; };
 		CEB3D8A131C93AF66995D2B5 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		D1F9F9A814141BCF188504C2 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		DAAF42CBE188005B86A885F4 /* FriedApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriedApp.swift; sourceTree = "<group>"; };
@@ -95,6 +100,7 @@
 		E6F19A9C04137FF92E7CEDB1 /* ScoreDial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreDial.swift; sourceTree = "<group>"; };
 		E7C1F585D3A9D40762858EBE /* GlassCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassCard.swift; sourceTree = "<group>"; };
 		F41B236F5A822522289EFC67 /* EggMascot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EggMascot.swift; sourceTree = "<group>"; };
+		FB2620B66C4B3EF67AEA3ECE /* ReportEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportEngine.swift; sourceTree = "<group>"; };
 		FB41FB11FFAE4034FB5EEF2D /* ShareCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCardView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -196,6 +202,8 @@
 		988AA9FC80575CD127946957 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				4078167E173B701514D656AD /* BrainAge.swift */,
+				CD9F0CED2FD16E313FF742C4 /* BrainState.swift */,
 				CAA384CD662096B802C63BF1 /* ChallengeStore.swift */,
 				932B1CA4EFEFF39E534A2DE4 /* HistoryStore.swift */,
 				D1F9F9A814141BCF188504C2 /* Models.swift */,
@@ -218,6 +226,14 @@
 				9B28439CD4FD1208AB4D7298 /* SplashView.swift */,
 			);
 			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		AEF118F7C4B59E8D61D8874D /* Report */ = {
+			isa = PBXGroup;
+			children = (
+				FB2620B66C4B3EF67AEA3ECE /* ReportEngine.swift */,
+			);
+			path = Report;
 			sourceTree = "<group>";
 		};
 		D5809E54E1A7AB890CC0C544 /* Tests */ = {
@@ -258,6 +274,7 @@
 				754B03B76FA4C4522350E9BB /* Home */,
 				A7CC37693A36F7C715483380 /* Onboarding */,
 				459A932FD6FE032B41906EAD /* Paywall */,
+				AEF118F7C4B59E8D61D8874D /* Report */,
 				1B38FE3C9C1B48A09C3BF45D /* Reveal */,
 				5629618A2B8A9D7CF9879F61 /* Store */,
 			);
@@ -362,6 +379,8 @@
 				FBA36162EBBC63104462D95D /* AmbientBackground.swift in Sources */,
 				08233B0D825ED8078BAF4E88 /* AnalysisEngine.swift in Sources */,
 				3EABA77BEB877786660F6A77 /* AppState.swift in Sources */,
+				81D7014275AF1D36FC2F54AB /* BrainAge.swift in Sources */,
+				5AEAD0B7B5F7EA1D10BA1DB2 /* BrainState.swift in Sources */,
 				965148B80D8E8BF38F186365 /* CalculatingView.swift in Sources */,
 				FC8C70875FC61F77DFCDE3B7 /* ChallengeStore.swift in Sources */,
 				5683CD5D5D289AFD8D2BF421 /* ConfettiView.swift in Sources */,
@@ -379,6 +398,7 @@
 				4397C96D2137EFEDD47A4B35 /* PrimaryButton.swift in Sources */,
 				814E731B787ECF4A3F8B52D7 /* QuizContent.swift in Sources */,
 				E0D28FABB1811DBEA625AFD0 /* ReactionGauntletView.swift in Sources */,
+				34321896354690099B00495B /* ReportEngine.swift in Sources */,
 				7442122DE1862D1FBD29D42B /* RevealView.swift in Sources */,
 				9BCD9C8C9C8476F7855714EE /* RoastBank.swift in Sources */,
 				5CB76C042035BAFE0DE5E72E /* RoastEngine.swift in Sources */,
@@ -492,7 +512,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.fried.app.tests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nghinai.fried.tests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Fried.app/Fried";
@@ -569,7 +589,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.fried.app.tests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nghinai.fried.tests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Fried.app/Fried";
@@ -589,7 +609,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.fried.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nghinai.fried;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -608,7 +628,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.fried.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nghinai.fried;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
 			};

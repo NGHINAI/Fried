@@ -1,8 +1,7 @@
 import SwiftUI
 import Charts
 
-/// The main app after onboarding — a simple 3-tab shell (iOS 26 gives it a
-/// Liquid Glass tab bar automatically).
+/// The main app after onboarding — a 3-tab shell.
 struct MainTabView: View {
     @State private var sel = 0
     var body: some View {
@@ -22,145 +21,125 @@ struct MainTabView: View {
     }
 }
 
-// MARK: - Today
+// MARK: - Today (the living brain dashboard)
 
 struct TodayView: View {
     @EnvironmentObject var app: AppState
     @EnvironmentObject var history: HistoryStore
     @EnvironmentObject var store: Store
     @EnvironmentObject var challenge: ChallengeStore
-    @State private var roast = ""
+    @EnvironmentObject var brain: BrainState
+    @EnvironmentObject var reportStore: ReportStore
     @State private var analysis: FriedAnalysis?
     @State private var plan: DefryPlan?
 
     private var score: FriedScore { app.result ?? FriedScore(value: 0, tier: .crispMind) }
+    private var brainAge: Int {
+        BrainAgeEngine.brainAge(realAge: app.age, score: score, reaction: app.reaction, freshness: brain.freshness)
+    }
 
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
                 header
-                scoreCard
+                brainHero
+                brainAgeCard
+                reportCard
                 if store.hasAccess {
+                    tasksCard
                     aiReadCard
-                    planCard
-                    breakdownCard
-                    roastCard
                 } else {
                     lockedCard
                 }
-                PrimaryButton(title: "Re-test my reflexes") {
+                PrimaryButton(title: "Re-test my brain") {
                     app.jumpToGauntlet = true
                     withAnimation { app.screen = .onboarding }
                 }
                 .padding(.top, 4)
+                Text("For entertainment only — a playful vibe check. Brain age, scores & reports are made-up fun, not a measurement of your health, focus, or intelligence.")
+                    .font(.system(size: 11)).foregroundStyle(Theme.textSecondary.opacity(0.55))
+                    .multilineTextAlignment(.center).padding(.horizontal, 14).padding(.top, 10)
             }
-            .padding(.horizontal, Theme.pad)
-            .padding(.top, 64)
-            .padding(.bottom, 40)
+            .padding(.horizontal, Theme.pad).padding(.top, 60).padding(.bottom, 40)
         }
         .scrollIndicators(.hidden)
         .task {
+            if ProcessInfo.processInfo.environment["FRIED_PREVIEW_SCREEN"] == "home" {
+                brain.registerScore(score.value)
+            }
             history.record(score.value)
             plan = PlanEngine.plan(score: score, quiz: app.quiz, reaction: app.reaction)
-            roast = await RoastEngine.roast(for: score)
+            await reportStore.ensure(reportContext())
             analysis = await AnalysisEngine.analyze(score: score, quiz: app.quiz, reaction: app.reaction)
         }
     }
 
-    private var lockedCard: some View {
-        Button {
-            app.paywallReturn = .home
-            withAnimation { app.screen = .paywall }
-        } label: {
-            GlassCard {
-                VStack(spacing: 10) {
-                    Image(systemName: "lock.fill").font(.system(size: 26)).foregroundStyle(Theme.amber)
-                    Text("Unlock your full report").font(Theme.title(20)).foregroundStyle(Theme.textPrimary)
-                    Text("Your breakdown, the AI's read, and a personalized de-fry plan built from your answers.")
-                        .font(Theme.body(14)).foregroundStyle(Theme.textSecondary).multilineTextAlignment(.center)
-                    Text("\(store.fullPriceText) once · no subscription").font(Theme.body(15)).fontWeight(.bold)
-                        .foregroundStyle(Theme.amber).padding(.top, 2)
-                }
-                .padding(24).frame(maxWidth: .infinity)
-            }
-        }
-        .buttonStyle(.plain)
-    }
-
-    private var planCard: some View {
-        GlassCard {
-            VStack(alignment: .leading, spacing: 14) {
-                HStack(spacing: 7) {
-                    Image(systemName: "checklist").font(.system(size: 13, weight: .bold)).foregroundStyle(Theme.amber)
-                    Text("YOUR DE-FRY PLAN").font(Theme.label(12)).tracking(1.3).foregroundStyle(Theme.textSecondary)
-                    Spacer()
-                    if let plan {
-                        Text("\(challenge.completed(of: plan.steps.count))/\(plan.steps.count) today")
-                            .font(Theme.label(12)).foregroundStyle(Theme.amber)
-                    }
-                }
-                if let plan {
-                    Text(plan.diagnosis).font(Theme.body(16)).foregroundStyle(Theme.textPrimary)
-                    VStack(spacing: 10) {
-                        ForEach(Array(plan.steps.enumerated()), id: \.offset) { i, step in
-                            Button { challenge.toggle(i) } label: {
-                                HStack(alignment: .top, spacing: 11) {
-                                    Image(systemName: challenge.isDone(i) ? "checkmark.circle.fill" : "circle")
-                                        .font(.system(size: 21))
-                                        .foregroundStyle(challenge.isDone(i) ? Theme.amber : Theme.textSecondary.opacity(0.55))
-                                    Text(step).font(Theme.body(15))
-                                        .foregroundStyle(challenge.isDone(i) ? Theme.textSecondary : Theme.textPrimary)
-                                        .strikethrough(challenge.isDone(i))
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                }
-                            }
-                            .buttonStyle(.plain)
-                            .sensoryFeedback(.impact(weight: .light), trigger: challenge.isDone(i))
-                        }
-                    }
-                    Text(plan.challenge)
-                        .font(Theme.body(14)).fontWeight(.semibold).foregroundStyle(Theme.amber)
-                        .padding(14).frame(maxWidth: .infinity, alignment: .leading)
-                        .background(Theme.amber.opacity(0.10), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-                }
-            }
-            .padding(20).frame(maxWidth: .infinity, alignment: .leading)
-        }
+    private func reportContext() -> ReportContext {
+        let p = plan ?? PlanEngine.plan(score: score, quiz: app.quiz, reaction: app.reaction)
+        let wd = Calendar.current.component(.weekday, from: Date())
+        let seed = Calendar.current.ordinality(of: .day, in: .era, for: Date()) ?? 0
+        return ReportContext(score: score, realAge: app.age, brainAge: brainAge, freshness: brain.freshness,
+                             streak: history.streak, reaction: app.reaction, topLeak: p.leaks.first,
+                             weekday: wd, daySeed: seed)
     }
 
     private var header: some View {
-        HStack(alignment: .center, spacing: 12) {
-            EggMascot(mood: .forTier(score.tier), size: 46)
+        HStack {
             VStack(alignment: .leading, spacing: 2) {
-                Text("Your brain today").font(Theme.title(26)).foregroundStyle(Theme.textPrimary)
+                Text("Your brain").font(Theme.title(26)).foregroundStyle(Theme.textPrimary)
                 Text(Date().formatted(.dateTime.weekday(.wide).month().day()))
                     .font(Theme.label(13)).foregroundStyle(Theme.textSecondary)
             }
             Spacer()
             HStack(spacing: 5) {
                 Text("🔥").font(.system(size: 15))
-                Text("\(history.streak)").font(Theme.body(17)).fontWeight(.bold).foregroundStyle(Theme.textPrimary)
+                Text("\(history.streak)").font(Theme.body(17)).fontWeight(.semibold).foregroundStyle(Theme.textPrimary)
             }
-            .padding(.horizontal, 14).padding(.vertical, 9)
-            .friedGlass(cornerRadius: 16)
+            .padding(.horizontal, 14).padding(.vertical, 9).friedGlass(cornerRadius: 16)
         }
     }
 
-    private var scoreCard: some View {
+    // The living brain — FREE (the insecurity hook)
+    private var brainHero: some View {
+        let barColor = brain.freshness > 60 ? Theme.mint : (brain.freshness > 35 ? Theme.amber : Theme.ember)
+        return GlassCard {
+            VStack(spacing: 14) {
+                EggMascot(mood: .forFreshness(brain.freshness), friedLevel: brain.friedLevel, size: 132)
+                    .padding(.top, 4)
+                    .animation(.easeInOut(duration: 0.6), value: brain.freshness)
+                Text("\(brain.friedPercent)% fried · \(brain.label)")
+                    .font(Theme.title(22)).foregroundStyle(Theme.textPrimary)
+                GeometryReader { g in
+                    ZStack(alignment: .leading) {
+                        Capsule().fill(Color.white.opacity(0.08))
+                        Capsule().fill(barColor)
+                            .frame(width: max(10, g.size.width * brain.freshness / 100))
+                            .animation(.spring(response: 0.5, dampingFraction: 0.8), value: brain.freshness)
+                    }
+                }
+                .frame(height: 8).padding(.horizontal, 2)
+                Text(brain.freshness < 40
+                     ? "Your brain is frying — cool it down below."
+                     : "Keep it fresh. It fries a little more every day you skip.")
+                    .font(Theme.body(14)).foregroundStyle(Theme.textSecondary).multilineTextAlignment(.center)
+            }
+            .padding(22).frame(maxWidth: .infinity)
+        }
+    }
+
+    // Brain Age — FREE (the insecurity hook)
+    private var brainAgeCard: some View {
         GlassCard {
             HStack(spacing: 18) {
-                ZStack {
-                    Circle().stroke(.white.opacity(0.08), lineWidth: 10)
-                    Circle().trim(from: 0, to: Double(score.value) / 100)
-                        .stroke(Theme.gradient(for: score.tier), style: StrokeStyle(lineWidth: 10, lineCap: .round))
-                        .rotationEffect(.degrees(-90))
-                    Text("\(score.value)").font(Theme.score(34)).foregroundStyle(Theme.gradient(for: score.tier))
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("BRAIN AGE").font(Theme.label(12)).tracking(1.3).foregroundStyle(Theme.textSecondary)
+                    Text("\(brainAge)").font(Theme.score(54)).foregroundStyle(Theme.gradient(for: score.tier))
                 }
-                .frame(width: 92, height: 92)
+                Rectangle().fill(Theme.hairline).frame(width: 1, height: 58)
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("\(score.tier.emoji) \(score.tier.title)")
-                        .font(Theme.title(22)).foregroundStyle(Theme.textPrimary)
-                    Text("Today's fried score").font(Theme.label(13)).foregroundStyle(Theme.textSecondary)
+                    Text("You're \(app.age)").font(Theme.body(16)).foregroundStyle(Theme.textPrimary)
+                    Text(BrainAgeEngine.gapLine(realAge: app.age, brainAge: brainAge))
+                        .font(Theme.label(13)).foregroundStyle(Theme.amber)
                 }
                 Spacer(minLength: 0)
             }
@@ -168,11 +147,99 @@ struct TodayView: View {
         }
     }
 
-    private var aiReadCard: some View {
+    // Daily Brain Report — the AI dopamine. Headline+risk free, full report paid.
+    private var reportCard: some View {
         GlassCard {
             VStack(alignment: .leading, spacing: 12) {
                 HStack(spacing: 7) {
                     Image(systemName: "sparkles").font(.system(size: 13, weight: .bold)).foregroundStyle(Theme.amber)
+                    Text("TODAY'S BRAIN REPORT").font(Theme.label(12)).tracking(1.3).foregroundStyle(Theme.textSecondary)
+                    Spacer()
+                    if let r = reportStore.report { riskPill(r.risk) }
+                }
+                if let r = reportStore.report {
+                    Text(r.headline).font(Theme.title(20)).foregroundStyle(Theme.textPrimary)
+                    if store.hasAccess {
+                        Text(r.reading).font(Theme.body(15)).foregroundStyle(Theme.textSecondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                        HStack(alignment: .top, spacing: 8) {
+                            Image(systemName: "target").font(.system(size: 13, weight: .bold)).foregroundStyle(Theme.amber)
+                            Text("Today's mission — \(r.mission)").font(Theme.body(14)).foregroundStyle(Theme.textPrimary)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                        .padding(.top, 2)
+                    } else {
+                        ZStack {
+                            Text(r.reading).font(Theme.body(15)).foregroundStyle(Theme.textSecondary)
+                                .lineLimit(2).blur(radius: 5)
+                            Text("🔒 Unlock today's full report + mission")
+                                .font(Theme.label(13)).foregroundStyle(Theme.amber)
+                        }
+                    }
+                } else {
+                    Text("Reading your brain…").font(Theme.body(15)).foregroundStyle(Theme.textSecondary)
+                }
+            }
+            .padding(20).frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
+    private func riskPill(_ risk: String) -> some View {
+        let c: Color = risk == "High" ? Theme.ember : (risk == "Medium" ? Theme.amber : Theme.mint)
+        return Text("\(risk) risk").font(Theme.label(11)).foregroundStyle(c)
+            .padding(.horizontal, 10).padding(.vertical, 5)
+            .background(c.opacity(0.13), in: Capsule())
+    }
+
+    // De-fry tasks that COOL the brain — PAID (the care loop)
+    private var tasksCard: some View {
+        GlassCard {
+            VStack(alignment: .leading, spacing: 14) {
+                HStack {
+                    Image(systemName: "checklist").font(.system(size: 13, weight: .bold)).foregroundStyle(Theme.amber)
+                    Text("COOL YOUR BRAIN DOWN").font(Theme.label(12)).tracking(1.3).foregroundStyle(Theme.textSecondary)
+                    Spacer()
+                    if let plan {
+                        Text("\(challenge.completed(of: plan.steps.count))/\(plan.steps.count)")
+                            .font(Theme.label(12)).foregroundStyle(Theme.amber)
+                    }
+                }
+                if let plan {
+                    ForEach(Array(plan.steps.enumerated()), id: \.offset) { i, step in
+                        Button { toggleTask(i) } label: {
+                            HStack(alignment: .top, spacing: 11) {
+                                Image(systemName: challenge.isDone(i) ? "checkmark.circle.fill" : "circle")
+                                    .font(.system(size: 21))
+                                    .foregroundStyle(challenge.isDone(i) ? Theme.mint : Theme.textSecondary.opacity(0.55))
+                                Text(step).font(Theme.body(15))
+                                    .foregroundStyle(challenge.isDone(i) ? Theme.textSecondary : Theme.textPrimary)
+                                    .strikethrough(challenge.isDone(i))
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                Text("+7").font(Theme.label(12)).foregroundStyle(Theme.mint)
+                                    .opacity(challenge.isDone(i) ? 0.35 : 1)
+                            }
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                Text("Each one cools your brain. Skip a day and it fries again.")
+                    .font(Theme.label(12)).foregroundStyle(Theme.textSecondary)
+            }
+            .padding(20).frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
+    private func toggleTask(_ i: Int) {
+        let wasDone = challenge.isDone(i)
+        challenge.toggle(i)
+        brain.recover(wasDone ? -7 : 7)
+    }
+
+    private var aiReadCard: some View {
+        GlassCard {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack(spacing: 7) {
+                    Image(systemName: "brain").font(.system(size: 13, weight: .bold)).foregroundStyle(Theme.amber)
                     Text("THE AI'S READ ON YOU").font(Theme.label(12)).tracking(1.3).foregroundStyle(Theme.textSecondary)
                 }
                 Text(analysis?.summary ?? "Reading your data…")
@@ -194,54 +261,24 @@ struct TodayView: View {
         }
     }
 
-    private var breakdownCard: some View {
-        GlassCard {
-            VStack(alignment: .leading, spacing: 16) {
-                Text("THE BREAKDOWN").font(Theme.label(12)).tracking(1.5).foregroundStyle(Theme.textSecondary)
-                ForEach(subScores, id: \.0) { item in bar(item.0, item.1) }
-            }
-            .padding(20).frame(maxWidth: .infinity, alignment: .leading)
-        }
-    }
-
-    private var roastCard: some View {
-        GlassCard {
-            HStack(alignment: .top, spacing: 12) {
-                Text("🔥").font(.system(size: 22))
-                Text(roast.isEmpty ? " " : roast).font(Theme.body(16)).foregroundStyle(Theme.textPrimary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .padding(20)
-        }
-    }
-
-    private func bar(_ label: String, _ val: Int) -> some View {
-        VStack(alignment: .leading, spacing: 7) {
-            HStack {
-                Text(label).font(Theme.body(15)).foregroundStyle(Theme.textPrimary)
-                Spacer()
-                Text("\(val)").font(Theme.label(14)).foregroundStyle(Theme.textSecondary)
-            }
-            GeometryReader { g in
-                ZStack(alignment: .leading) {
-                    Capsule().fill(Color.white.opacity(0.08))
-                    Capsule().fill(Theme.heatGradientH).frame(width: max(8, g.size.width * Double(val) / 100))
+    private var lockedCard: some View {
+        Button {
+            app.paywallReturn = .home
+            withAnimation { app.screen = .paywall }
+        } label: {
+            GlassCard {
+                VStack(spacing: 10) {
+                    Image(systemName: "lock.fill").font(.system(size: 26)).foregroundStyle(Theme.amber)
+                    Text("Cool your brain down").font(Theme.title(20)).foregroundStyle(Theme.textPrimary)
+                    Text("Unlock your full daily report, the missions that de-fry your brain, the AI's read, and tracking.")
+                        .font(Theme.body(14)).foregroundStyle(Theme.textSecondary).multilineTextAlignment(.center)
+                    Text("\(store.fullPriceText) once · no subscription").font(Theme.body(15)).fontWeight(.semibold)
+                        .foregroundStyle(Theme.amber).padding(.top, 2)
                 }
+                .padding(24).frame(maxWidth: .infinity)
             }
-            .frame(height: 8)
         }
-    }
-
-    private var subScores: [(String, Int)] {
-        let base = score.value
-        if let q = app.quiz, let r = app.reaction {
-            return [
-                ("Scroll habits", Int(ScoringEngine.quizScore(q).rounded())),
-                ("Reflex lag", Int(ScoringEngine.reactionScore(r).rounded())),
-                ("Focus drift", Int(min(100, max(0, r.lapseVariance * 100)).rounded()))
-            ]
-        }
-        return [("Scroll habits", min(100, base + 6)), ("Reflex lag", max(0, base - 8)), ("Focus drift", min(100, base + 2))]
+        .buttonStyle(.plain)
     }
 }
 
@@ -329,10 +366,10 @@ struct ProfileView: View {
                     } label: {
                         GlassCard {
                             VStack(spacing: 8) {
-                                Text("🔓 Unlock Fried").font(Theme.title(22)).foregroundStyle(Theme.textPrimary)
-                                Text("Full breakdown, daily roasts, share cards & more").font(Theme.label(13))
+                                Text("Unlock Fried").font(Theme.title(22)).foregroundStyle(Theme.textPrimary)
+                                Text("Daily report, de-fry missions, AI read & tracking").font(Theme.label(13))
                                     .foregroundStyle(Theme.textSecondary).multilineTextAlignment(.center)
-                                Text("\(store.fullPriceText) once · no subscription").font(Theme.body(15)).fontWeight(.bold)
+                                Text("\(store.fullPriceText) once · no subscription").font(Theme.body(15)).fontWeight(.semibold)
                                     .foregroundStyle(Theme.amber).padding(.top, 4)
                             }.padding(22).frame(maxWidth: .infinity)
                         }
@@ -346,7 +383,7 @@ struct ProfileView: View {
                                 .foregroundStyle(Theme.amber).frame(width: 24)
                             VStack(alignment: .leading, spacing: 2) {
                                 Text("Daily reminder").font(Theme.body(16)).foregroundStyle(Theme.textPrimary)
-                                Text("A nudge to check your score").font(Theme.label(12)).foregroundStyle(Theme.textSecondary)
+                                Text("Before your brain fries again").font(Theme.label(12)).foregroundStyle(Theme.textSecondary)
                             }
                         }
                     }
@@ -368,16 +405,16 @@ struct ProfileView: View {
                     VStack(spacing: 0) {
                         row("Restore purchases", "arrow.clockwise") { Task { await store.restore() } }
                         divider
-                        link("Terms of use", "doc.text", "https://fried.app/terms")
+                        link("Terms of use", "doc.text", "https://nghinai.github.io/Fried/terms.html")
                         divider
-                        link("Privacy policy", "hand.raised", "https://fried.app/privacy")
+                        link("Privacy policy", "hand.raised", "https://nghinai.github.io/Fried/privacy.html")
                         divider
                         link("Contact", "envelope", "mailto:hello@fried.app")
                     }.padding(.vertical, 4)
                 }
 
                 Text("Fried is for entertainment only — a playful vibe check, not a measurement of your health, focus, or intelligence.")
-                    .font(.system(size: 11, design: .rounded)).foregroundStyle(Theme.textSecondary.opacity(0.6))
+                    .font(.system(size: 11)).foregroundStyle(Theme.textSecondary.opacity(0.6))
                     .multilineTextAlignment(.center).padding(.horizontal, 16).padding(.top, 6)
             }
             .padding(.horizontal, Theme.pad).padding(.top, 64).padding(.bottom, 40)

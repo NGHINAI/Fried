@@ -6,6 +6,7 @@ import SwiftUI
 struct RevealView: View {
     @EnvironmentObject var app: AppState
     @EnvironmentObject var store: Store
+    @EnvironmentObject var brain: BrainState
     @State private var roast = ""
     @State private var showRoast = false
     @State private var shareImage: Image?
@@ -46,6 +47,7 @@ struct RevealView: View {
             ConfettiView(burst: confetti).ignoresSafeArea()
         }
         .task {
+            brain.registerScore(score.value)
             roast = await RoastEngine.roast(for: score)
             shareImage = ShareCard.image(score: score, roast: roast)
             withAnimation(.easeOut(duration: 0.5).delay(0.9)) { showRoast = true }

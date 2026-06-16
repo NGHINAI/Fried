@@ -12,6 +12,15 @@ final class AppState: ObservableObject {
     @Published var quiz: QuizResult? = nil
     @Published var jumpToGauntlet = false
     @Published var paywallReturn: Screen = .reveal
+    @Published var age: Int = {
+        let saved = UserDefaults.standard.integer(forKey: "fried.age")
+        return saved == 0 ? 24 : saved
+    }()
+
+    func setAge(_ a: Int) {
+        age = a
+        UserDefaults.standard.set(a, forKey: "fried.age")
+    }
 
     init() {
         if let p = ProcessInfo.processInfo.environment["FRIED_PREVIEW_SCREEN"] {
