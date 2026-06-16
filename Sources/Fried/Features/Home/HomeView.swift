@@ -37,6 +37,7 @@ struct TodayView: View {
     @State private var gainPop: Int? = nil             // floating +N on recovery
     @State private var thudTick = 0                    // heavy-haptic trigger (the damage)
     @State private var successTick = 0                 // success-haptic trigger (the repair)
+    @State private var showNotifPrime = false          // one-time benefit-first notif priming
 
     private var isPreview: Bool { ProcessInfo.processInfo.environment["FRIED_PREVIEW_SCREEN"] != nil }
 
@@ -104,7 +105,9 @@ struct TodayView: View {
             plan = PlanEngine.plan(score: score, quiz: app.quiz, reaction: app.reaction)
             await reportStore.ensure(reportContext())
             analysis = await AnalysisEngine.analyze(score: score, quiz: app.quiz, reaction: app.reaction)
+            await maybePrimeNotifications()
         }
+        .sheet(isPresented: $showNotifPrime) { notifPrimeSheet }
     }
 
     private func reportContext() -> ReportContext {
@@ -364,6 +367,38 @@ struct TodayView: View {
             try? await Task.sleep(for: .seconds(0.9))
             withAnimation(.easeIn(duration: 0.3)) { gainPop = nil }
         }
+    }
+
+    // Benefit-first priming BEFORE the one-shot system prompt — shown once, only
+    // if they've never been asked. Research: warm-up screens lift opt-in materially.
+    private func maybePrimeNotifications() async {
+        guard !isPreview, !UserDefaults.standard.bool(forKey: "fried.primedNotif") else { return }
+        guard await NotificationManager.isUndetermined() else { return }
+        try? await Task.sleep(for: .seconds(0.8))
+        withAnimation { showNotifPrime = true }
+    }
+
+    private var notifPrimeSheet: some View {
+        VStack(spacing: 18) {
+            Text("🔔").font(.system(size: 46))
+            Text("Catch your brain frying")
+                .font(Theme.title(23)).foregroundStyle(Theme.textPrimary).multilineTextAlignment(.center)
+            Text("One quiet daily nudge when your brain needs cooling — and before your streak resets. No spam, ever.")
+                .font(Theme.body(15)).foregroundStyle(Theme.textSecondary)
+                .multilineTextAlignment(.center).padding(.horizontal, 18)
+            PrimaryButton(title: "Turn on reminders") {
+                UserDefaults.standard.set(true, forKey: "fried.primedNotif")
+                Task { _ = await NotificationManager.requestAndSchedule(); showNotifPrime = false }
+            }
+            Button("Maybe later") {
+                UserDefaults.standard.set(true, forKey: "fried.primedNotif")
+                showNotifPrime = false
+            }
+            .font(Theme.body(15)).foregroundStyle(Theme.textSecondary).padding(.top, 2)
+        }
+        .padding(28)
+        .presentationDetents([.height(380)])
+        .presentationBackground(.ultraThinMaterial)
     }
 
     private var aiReadCard: some View {

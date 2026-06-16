@@ -1,4 +1,5 @@
 import SwiftUI
+import StoreKit
 
 /// The front door. The number is the WOW (counts up, confetti). Then the THREAT
 /// lands: where you rank, the recoverable points you're LOSING, and the five
@@ -15,10 +16,13 @@ struct RevealView: View {
     @State private var confetti = false
     @State private var celebrate = false
     @State private var revealThreat = false
+    @State private var landed = false
+    @Environment(\.requestReview) private var requestReview
 
+    private var isPreview: Bool { ProcessInfo.processInfo.environment["FRIED_PREVIEW_SCREEN"] != nil }
     private var score: FriedScore { app.result ?? FriedScore(value: 0, tier: .crispMind) }
     private var breakdown: BrainBreakdown {
-        BrainBreakdownEngine.make(quiz: app.quiz, reaction: app.reaction, screenTime: nil,
+        BrainBreakdownEngine.make(quiz: app.quiz, reaction: app.reaction, screenTime: app.screenTime,
                                   overall: score.value, age: app.age)
     }
 
@@ -28,12 +32,23 @@ struct RevealView: View {
                 VStack(spacing: 18) {
                     Text("YOUR FRIED SCORE").font(Theme.label(13)).tracking(2.5)
                         .foregroundStyle(Theme.textSecondary).padding(.top, 18)
-                    ScoreDial(score: score.value, tier: score.tier)
-                        .scaleEffect(celebrate ? 1 : 0.85)
-                        .animation(.spring(response: 0.6, dampingFraction: 0.6), value: celebrate)
-                    Text("\(score.tier.emoji)  \(score.tier.title)")
-                        .font(Theme.title(28)).foregroundStyle(Theme.textPrimary)
-                    percentileLine
+                    ZStack {
+                        Circle()
+                            .fill(RadialGradient(colors: [Theme.color(for: score.tier).opacity(0.5), .clear],
+                                                 center: .center, startRadius: 0, endRadius: 175))
+                            .frame(width: 340, height: 340)
+                            .scaleEffect(landed ? 1.05 : 0.5).opacity(landed ? 1 : 0)
+                            .blendMode(.plusLighter).allowsHitTesting(false)
+                        ScoreDial(score: score.value, tier: score.tier)
+                            .scaleEffect(celebrate ? 1 : 0.85)
+                            .animation(.spring(response: 0.6, dampingFraction: 0.6), value: celebrate)
+                    }
+                    VStack(spacing: 14) {
+                        Text("\(score.tier.emoji)  \(score.tier.title)")
+                            .font(Theme.title(28)).foregroundStyle(Theme.textPrimary)
+                        percentileLine
+                    }
+                    .opacity(landed ? 1 : 0).offset(y: landed ? 0 : 12)
 
                     if revealThreat {
                         gapCard
@@ -65,16 +80,30 @@ struct RevealView: View {
         .safeAreaInset(edge: .bottom) { ctaBar }
         .task {
             brain.registerScore(score.value)
-            roast = await RoastEngine.roast(for: score)
-            shareImage = ShareCard.image(score: score, breakdown: breakdown, roast: roast)
-            withAnimation(.easeOut(duration: 0.5).delay(0.9)) { showRoast = true }
-            withAnimation(.spring(response: 0.6, dampingFraction: 0.85).delay(1.3)) { revealThreat = true }
+            Task {                                   // roast/share off the choreography path
+                roast = await RoastEngine.roast(for: score)
+                shareImage = ShareCard.image(score: score, breakdown: breakdown, roast: roast)
+            }
+            // The number counts up ~1.3s; land it HARD, then stagger the threat in.
+            try? await Task.sleep(for: .seconds(1.35))
+            withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) { landed = true }
+            try? await Task.sleep(for: .seconds(0.3))
+            withAnimation(.spring(response: 0.6, dampingFraction: 0.85)) { revealThreat = true }
+            try? await Task.sleep(for: .seconds(0.3))
+            withAnimation(.easeOut(duration: 0.5)) { showRoast = true }
+            // Ask for a review at the dopamine peak — once per install, real flow only.
+            if !isPreview, !UserDefaults.standard.bool(forKey: "fried.didAskReview") {
+                try? await Task.sleep(for: .seconds(1.6))
+                UserDefaults.standard.set(true, forKey: "fried.didAskReview")
+                requestReview()
+            }
         }
         .onAppear {
             celebrate = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { confetti = true }
         }
         .sensoryFeedback(.success, trigger: confetti)
+        .sensoryFeedback(.impact(weight: .heavy, intensity: 1.0), trigger: landed)
     }
 
     // FREE — the shareable social-comparison sting (red if below the pack, green if ahead)

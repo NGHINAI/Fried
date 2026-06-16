@@ -6,6 +6,7 @@ struct OnboardingFlow: View {
     @State private var answers: [Int] = []
     @State private var askedAge = false
     @State private var ageSel = 24
+    @State private var showScreenTime = false
     @State private var showInterstitial = false
     @State private var showGauntlet = false
 
@@ -17,6 +18,8 @@ struct OnboardingFlow: View {
                                      maxIndex: QuizContent.maxIndex))
             } else if showInterstitial {
                 interstitial
+            } else if showScreenTime {
+                screenTimeStep
             } else if askedAge {
                 quiz
             } else {
@@ -144,7 +147,40 @@ struct OnboardingFlow: View {
         if index + 1 < QuizContent.questions.count {
             withAnimation(.smooth(duration: 0.35)) { index += 1 }
         } else {
-            withAnimation(.spring(response: 0.5, dampingFraction: 0.85)) { showInterstitial = true }
+            withAnimation(.spring(response: 0.5, dampingFraction: 0.85)) { showScreenTime = true }
+        }
+    }
+
+    /// One more input → more investment (IKEA effect) AND a real signal that
+    /// feeds the score (the inputs-must-feed-the-result ethic).
+    private var screenTimeStep: some View {
+        let options: [(String, Int)] = [
+            ("Under 2 hours", 90), ("2–4 hours", 180), ("4–6 hours", 300),
+            ("6–8 hours", 420), ("Over 8 hours", 540)
+        ]
+        return VStack(spacing: 0) {
+            ProgressBar(progress: 7.5 / 8.0)
+                .padding(.top, 60).padding(.horizontal, Theme.pad)
+            Spacer().frame(height: 46)
+            VStack(spacing: 28) {
+                Text("Your daily screen time?")
+                    .font(Theme.title(30)).foregroundStyle(Theme.textPrimary)
+                    .multilineTextAlignment(.center).padding(.horizontal, 22)
+                Text("Be honest — Settings → Screen Time has the receipts.")
+                    .font(Theme.body(15)).foregroundStyle(Theme.textSecondary)
+                    .multilineTextAlignment(.center).padding(.horizontal, 30)
+                VStack(spacing: 12) {
+                    ForEach(Array(options.enumerated()), id: \.offset) { _, opt in
+                        AnswerButton(text: opt.0) {
+                            app.screenTime = ScreenTimeResult(totalMinutes: opt.1, apps: [])
+                            withAnimation(.spring(response: 0.5, dampingFraction: 0.85)) { showInterstitial = true }
+                        }
+                    }
+                }
+                .padding(.horizontal, Theme.pad)
+            }
+            .transition(.blurReplace)
+            Spacer()
         }
     }
 }

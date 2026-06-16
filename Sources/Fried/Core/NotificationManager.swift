@@ -52,4 +52,11 @@ enum NotificationManager {
         let settings = await UNUserNotificationCenter.current().notificationSettings()
         return settings.authorizationStatus == .authorized
     }
+
+    /// True only if the user has never been asked — so we can show a benefit-first
+    /// priming card before the one-shot system prompt (lifts opt-in materially).
+    static func isUndetermined() async -> Bool {
+        let settings = await UNUserNotificationCenter.current().notificationSettings()
+        return settings.authorizationStatus == .notDetermined
+    }
 }

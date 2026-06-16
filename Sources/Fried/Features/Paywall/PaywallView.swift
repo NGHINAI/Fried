@@ -11,7 +11,7 @@ struct PaywallView: View {
 
     private var score: FriedScore { app.result ?? FriedScore(value: 0, tier: .crispMind) }
     private var breakdown: BrainBreakdown {
-        BrainBreakdownEngine.make(quiz: app.quiz, reaction: app.reaction, screenTime: nil,
+        BrainBreakdownEngine.make(quiz: app.quiz, reaction: app.reaction, screenTime: app.screenTime,
                                   overall: score.value, age: app.age)
     }
 

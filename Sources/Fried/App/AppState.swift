@@ -10,6 +10,7 @@ final class AppState: ObservableObject {
     @Published var result: FriedScore? = nil
     @Published var reaction: ReactionResult? = nil
     @Published var quiz: QuizResult? = nil
+    @Published var screenTime: ScreenTimeResult? = nil
     @Published var jumpToGauntlet = false
     @Published var paywallReturn: Screen = .reveal
     @Published var age: Int = {
@@ -50,7 +51,7 @@ final class AppState: ObservableObject {
     func finishOnboarding(quiz: QuizResult, reaction: ReactionResult) {
         self.quiz = quiz
         self.reaction = reaction
-        self.result = ScoringEngine.score(quiz: quiz, reaction: reaction, screenTime: nil)
+        self.result = ScoringEngine.score(quiz: quiz, reaction: reaction, screenTime: screenTime)
         withAnimation(.spring(response: 0.5, dampingFraction: 0.85)) { screen = .calculating }
     }
 }
