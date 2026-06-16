@@ -39,6 +39,8 @@ struct TodayView: View {
     @State private var successTick = 0                 // success-haptic trigger (the repair)
     @State private var showNotifPrime = false          // one-time benefit-first notif priming
     @State private var dismissedMilestone = false      // hide the streak-milestone share banner
+    @State private var showGoalSheet = false           // one-time first-session goal pick
+    @State private var goalSel = 30
 
     private var isPreview: Bool { ProcessInfo.processInfo.environment["FRIED_PREVIEW_SCREEN"] != nil }
 
@@ -108,8 +110,10 @@ struct TodayView: View {
             plan = PlanEngine.plan(score: score, quiz: app.quiz, reaction: app.reaction)
             await reportStore.ensure(reportContext())
             analysis = await AnalysisEngine.analyze(score: score, quiz: app.quiz, reaction: app.reaction)
+            await maybeShowGoal()
             await maybePrimeNotifications()
         }
+        .sheet(isPresented: $showGoalSheet) { goalSheet }
         .sheet(isPresented: $showNotifPrime) { notifPrimeSheet }
     }
 
@@ -271,18 +275,24 @@ struct TodayView: View {
 
     // #2 "Potential you" — the recoverable headroom, the daily aspiration (FREE).
     // Uses the brain state's fried% so it matches the hero number exactly (clarity).
-    private var headroomGap: Int { max(0, brain.friedPercent - 18) }
+    private var headroomTarget: Int { app.goal != 0 ? app.goal : 18 }
+    private var headroomGap: Int { max(0, brain.friedPercent - headroomTarget) }
     private var headroomCard: some View {
-        GlassCard {
+        let reached = headroomGap == 0
+        let hasGoal = app.goal != 0
+        return GlassCard {
             HStack(spacing: 16) {
                 VStack(alignment: .leading, spacing: 0) {
-                    Text("HEADROOM").font(Theme.label(12)).tracking(1.3).foregroundStyle(Theme.textSecondary)
-                    Text("\(headroomGap)").font(Theme.score(46)).foregroundStyle(Theme.recovery)
+                    Text(reached ? "ON TARGET" : "HEADROOM").font(Theme.label(12)).tracking(1.3).foregroundStyle(Theme.textSecondary)
+                    Text(reached ? "🎯" : "\(headroomGap)").font(Theme.score(46)).foregroundStyle(Theme.recovery)
                 }
                 Rectangle().fill(Theme.hairline).frame(width: 1, height: 52)
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("points you can claw back").font(Theme.body(15)).foregroundStyle(Theme.textPrimary)
-                    Text("A fresh brain sits near 18% fried — you're at \(brain.friedPercent)%.")
+                    Text(reached ? "You hit your goal — hold it."
+                                 : (hasGoal ? "points to your goal" : "points you can claw back"))
+                        .font(Theme.body(15)).foregroundStyle(Theme.textPrimary)
+                    Text(hasGoal ? "Target \(app.goal)% · you're at \(brain.friedPercent)%."
+                                 : "A fresh brain sits near 18% fried — you're at \(brain.friedPercent)%.")
                         .font(Theme.label(13)).foregroundStyle(Theme.textSecondary)
                 }
                 Spacer(minLength: 0)
@@ -436,10 +446,42 @@ struct TodayView: View {
     // Benefit-first priming BEFORE the one-shot system prompt — shown once, only
     // if they've never been asked. Research: warm-up screens lift opt-in materially.
     private func maybePrimeNotifications() async {
-        guard !isPreview, !UserDefaults.standard.bool(forKey: "fried.primedNotif") else { return }
+        // Sequenced AFTER the goal is set, so the two first-run sheets never stack.
+        guard !isPreview, app.goal != 0, !UserDefaults.standard.bool(forKey: "fried.primedNotif") else { return }
         guard await NotificationManager.isUndetermined() else { return }
         try? await Task.sleep(for: .seconds(0.8))
         withAnimation { showNotifPrime = true }
+    }
+
+    // First session: pick an explicit target (goal-gradient — a finish line accelerates effort).
+    private func maybeShowGoal() async {
+        let forced = ProcessInfo.processInfo.environment["FRIED_PREVIEW_GOAL"] == "1"
+        guard forced || (!isPreview && app.goal == 0) else { return }
+        goalSel = max(10, min(60, brain.friedPercent - 25))   // a sensible, reachable default
+        try? await Task.sleep(for: .seconds(0.5))
+        showGoalSheet = true
+    }
+
+    private var goalSheet: some View {
+        VStack(spacing: 16) {
+            Text("🎯").font(.system(size: 44))
+            Text("Set your target").font(Theme.title(24)).foregroundStyle(Theme.textPrimary)
+            Text("Where do you want your brain? We'll track you toward it every day.")
+                .font(Theme.body(15)).foregroundStyle(Theme.textSecondary)
+                .multilineTextAlignment(.center).padding(.horizontal, 18)
+            Text("\(goalSel)").font(Theme.hero(64)).foregroundStyle(Theme.recovery)
+            Text("fried or lower").font(Theme.label(13)).foregroundStyle(Theme.textSecondary)
+            Slider(value: Binding(get: { Double(goalSel) }, set: { goalSel = Int(($0 / 5).rounded()) * 5 }),
+                   in: 5...60, step: 5)
+                .tint(Theme.recovery).padding(.horizontal, 30)
+            PrimaryButton(title: "Lock in my goal") {
+                app.setGoal(goalSel)
+                showGoalSheet = false
+            }
+        }
+        .padding(28)
+        .presentationDetents([.height(440)])
+        .presentationBackground(.ultraThinMaterial)
     }
 
     private var notifPrimeSheet: some View {
@@ -611,7 +653,15 @@ struct TrendsView: View {
 struct ProfileView: View {
     @EnvironmentObject var app: AppState
     @EnvironmentObject var store: Store
+    @EnvironmentObject var history: HistoryStore
+    @EnvironmentObject var archetypeStore: ArchetypeStore
     @AppStorage("fried.notif.on") private var notifOn = false
+
+    private var score: FriedScore { app.result ?? FriedScore(value: 0, tier: .crispMind) }
+    private var breakdown: BrainBreakdown {
+        BrainBreakdownEngine.make(quiz: app.quiz, reaction: app.reaction, screenTime: app.screenTime,
+                                  overall: score.value, age: app.age)
+    }
 
     var body: some View {
         ScrollView {
@@ -619,72 +669,11 @@ struct ProfileView: View {
                 Text("You")
                     .font(Theme.title(28)).foregroundStyle(Theme.textPrimary)
                     .frame(maxWidth: .infinity, alignment: .leading)
-
-                if store.hasAccess {
-                    GlassCard {
-                        HStack(spacing: 12) {
-                            Image(systemName: "checkmark.seal.fill").font(.system(size: 22)).foregroundStyle(Theme.amber)
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text("Fried Pro").font(Theme.title(20)).foregroundStyle(Theme.textPrimary)
-                                Text("Unlocked forever. Nice.").font(Theme.label(13)).foregroundStyle(Theme.textSecondary)
-                            }
-                            Spacer()
-                        }.padding(20).frame(maxWidth: .infinity)
-                    }
-                } else {
-                    Button {
-                        app.paywallReturn = .home
-                        withAnimation { app.screen = .paywall }
-                    } label: {
-                        GlassCard {
-                            VStack(spacing: 8) {
-                                Text("Unlock Fried").font(Theme.title(22)).foregroundStyle(Theme.textPrimary)
-                                Text("Daily report, de-fry missions, AI read & tracking").font(Theme.label(13))
-                                    .foregroundStyle(Theme.textSecondary).multilineTextAlignment(.center)
-                                Text("\(store.fullPriceText) once · no subscription").font(Theme.body(15)).fontWeight(.semibold)
-                                    .foregroundStyle(Theme.amber).padding(.top, 4)
-                            }.padding(22).frame(maxWidth: .infinity)
-                        }
-                    }.buttonStyle(.plain)
-                }
-
-                GlassCard {
-                    Toggle(isOn: $notifOn) {
-                        HStack(spacing: 14) {
-                            Image(systemName: "bell.fill").font(.system(size: 15, weight: .semibold))
-                                .foregroundStyle(Theme.amber).frame(width: 24)
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text("Daily reminder").font(Theme.body(16)).foregroundStyle(Theme.textPrimary)
-                                Text("Before your brain fries again").font(Theme.label(12)).foregroundStyle(Theme.textSecondary)
-                            }
-                        }
-                    }
-                    .tint(Theme.amber)
-                    .padding(.horizontal, 18).padding(.vertical, 12)
-                    .onChange(of: notifOn) { _, on in
-                        Task {
-                            if on {
-                                let ok = await NotificationManager.requestAndSchedule()
-                                if !ok { notifOn = false }
-                            } else {
-                                NotificationManager.cancel()
-                            }
-                        }
-                    }
-                }
-
-                GlassCard {
-                    VStack(spacing: 0) {
-                        row("Restore purchases", "arrow.clockwise") { Task { await store.restore() } }
-                        divider
-                        link("Terms of use", "doc.text", "https://nghinai.github.io/Fried/terms.html")
-                        divider
-                        link("Privacy policy", "hand.raised", "https://nghinai.github.io/Fried/privacy.html")
-                        divider
-                        link("Contact", "envelope", "mailto:hello@fried.app")
-                    }.padding(.vertical, 4)
-                }
-
+                archetypeCard
+                statsGrid
+                accessCard
+                notifCard
+                settingsCard
                 Text("Fried is for entertainment only — a playful vibe check, not a measurement of your health, focus, or intelligence.")
                     .font(.system(size: 11)).foregroundStyle(Theme.textSecondary.opacity(0.6))
                     .multilineTextAlignment(.center).padding(.horizontal, 16).padding(.top, 6)
@@ -692,6 +681,139 @@ struct ProfileView: View {
             .padding(.horizontal, Theme.pad).padding(.top, 64).padding(.bottom, 40)
         }
         .scrollIndicators(.hidden)
+        .task { await archetypeStore.ensure(score: score, breakdown: breakdown) }
+    }
+
+    // The AI wow: an on-device-generated identity + variable reward (re-roll).
+    private var archetypeCard: some View {
+        GlassCard {
+            VStack(spacing: 12) {
+                Text("YOUR BRAIN ARCHETYPE").font(Theme.label(12)).tracking(1.5).foregroundStyle(Theme.textSecondary)
+                Image(systemName: "sparkles").font(.system(size: 18)).foregroundStyle(Theme.amber)
+                if let a = archetypeStore.archetype, !archetypeStore.loading {
+                    Text(a.title).font(Theme.title(26)).foregroundStyle(Theme.gradient(for: score.tier))
+                        .multilineTextAlignment(.center)
+                    Text(a.blurb).font(Theme.body(15)).foregroundStyle(Theme.textPrimary)
+                        .multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
+                } else {
+                    ProgressView().tint(Theme.amber).padding(.vertical, 14)
+                    Text("Reading your brain…").font(Theme.label(13)).foregroundStyle(Theme.textSecondary)
+                }
+                HStack(spacing: 12) {
+                    Button { Task { await archetypeStore.reroll(score: score, breakdown: breakdown) } } label: {
+                        Label(archetypeStore.loading ? "Conjuring…" : "Re-roll", systemImage: "dice.fill")
+                            .font(Theme.label(14)).fontWeight(.semibold).foregroundStyle(Theme.amber)
+                            .padding(.horizontal, 16).padding(.vertical, 9)
+                            .liquidGlass(in: Capsule(), interactive: true)
+                    }
+                    .buttonStyle(.plain).disabled(archetypeStore.loading)
+                    if let a = archetypeStore.archetype {
+                        ShareLink(item: URL(string: "https://fried.app")!,
+                                  message: Text("My brain archetype: \(a.title) 🍳 How fried is your brain?")) {
+                            Label("Share", systemImage: "square.and.arrow.up")
+                                .font(Theme.label(14)).foregroundStyle(Theme.textPrimary)
+                                .padding(.horizontal, 16).padding(.vertical, 9)
+                                .liquidGlass(in: Capsule(), interactive: true)
+                        }
+                    }
+                }
+                .padding(.top, 4)
+            }
+            .padding(22).frame(maxWidth: .infinity)
+            .animation(.easeInOut(duration: 0.3), value: archetypeStore.archetype)
+        }
+    }
+
+    // Lifetime stats — accumulated progress you protect (endowment effect).
+    private var statsGrid: some View {
+        let vals = history.days.map(\.value)
+        let clawed = max(0, (vals.first ?? 0) - (vals.min() ?? 0))
+        return LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
+            statBox("\(vals.count)", "tests taken", Theme.textPrimary)
+            statBox(vals.min().map { "\($0)" } ?? "—", "best score", Theme.recovery)
+            statBox("\(history.longestStreak)", "best streak", Theme.amber)
+            statBox("\(clawed)", "points clawed back", Theme.recovery)
+        }
+    }
+    private func statBox(_ value: String, _ label: String, _ color: Color) -> some View {
+        GlassCard {
+            VStack(spacing: 4) {
+                Text(value).font(Theme.hero(38)).foregroundStyle(color)
+                Text(label).font(Theme.label(12)).foregroundStyle(Theme.textSecondary)
+            }
+            .padding(.vertical, 18).frame(maxWidth: .infinity)
+        }
+    }
+
+    @ViewBuilder private var accessCard: some View {
+        if store.hasAccess {
+            GlassCard {
+                HStack(spacing: 12) {
+                    Image(systemName: "checkmark.seal.fill").font(.system(size: 22)).foregroundStyle(Theme.amber)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Fried Pro").font(Theme.title(20)).foregroundStyle(Theme.textPrimary)
+                        Text("Unlocked forever. Nice.").font(Theme.label(13)).foregroundStyle(Theme.textSecondary)
+                    }
+                    Spacer()
+                }.padding(20).frame(maxWidth: .infinity)
+            }
+        } else {
+            Button {
+                app.paywallReturn = .home
+                withAnimation { app.screen = .paywall }
+            } label: {
+                GlassCard {
+                    VStack(spacing: 8) {
+                        Text("Unlock Fried").font(Theme.title(22)).foregroundStyle(Theme.textPrimary)
+                        Text("Daily report, de-fry missions, AI read & tracking").font(Theme.label(13))
+                            .foregroundStyle(Theme.textSecondary).multilineTextAlignment(.center)
+                        Text("\(store.fullPriceText) once · no subscription").font(Theme.body(15)).fontWeight(.semibold)
+                            .foregroundStyle(Theme.amber).padding(.top, 4)
+                    }.padding(22).frame(maxWidth: .infinity)
+                }
+            }.buttonStyle(.plain)
+        }
+    }
+
+    private var notifCard: some View {
+        GlassCard {
+            Toggle(isOn: $notifOn) {
+                HStack(spacing: 14) {
+                    Image(systemName: "bell.fill").font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(Theme.amber).frame(width: 24)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Daily reminder").font(Theme.body(16)).foregroundStyle(Theme.textPrimary)
+                        Text("Before your brain fries again").font(Theme.label(12)).foregroundStyle(Theme.textSecondary)
+                    }
+                }
+            }
+            .tint(Theme.amber)
+            .padding(.horizontal, 18).padding(.vertical, 12)
+            .onChange(of: notifOn) { _, on in
+                Task {
+                    if on {
+                        let ok = await NotificationManager.requestAndSchedule()
+                        if !ok { notifOn = false }
+                    } else {
+                        NotificationManager.cancel()
+                    }
+                }
+            }
+        }
+    }
+
+    private var settingsCard: some View {
+        GlassCard {
+            VStack(spacing: 0) {
+                row("Restore purchases", "arrow.clockwise") { Task { await store.restore() } }
+                divider
+                link("Terms of use", "doc.text", "https://nghinai.github.io/Fried/terms.html")
+                divider
+                link("Privacy policy", "hand.raised", "https://nghinai.github.io/Fried/privacy.html")
+                divider
+                link("Contact", "envelope", "mailto:hello@fried.app")
+            }.padding(.vertical, 4)
+        }
     }
 
     private var divider: some View { Rectangle().fill(Theme.hairline).frame(height: 1).padding(.leading, 52) }

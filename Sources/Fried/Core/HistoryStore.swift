@@ -45,6 +45,20 @@ final class HistoryStore: ObservableObject {
         return count
     }
 
+    /// The longest run of consecutive days ever recorded — a lifetime stat to protect.
+    var longestStreak: Int {
+        let set = Set(days.map { cal.startOfDay(for: $0.date) }).sorted()
+        guard !set.isEmpty else { return 0 }
+        var longest = 1, run = 1
+        for i in 1..<set.count {
+            if let next = cal.date(byAdding: .day, value: 1, to: set[i - 1]),
+               cal.isDate(next, inSameDayAs: set[i]) {
+                run += 1; longest = max(longest, run)
+            } else { run = 1 }
+        }
+        return longest
+    }
+
     /// Demo data so the trend chart looks alive in previews/screenshots.
     func seedSampleIfEmpty() {
         guard days.isEmpty else { return }

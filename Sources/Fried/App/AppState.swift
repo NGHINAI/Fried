@@ -23,6 +23,13 @@ final class AppState: ObservableObject {
         UserDefaults.standard.set(a, forKey: "fried.age")
     }
 
+    /// The user's target fried score (0 = not set yet) — their explicit finish line.
+    @Published var goal: Int = UserDefaults.standard.integer(forKey: "fried.goal")
+    func setGoal(_ g: Int) {
+        goal = g
+        UserDefaults.standard.set(g, forKey: "fried.goal")
+    }
+
     init() {
         if let p = ProcessInfo.processInfo.environment["FRIED_PREVIEW_SCREEN"] {
             applyPreview(p)
