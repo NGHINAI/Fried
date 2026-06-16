@@ -32,6 +32,25 @@ struct TodayView: View {
     @EnvironmentObject var reportStore: ReportStore
     @State private var analysis: FriedAnalysis?
     @State private var plan: DefryPlan?
+    @State private var shownFreshness: Double? = nil   // animated display value for the bar/egg
+    @State private var showDamage = false              // "while you were gone" loss banner
+    @State private var gainPop: Int? = nil             // floating +N on recovery
+    @State private var thudTick = 0                    // heavy-haptic trigger (the damage)
+    @State private var successTick = 0                 // success-haptic trigger (the repair)
+
+    private var isPreview: Bool { ProcessInfo.processInfo.environment["FRIED_PREVIEW_SCREEN"] != nil }
+
+    /// What the bar/egg actually render. Lags `brain.freshness` so we can animate
+    /// it draining (decay) or springing up (recovery). Before the first settle it
+    /// shows where you LAST saw it, so the drain starts from the right place.
+    private var displayFreshness: Double {
+        if let s = shownFreshness { return s }
+        return brain.lastDecay >= 2 ? brain.freshnessBeforeDecay : brain.freshness
+    }
+    private var displayFriedPct: Int { Int((100 - displayFreshness).rounded()) }
+    private func freshLabel(_ f: Double) -> String {
+        switch f { case 75...: return "Crisp"; case 50..<75: return "Toasting"; case 25..<50: return "Frying"; default: return "Burnt" }
+    }
 
     private var score: FriedScore { app.result ?? FriedScore(value: 0, tier: .crispMind) }
     private var brainAge: Int {
@@ -42,6 +61,7 @@ struct TodayView: View {
         ScrollView {
             VStack(spacing: 16) {
                 header
+                if showDamage { damageBanner }
                 brainHero
                 brainAgeCard
                 reportCard
@@ -63,9 +83,21 @@ struct TodayView: View {
             .padding(.horizontal, Theme.pad).padding(.top, 60).padding(.bottom, 40)
         }
         .scrollIndicators(.hidden)
+        .onAppear(perform: settleOnAppear)
+        .sensoryFeedback(.impact(weight: .heavy, intensity: 0.9), trigger: thudTick)
+        .sensoryFeedback(.success, trigger: successTick)
         .task {
-            if ProcessInfo.processInfo.environment["FRIED_PREVIEW_SCREEN"] == "home" {
+            if isPreview {
                 brain.registerScore(score.value)
+                shownFreshness = brain.freshness
+                #if DEBUG
+                if ProcessInfo.processInfo.environment["FRIED_PREVIEW_DAMAGE"] == "1" {
+                    brain.seedReturn()
+                    showDamage = true
+                    shownFreshness = brain.freshnessBeforeDecay
+                    withAnimation(.easeOut(duration: 1.3)) { shownFreshness = brain.freshness }
+                }
+                #endif
             }
             history.record(score.value)
             plan = PlanEngine.plan(score: score, quiz: app.quiz, reaction: app.reaction)
@@ -99,32 +131,107 @@ struct TodayView: View {
         }
     }
 
-    // The living brain — FREE (the insecurity hook)
+    // The living brain — FREE (the insecurity hook). Everything reads
+    // displayFreshness so the egg, bar and number animate together.
     private var brainHero: some View {
-        let barColor = brain.freshness > 60 ? Theme.mint : (brain.freshness > 35 ? Theme.amber : Theme.ember)
+        let f = displayFreshness
+        let barColor = f > 60 ? Theme.mint : (f > 35 ? Theme.amber : Theme.ember)
         return GlassCard {
             VStack(spacing: 14) {
-                EggMascot(mood: .forFreshness(brain.freshness), friedLevel: brain.friedLevel, size: 132)
-                    .padding(.top, 4)
-                    .animation(.easeInOut(duration: 0.6), value: brain.freshness)
-                Text("\(brain.friedPercent)% fried · \(brain.label)")
+                ZStack(alignment: .top) {
+                    EggMascot(mood: .forFreshness(f), friedLevel: (100 - f) / 100, size: 132)
+                        .padding(.top, 4)
+                    if let g = gainPop {       // the dopamine: a +N that floats off the egg
+                        Text("+\(g)")
+                            .font(Theme.score(32)).foregroundStyle(Theme.mint)
+                            .shadow(color: Theme.mint.opacity(0.7), radius: 10)
+                            .offset(y: -10)
+                            .transition(.asymmetric(insertion: .scale.combined(with: .opacity),
+                                                    removal: .move(edge: .top).combined(with: .opacity)))
+                    }
+                }
+                Text("\(displayFriedPct)% fried · \(freshLabel(f))")
                     .font(Theme.title(22)).foregroundStyle(Theme.textPrimary)
+                    .contentTransition(.numericText(value: Double(displayFriedPct)))
                 GeometryReader { g in
                     ZStack(alignment: .leading) {
                         Capsule().fill(Color.white.opacity(0.08))
                         Capsule().fill(barColor)
-                            .frame(width: max(10, g.size.width * brain.freshness / 100))
-                            .animation(.spring(response: 0.5, dampingFraction: 0.8), value: brain.freshness)
+                            .frame(width: max(10, g.size.width * f / 100))
                     }
                 }
                 .frame(height: 8).padding(.horizontal, 2)
-                Text(brain.freshness < 40
-                     ? "Your brain is frying — cool it down below."
-                     : "Keep it fresh. It fries a little more every day you skip.")
-                    .font(Theme.body(14)).foregroundStyle(Theme.textSecondary).multilineTextAlignment(.center)
+                Text(liveStatusLine)
+                    .font(Theme.body(14))
+                    .foregroundStyle(f < 40 ? Theme.ember : Theme.textSecondary)
+                    .multilineTextAlignment(.center)
             }
             .padding(22).frame(maxWidth: .infinity)
         }
+    }
+
+    /// Always-on "it's alive and rotting right now" readout.
+    private var liveStatusLine: String {
+        let h = Int(brain.hoursSinceCool.rounded())
+        if brain.freshness < 40 {
+            return h >= 1 ? "🔥 Still frying · last cooled \(h)h ago — cool it down below."
+                          : "🔥 Frying right now — cool it down below."
+        } else if brain.freshness < 70 {
+            return "Toasting. It fries a little more every hour you ignore it."
+        }
+        return "Crisp — for now. Skip a day and it starts frying again."
+    }
+
+    /// The loss-aversion centrepiece: watch the bar drain, feel the thud.
+    private func settleOnAppear() {
+        guard shownFreshness == nil else { return }
+        if brain.lastDecay >= 2 && !isPreview {
+            showDamage = true
+            thudTick += 1
+            withAnimation(.easeOut(duration: 1.2).delay(0.4)) { shownFreshness = brain.freshness }
+        } else if !isPreview {
+            shownFreshness = brain.freshness
+        }
+    }
+
+    // "While you were gone" — the damage made visible. FREE (drives the paywall).
+    private var damageBanner: some View {
+        let years = brainAgeBefore.map { max(0, brainAge - $0) } ?? 0
+        return GlassCard {
+            HStack(alignment: .top, spacing: 12) {
+                Image(systemName: "chart.line.downtrend.xyaxis")
+                    .font(.system(size: 22, weight: .semibold)).foregroundStyle(Theme.ember)
+                    .padding(.top, 1)
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("While you were gone").font(Theme.title(17)).foregroundStyle(Theme.textPrimary)
+                    Text(damageLine(years: years)).font(Theme.body(14))
+                        .foregroundStyle(Theme.textSecondary).fixedSize(horizontal: false, vertical: true)
+                }
+                Spacer(minLength: 0)
+                Button { withAnimation { showDamage = false } } label: {
+                    Image(systemName: "xmark").font(.system(size: 13, weight: .bold))
+                        .foregroundStyle(Theme.textSecondary)
+                }
+            }
+            .padding(18)
+        }
+        .overlay(RoundedRectangle(cornerRadius: Theme.radius).stroke(Theme.ember.opacity(0.5), lineWidth: 1))
+        .transition(.move(edge: .top).combined(with: .opacity))
+    }
+
+    private var brainAgeBefore: Int? {
+        guard brain.lastDecay >= 2 else { return nil }
+        return BrainAgeEngine.brainAge(realAge: app.age, score: score,
+                                       reaction: app.reaction, freshness: brain.freshnessBeforeDecay)
+    }
+    private func damageLine(years: Int) -> String {
+        let pct = max(1, Int(brain.lastDecay.rounded()))
+        let h = Int(brain.awayHours.rounded())
+        let timePart = h >= 24 ? "\(h / 24)d" : "\(max(1, h))h"
+        if years >= 1 {
+            return "Your brain fried \(pct)% more and aged \(years) year\(years == 1 ? "" : "s") in the last \(timePart). Cool it down ↓"
+        }
+        return "Your brain fried \(pct)% more in the last \(timePart). Cool it down ↓"
     }
 
     // Brain Age — FREE (the insecurity hook)
@@ -233,6 +340,14 @@ struct TodayView: View {
         let wasDone = challenge.isDone(i)
         challenge.toggle(i)
         brain.recover(wasDone ? -7 : 7)
+        withAnimation(.spring(response: 0.45, dampingFraction: 0.7)) { shownFreshness = brain.freshness }
+        guard !wasDone else { return }      // only celebrate completing, not un-checking
+        successTick += 1                    // success haptic
+        withAnimation(.spring(response: 0.4, dampingFraction: 0.55)) { gainPop = 7 }
+        Task {
+            try? await Task.sleep(for: .seconds(0.9))
+            withAnimation(.easeIn(duration: 0.3)) { gainPop = nil }
+        }
     }
 
     private var aiReadCard: some View {
