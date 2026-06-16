@@ -21,6 +21,26 @@ enum NotificationManager {
         schedule(streak: streak, friedPercent: friedPercent)
     }
 
+    /// AI reminder: Yolkie writes tonight's push ON-DEVICE from today's data.
+    static func refreshAI(friedPercent: Int, brainAge: Int, realAge: Int, topLeak: String, streak: Int) async {
+        guard await isAuthorized() else { return }
+        let n = await NudgeEngine.daily(friedPercent: friedPercent, brainAge: brainAge,
+                                        realAge: realAge, topLeak: topLeak, streak: streak)
+        scheduleCustom(title: n.title, body: n.body)
+    }
+
+    static func scheduleCustom(title: String, body: String) {
+        let center = UNUserNotificationCenter.current()
+        center.removePendingNotificationRequests(withIdentifiers: [id])
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.body = body
+        content.sound = .default
+        var when = DateComponents(); when.hour = 19
+        let trigger = UNCalendarNotificationTrigger(dateMatching: when, repeats: true)
+        center.add(UNNotificationRequest(identifier: id, content: content, trigger: trigger))
+    }
+
     static func schedule(streak: Int = 0, friedPercent: Int = 0) {
         let center = UNUserNotificationCenter.current()
         center.removePendingNotificationRequests(withIdentifiers: [id])

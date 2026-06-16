@@ -39,6 +39,7 @@ final class AskStore: ObservableObject {
 
     func remaining(hasAccess: Bool) -> Int { hasAccess ? Int.max : max(0, freeLimit - freeUsed) }
     func canAsk(hasAccess: Bool) -> Bool { hasAccess || freeUsed < freeLimit }
+    func clear() { messages = [] }
 
     func ask(_ question: String, hasAccess: Bool) async {
         let q = question.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -61,7 +62,7 @@ enum AskEngine {
         if #available(iOS 26.0, *), let ai = await aiAnswer(question, context: context, history: history) {
             return ai
         }
-        return fallback(question, context: context)
+        return fallback(question, context: context, turn: history.count)
     }
 
     // MARK: On-device AI — the persuasion engine
@@ -115,17 +116,47 @@ enum AskEngine {
         """
     }
 
-    // MARK: Offline fallback (no Apple Intelligence) — still loss-framed + action-led
-    private static func fallback(_ q: String, context c: AskContext) -> String {
+    // MARK: Offline fallback (no Apple Intelligence) — varied, intent-aware, loss-framed
+    // + action-led. Rotates by turn so Yolkie never repeats himself.
+    private static func fallback(_ q: String, context c: AskContext, turn: Int) -> String {
         let gap = max(0, c.brainAge - c.realAge)
         let leak = c.topLeak.lowercased()
         let lower = q.lowercased()
-        if lower.contains("fix") || lower.contains("how") || lower.contains("better") || lower.contains("help") {
-            return "Your biggest leak is \(leak). Fix that one first: do a single de-fry mission today and re-test tonight. Small and daily beats heroic and never — that's how you claw \(gap > 0 ? "those \(gap) years" : "points") back. Start now, not tomorrow."
+        func pick(_ arr: [String]) -> String { arr[abs(turn) % arr.count] }
+        let yearsLine = gap > 0 ? "those \(gap) years" : "the points"
+
+        if lower.contains("roast") || lower.contains("mean") {
+            return pick([
+                "You? \(c.friedPercent)% fried, brain age \(c.brainAge) at \(c.realAge) — and your \(leak) is doing the heavy lifting of ruining you. Bold to ask. Now go do a mission before I really start.",
+                "Babe, you're more cooked than \(c.percentile)% of people your age and your big personality trait is \(leak). That's not a vibe, that's a warning label. Re-test tonight and prove me wrong.",
+            ])
         }
-        if lower.contains("why") || lower.contains("fried") || lower.contains("bad") {
-            return "You're \(c.friedPercent)% fried — more cooked than \(c.percentile)% of people your age — and it traces mostly to \(leak). It's not permanent, but every day you ignore it, it sets a little deeper. Cool it down below before it sticks."
+        if lower.contains("fix") || lower.contains("how") || lower.contains("better") || lower.contains("help") || lower.contains("improve") {
+            return pick([
+                "Start with your biggest leak: \(leak). One de-fry mission today, re-test tonight. Small and daily beats heroic and never — that's how you claw \(yearsLine) back.",
+                "Forget the overhaul. Do ONE thing now — a single mission aimed at \(leak) — then lock in a goal so you've got a finish line. Momentum is the whole game.",
+            ])
         }
-        return "Straight talk: brain age \(c.brainAge) vs your real \(c.realAge), \(c.friedPercent)% fried, biggest tell \(leak). Most of it is reversible — but only if you move today. Do one mission right now and prove it to yourself."
+        if lower.contains("why") || lower.contains("fried") || lower.contains("so bad") {
+            return pick([
+                "You're \(c.friedPercent)% fried — more cooked than \(c.percentile)% of people your age — and it traces mostly to \(leak). Every day you ignore it, it sets a little deeper. Cool it down below.",
+                "Short version: \(leak) is melting you. Brain age \(c.brainAge) vs your real \(c.realAge) — that gap is the receipt. Do one mission today and start tearing it up.",
+            ])
+        }
+        if lower.contains("problem") || lower.contains("worst") || lower.contains("leak") || lower.contains("weak") {
+            return "Your #1 leak is \(leak) — it's dragging everything else down with it. Fix that one and the whole score moves. Start with today's mission."
+        }
+        if lower.count <= 5 || lower.contains("ok") || lower.contains("sure") || lower.contains("thanks") || lower.contains("yes") || lower.contains("cool") {
+            return pick([
+                "Good. Then prove it — one mission, right now. I'll be watching your score.",
+                "Talk's cheap, chef. Go cool your brain down and re-test tonight. \(gap > 0 ? "Those \(gap) years aren't clawing themselves back." : "")",
+                "Love the energy. Channel it into one de-fry mission before you close this app.",
+            ])
+        }
+        return pick([
+            "Cute question — but I really only know one thing: your brain. \(c.friedPercent)% fried, biggest tell \(leak). Want the fix? Do a mission now.",
+            "I'll be honest, I'm built to stare at your fried score (\(c.score)/100) and nag you better. Biggest leak: \(leak). Go handle it today.",
+            "Off-topic, but I'll allow it. Back to you though: \(c.friedPercent)% fried, brain age \(c.brainAge). One mission today stops the slide.",
+        ])
     }
 }

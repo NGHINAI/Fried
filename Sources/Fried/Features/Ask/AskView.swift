@@ -4,6 +4,7 @@ import SwiftUI
 /// left (glass), you on the right (copper), suggestion chips that bait curiosity,
 /// a Liquid-Glass input. 5 free questions, then the paywall replaces the input.
 struct AskView: View {
+    var embedded = false                    // true when hosted as the Yolkie tab (no close button)
     @EnvironmentObject var app: AppState
     @EnvironmentObject var store: Store
     @EnvironmentObject var brain: BrainState
@@ -50,24 +51,32 @@ struct AskView: View {
     }
 
     private var topBar: some View {
-        HStack {
-            Button { dismiss() } label: {
-                Image(systemName: "xmark").font(.system(size: 14, weight: .bold)).foregroundStyle(Theme.textSecondary)
-                    .frame(width: 34, height: 34).liquidGlass(in: Circle(), interactive: true)
-            }
-            .buttonStyle(.plain)
-            Spacer()
-            VStack(spacing: 1) {
-                Text("Ask your brain").font(Theme.title(18)).foregroundStyle(Theme.textPrimary)
-                if !store.hasAccess {
-                    Text("\(ask.remaining(hasAccess: false)) free left")
-                        .font(Theme.label(11)).foregroundStyle(Theme.amber)
+        HStack(spacing: 11) {
+            if !embedded {
+                Button { dismiss() } label: {
+                    Image(systemName: "xmark").font(.system(size: 14, weight: .bold)).foregroundStyle(Theme.textSecondary)
+                        .frame(width: 34, height: 34).liquidGlass(in: Circle(), interactive: true)
                 }
+                .buttonStyle(.plain)
+            }
+            AnimatedYolkie(size: 34, fried: Double(score.value) / 100, active: ask.thinking)
+            VStack(alignment: .leading, spacing: 0) {
+                Text("Yolkie").font(Theme.title(19)).foregroundStyle(Theme.textPrimary)
+                Text(store.hasAccess ? "your brain coach · unlimited"
+                                     : "\(ask.remaining(hasAccess: false)) free questions left")
+                    .font(Theme.label(11)).foregroundStyle(store.hasAccess ? Theme.textSecondary : Theme.amber)
             }
             Spacer()
-            Color.clear.frame(width: 34, height: 34)
+            if !ask.messages.isEmpty {
+                Button { withAnimation { ask.clear() } } label: {
+                    Image(systemName: "square.and.pencil").font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(Theme.textSecondary).frame(width: 34, height: 34)
+                        .liquidGlass(in: Circle(), interactive: true)
+                }
+                .buttonStyle(.plain)
+            }
         }
-        .padding(.horizontal, Theme.pad).padding(.top, 10).padding(.bottom, 10)
+        .padding(.horizontal, Theme.pad).padding(.top, embedded ? 14 : 10).padding(.bottom, 10)
     }
 
     private var messages: some View {
@@ -89,10 +98,10 @@ struct AskView: View {
     }
 
     private var emptyState: some View {
-        VStack(spacing: 14) {
-            EggMascot(mood: .curious, friedLevel: Double(score.value) / 100, size: 78)
-            Text("Ask me anything.").font(Theme.title(23)).foregroundStyle(Theme.textPrimary)
-            Text("I've seen your numbers. Want the truth about your brain?")
+        VStack(spacing: 16) {
+            AnimatedYolkie(size: 104, fried: Double(score.value) / 100)
+            Text("Hey, I'm Yolkie.").font(Theme.title(24)).foregroundStyle(Theme.textPrimary)
+            Text("I've seen your numbers. Ask me anything about your brain — I'll give it to you straight.")
                 .font(Theme.body(15)).foregroundStyle(Theme.textSecondary)
                 .multilineTextAlignment(.center).padding(.horizontal, 24)
             VStack(spacing: 9) {
@@ -135,7 +144,7 @@ struct AskView: View {
 
     private var thinkingBubble: some View {
         HStack(spacing: 9) {
-            EggMascot(mood: .curious, friedLevel: Double(score.value) / 100, size: 28)
+            AnimatedYolkie(size: 28, fried: Double(score.value) / 100, active: true)
             TypingDots().padding(.horizontal, 16).padding(.vertical, 15).friedGlass(cornerRadius: 18)
             Spacer(minLength: 8)
         }
@@ -195,6 +204,23 @@ struct AskView: View {
             brainAge: brainAge, realAge: app.age,
             friedPercent: brain.friedPercent, percentile: breakdown.percentile,
             topLeak: breakdown.topLeak.label, streak: history.streak, goal: app.goal)
+    }
+}
+
+/// A cartoonish, always-alive Yolkie — a gentle bob + wobble (snappier when active).
+struct AnimatedYolkie: View {
+    var size: CGFloat
+    var fried: Double
+    var mood: EggMood = .curious
+    var active = false
+    @State private var bob = false
+    var body: some View {
+        EggMascot(mood: mood, friedLevel: fried, size: size)
+            .scaleEffect(bob ? 1.05 : 0.96)
+            .rotationEffect(.degrees(bob ? 3 : -3))
+            .offset(y: bob ? -3 : 2)
+            .animation(.easeInOut(duration: active ? 0.4 : 1.2).repeatForever(autoreverses: true), value: bob)
+            .onAppear { bob = true }
     }
 }
 
