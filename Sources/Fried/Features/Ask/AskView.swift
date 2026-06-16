@@ -12,7 +12,10 @@ struct AskView: View {
     @EnvironmentObject var ask: AskStore
     @Environment(\.dismiss) private var dismiss
     @State private var input = ""
+    @State private var sendTick = 0
     @FocusState private var focused: Bool
+
+    private let quickPrompts = ["Roast me 🔥", "What do I fix?", "Why though?", "Challenge me"]
 
     private var score: FriedScore { app.result ?? FriedScore(value: 0, tier: .crispMind) }
     private var breakdown: BrainBreakdown {
@@ -30,12 +33,14 @@ struct AskView: View {
             AmbientBackground()
             VStack(spacing: 0) {
                 topBar
-                aiStatusLine
                 messages
+                if !ask.messages.isEmpty, ask.canAsk(hasAccess: store.hasAccess) { quickReplies }
                 inputArea
             }
         }
         .preferredColorScheme(.dark)
+        .sensoryFeedback(.impact(weight: .light), trigger: sendTick)
+        .sensoryFeedback(.impact(flexibility: .soft), trigger: ask.messages.count)
         .onAppear {
             syncContext()
             #if DEBUG
@@ -81,19 +86,6 @@ struct AskView: View {
         .padding(.horizontal, Theme.pad).padding(.top, embedded ? 14 : 10).padding(.bottom, 10)
     }
 
-    // The honest, definitive signal: only known AFTER a real call. availability can
-    // say "available" while respond() still fails (Simulator, model still downloading).
-    @ViewBuilder private var aiStatusLine: some View {
-        if let wasAI = ask.lastReplyWasAI {
-            Label(wasAI ? "Live on-device AI" : "Templated reply · live AI isn't running on this device",
-                  systemImage: wasAI ? "bolt.fill" : "exclamationmark.triangle.fill")
-                .font(Theme.label(11)).foregroundStyle(wasAI ? Theme.mint : Theme.amber)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, Theme.pad).padding(.bottom, 8)
-                .frame(maxWidth: .infinity)
-        }
-    }
-
     private var messages: some View {
         ScrollViewReader { proxy in
             ScrollView {
@@ -119,11 +111,6 @@ struct AskView: View {
             Text("I've seen your numbers. Ask me anything about your brain — I'll give it to you straight.")
                 .font(Theme.body(15)).foregroundStyle(Theme.textSecondary)
                 .multilineTextAlignment(.center).padding(.horizontal, 24)
-            Label(AIStatus.line, systemImage: AIStatus.isAvailable ? "bolt.fill" : "exclamationmark.circle.fill")
-                .font(Theme.label(12)).foregroundStyle(AIStatus.isAvailable ? Theme.mint : Theme.amber)
-                .padding(.horizontal, 12).padding(.vertical, 6)
-                .background((AIStatus.isAvailable ? Theme.mint : Theme.amber).opacity(0.12), in: Capsule())
-                .multilineTextAlignment(.center)
             VStack(spacing: 9) {
                 ForEach(suggestions, id: \.self) { s in
                     Button { send(s) } label: {
@@ -148,8 +135,15 @@ struct AskView: View {
         HStack(alignment: .top, spacing: 9) {
             if m.role == .brain {
                 EggMascot(mood: .chill, friedLevel: Double(score.value) / 100, size: 28).padding(.top, 2)
-                Text(m.text).font(Theme.body(15)).foregroundStyle(Theme.textPrimary)
-                    .padding(14).frame(maxWidth: 268, alignment: .leading).friedGlass(cornerRadius: 18)
+                Group {
+                    if m.id == ask.typingId {
+                        TypingText(full: m.text) { if ask.typingId == m.id { ask.typingId = nil } }
+                    } else {
+                        Text(m.text)
+                    }
+                }
+                .font(Theme.body(15)).foregroundStyle(Theme.textPrimary)
+                .padding(14).frame(maxWidth: 268, alignment: .leading).friedGlass(cornerRadius: 18)
                 Spacer(minLength: 8)
             } else {
                 Spacer(minLength: 8)
@@ -210,9 +204,27 @@ struct AskView: View {
         .padding(.horizontal, Theme.pad).padding(.top, 14).padding(.bottom, 12)
     }
 
+    private var quickReplies: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+                ForEach(quickPrompts, id: \.self) { s in
+                    Button { send(s) } label: {
+                        Text(s).font(Theme.label(13)).fontWeight(.medium).foregroundStyle(Theme.amber)
+                            .padding(.horizontal, 14).padding(.vertical, 9)
+                            .liquidGlass(in: Capsule(), interactive: true)
+                    }
+                    .buttonStyle(.plain).disabled(ask.thinking)
+                }
+            }
+            .padding(.horizontal, Theme.pad)
+        }
+        .padding(.bottom, 8)
+    }
+
     private func send(_ text: String) {
         let q = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !q.isEmpty, ask.canAsk(hasAccess: store.hasAccess) else { return }
+        sendTick += 1
         input = ""; focused = false
         syncContext()
         Task { await ask.ask(q, hasAccess: store.hasAccess) }
@@ -241,6 +253,25 @@ struct AnimatedYolkie: View {
             .offset(y: bob ? -3 : 2)
             .animation(.easeInOut(duration: active ? 0.4 : 1.2).repeatForever(autoreverses: true), value: bob)
             .onAppear { bob = true }
+    }
+}
+
+/// Reveals text character-by-character so Yolkie "talks" live — works for both the
+/// on-device model and the fallback, so the chat always feels alive.
+private struct TypingText: View {
+    let full: String
+    var onDone: () -> Void = {}
+    @State private var shown = ""
+    var body: some View {
+        Text(shown.isEmpty ? " " : shown)
+            .task(id: full) {
+                shown = ""
+                for ch in full {
+                    shown.append(ch)
+                    try? await Task.sleep(for: .seconds(0.011))
+                }
+                onDone()
+            }
     }
 }
 

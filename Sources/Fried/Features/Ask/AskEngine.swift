@@ -33,6 +33,7 @@ final class AskStore: ObservableObject {
     @Published var messages: [AskMessage] = []
     @Published var thinking = false
     @Published var lastReplyWasAI: Bool?               // nil until first reply; truth about THIS device
+    @Published var typingId: UUID?                     // the reply currently typing itself in
     @Published private(set) var freeUsed = UserDefaults.standard.integer(forKey: "fried.ask.used")
     let freeLimit = 5
 
@@ -40,7 +41,7 @@ final class AskStore: ObservableObject {
 
     func remaining(hasAccess: Bool) -> Int { hasAccess ? Int.max : max(0, freeLimit - freeUsed) }
     func canAsk(hasAccess: Bool) -> Bool { hasAccess || freeUsed < freeLimit }
-    func clear() { messages = [] }
+    func clear() { messages = []; typingId = nil }
 
     func ask(_ question: String, hasAccess: Bool) async {
         let q = question.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -53,8 +54,10 @@ final class AskStore: ObservableObject {
         }
         thinking = true
         let result = await AskEngine.answer(q, context: context, history: history)
-        messages.append(AskMessage(role: .brain, text: result.text))
+        let reply = AskMessage(role: .brain, text: result.text)
+        messages.append(reply)
         lastReplyWasAI = result.fromAI
+        typingId = reply.id          // this one types itself in, live
         thinking = false
     }
 }
