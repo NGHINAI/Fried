@@ -9,6 +9,7 @@ struct RootView: View {
     @StateObject private var reportStore = ReportStore()
     @StateObject private var archetypeStore = ArchetypeStore()
     @StateObject private var askStore = AskStore()
+    @StateObject private var router = TabRouter()
 
     var body: some View {
         ZStack {
@@ -23,6 +24,7 @@ struct RootView: View {
         .environmentObject(reportStore)
         .environmentObject(archetypeStore)
         .environmentObject(askStore)
+        .environmentObject(router)
         .preferredColorScheme(.dark)
     }
 

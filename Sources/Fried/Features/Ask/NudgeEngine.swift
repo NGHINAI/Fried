@@ -66,4 +66,54 @@ enum NudgeEngine {
         return Nudge(title: "Your brain is frying 🍳",
                      body: "60 seconds to cool it down. Don't let today set in.")
     }
+
+    // MARK: Proactive in-app one-liner — Yolkie greets you on the dashboard
+    static func proactiveLine(friedPercent: Int, brainAge: Int, realAge: Int, topLeak: String, streak: Int) async -> String {
+        if #available(iOS 26.0, *),
+           let ai = await aiLine(friedPercent: friedPercent, brainAge: brainAge, realAge: realAge, topLeak: topLeak, streak: streak) {
+            return ai
+        }
+        return fallbackLine(friedPercent: friedPercent, brainAge: brainAge, realAge: realAge, topLeak: topLeak, streak: streak)
+    }
+
+    @available(iOS 26.0, *)
+    private static func aiLine(friedPercent: Int, brainAge: Int, realAge: Int, topLeak: String, streak: Int) async -> String? {
+        #if canImport(FoundationModels)
+        let model = SystemLanguageModel.default
+        guard case .available = model.availability else { return nil }
+        let session = LanguageModelSession {
+            """
+            You are Yolkie greeting the user on their dashboard. Say ONE short line \
+            (max 16 words) about their CURRENT brain state — loss-framed, name their weak \
+            spot, nudge one action. Punchy, warm, a little dramatic. Never claim medical or \
+            scientific facts, never mention real cognition/IQ/health. Output ONLY the line.
+            """
+        }
+        let opts = GenerationOptions(temperature: 1.1, maximumResponseTokens: 50)
+        let prompt = "State: \(friedPercent)% fried, brain age \(brainAge) vs \(realAge), biggest leak \(topLeak), \(streak)-day streak. Greet me."
+        do {
+            let text = try await session.respond(to: prompt, options: opts).content
+                .trimmingCharacters(in: CharacterSet(charactersIn: " \n\"'"))
+            return text.isEmpty || text.count > 160 ? nil : text
+        } catch { return nil }
+        #else
+        return nil
+        #endif
+    }
+
+    private static func fallbackLine(friedPercent: Int, brainAge: Int, realAge: Int, topLeak: String, streak: Int) -> String {
+        let leak = topLeak.lowercased()
+        let lines: [String]
+        if friedPercent >= 65 {
+            lines = ["You're \(friedPercent)% fried and climbing — your \(leak) is the leak. One mission, now.",
+                     "Brain age \(brainAge) at \(realAge)? That gap's on your \(leak). Let's close it today."]
+        } else if friedPercent >= 40 {
+            lines = ["Holding at \(friedPercent)% fried — don't get comfy, \(leak) is still pulling you down.",
+                     "You're mid-fry. One de-fry mission keeps today from sliding the wrong way."]
+        } else {
+            lines = ["Crisp today at \(friedPercent)% fried. Protect it — one mission keeps the streak honest.",
+                     "Sharp, for now. Skip a day and \(leak) creeps right back. Stay on it."]
+        }
+        return lines[(friedPercent + streak) % lines.count]
+    }
 }

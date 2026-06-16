@@ -10,6 +10,7 @@ struct RevealView: View {
     @EnvironmentObject var app: AppState
     @EnvironmentObject var store: Store
     @EnvironmentObject var brain: BrainState
+    @EnvironmentObject var archetypeStore: ArchetypeStore
     @State private var roast = ""
     @State private var showRoast = false
     @State private var shareImage: Image?
@@ -82,7 +83,9 @@ struct RevealView: View {
             brain.registerScore(score.value)
             Task {                                   // roast/share off the choreography path
                 roast = await RoastEngine.roast(for: score)
-                shareImage = ShareCard.image(score: score, breakdown: breakdown, roast: roast)
+                await archetypeStore.ensure(score: score, breakdown: breakdown)
+                shareImage = ShareCard.image(score: score, breakdown: breakdown,
+                                             archetype: archetypeStore.archetype, roast: roast)
             }
             // The number counts up ~1.3s; land it HARD, then stagger the threat in.
             try? await Task.sleep(for: .seconds(1.35))

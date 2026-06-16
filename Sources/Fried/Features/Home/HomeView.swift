@@ -1,11 +1,14 @@
 import SwiftUI
 import Charts
 
+/// Shared tab selection so proactive nudges can jump the user to the Yolkie tab.
+@MainActor final class TabRouter: ObservableObject { @Published var sel = 0 }
+
 /// The main app after onboarding — a 4-tab shell with Yolkie (the AI) front and centre.
 struct MainTabView: View {
-    @State private var sel = 0
+    @EnvironmentObject var router: TabRouter
     var body: some View {
-        TabView(selection: $sel) {
+        TabView(selection: $router.sel) {
             TodayView().tag(0).tabItem { Label("Today", systemImage: "flame.fill") }
             TrendsView().tag(1).tabItem { Label("Trends", systemImage: "chart.bar.fill") }
             AskView(embedded: true).tag(2).tabItem { Label("Yolkie", systemImage: "sparkles") }
@@ -14,9 +17,9 @@ struct MainTabView: View {
         .tint(Theme.amber)
         .onAppear {
             switch ProcessInfo.processInfo.environment["FRIED_PREVIEW_TAB"] {
-            case "trends": sel = 1
-            case "yolkie": sel = 2
-            case "you": sel = 3
+            case "trends": router.sel = 1
+            case "yolkie": router.sel = 2
+            case "you": router.sel = 3
             default: break
             }
         }
@@ -32,6 +35,8 @@ struct TodayView: View {
     @EnvironmentObject var challenge: ChallengeStore
     @EnvironmentObject var brain: BrainState
     @EnvironmentObject var reportStore: ReportStore
+    @EnvironmentObject var router: TabRouter
+    @State private var proactiveLine = ""
     @State private var analysis: FriedAnalysis?
     @State private var plan: DefryPlan?
     @State private var shownFreshness: Double? = nil   // animated display value for the bar/egg
@@ -71,6 +76,7 @@ struct TodayView: View {
         ScrollView {
             VStack(spacing: 16) {
                 header
+                yolkieNudge
                 milestoneBanner
                 if showDamage { damageBanner }
                 brainHero
@@ -117,6 +123,9 @@ struct TodayView: View {
             plan = PlanEngine.plan(score: score, quiz: app.quiz, reaction: app.reaction)
             await reportStore.ensure(reportContext())
             analysis = await AnalysisEngine.analyze(score: score, quiz: app.quiz, reaction: app.reaction)
+            let line = await NudgeEngine.proactiveLine(friedPercent: brain.friedPercent, brainAge: brainAge,
+                                                       realAge: app.age, topLeak: breakdown.topLeak.label, streak: history.streak)
+            withAnimation(.easeInOut(duration: 0.4)) { proactiveLine = line }
             await maybeShowGoal()
             await maybePrimeNotifications()
         }
@@ -277,6 +286,28 @@ struct TodayView: View {
                 Spacer(minLength: 0)
             }
             .padding(20).frame(maxWidth: .infinity)
+        }
+    }
+
+    // Proactive Yolkie — a one-line AI take that greets you on the dashboard.
+    @ViewBuilder private var yolkieNudge: some View {
+        if !proactiveLine.isEmpty {
+            Button { withAnimation { router.sel = 2 } } label: {
+                HStack(spacing: 12) {
+                    AnimatedYolkie(size: 46, fried: brain.friedLevel)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(proactiveLine)
+                            .font(Theme.body(14)).foregroundStyle(Theme.textPrimary)
+                            .multilineTextAlignment(.leading).fixedSize(horizontal: false, vertical: true)
+                        Text("Tap to ask Yolkie →").font(Theme.label(11)).foregroundStyle(Theme.amber)
+                    }
+                    Spacer(minLength: 0)
+                }
+                .padding(14).frame(maxWidth: .infinity).friedGlass(cornerRadius: 18)
+                .overlay(RoundedRectangle(cornerRadius: 18).stroke(Theme.amber.opacity(0.25), lineWidth: 1))
+            }
+            .buttonStyle(.plain)
+            .transition(.move(edge: .top).combined(with: .opacity))
         }
     }
 
@@ -663,11 +694,16 @@ struct ProfileView: View {
     @EnvironmentObject var history: HistoryStore
     @EnvironmentObject var archetypeStore: ArchetypeStore
     @AppStorage("fried.notif.on") private var notifOn = false
+    @State private var shareCardImage: Image?
 
     private var score: FriedScore { app.result ?? FriedScore(value: 0, tier: .crispMind) }
     private var breakdown: BrainBreakdown {
         BrainBreakdownEngine.make(quiz: app.quiz, reaction: app.reaction, screenTime: app.screenTime,
                                   overall: score.value, age: app.age)
+    }
+    private func regenShareCard() {
+        shareCardImage = ShareCard.image(score: score, breakdown: breakdown,
+                                         archetype: archetypeStore.archetype, roast: "")
     }
 
     var body: some View {
@@ -688,7 +724,11 @@ struct ProfileView: View {
             .padding(.horizontal, Theme.pad).padding(.top, 64).padding(.bottom, 40)
         }
         .scrollIndicators(.hidden)
-        .task { await archetypeStore.ensure(score: score, breakdown: breakdown) }
+        .task {
+            await archetypeStore.ensure(score: score, breakdown: breakdown)
+            regenShareCard()
+        }
+        .onChange(of: archetypeStore.archetype) { _, _ in regenShareCard() }
     }
 
     // The AI wow: an on-device-generated identity + variable reward (re-roll).
@@ -714,9 +754,10 @@ struct ProfileView: View {
                             .liquidGlass(in: Capsule(), interactive: true)
                     }
                     .buttonStyle(.plain).disabled(archetypeStore.loading)
-                    if let a = archetypeStore.archetype {
-                        ShareLink(item: URL(string: "https://fried.app")!,
-                                  message: Text("My brain archetype: \(a.title) 🍳 How fried is your brain?")) {
+                    if let img = shareCardImage {
+                        ShareLink(item: img,
+                                  message: Text("My brain type: \(archetypeStore.archetype?.title ?? "") 🍳 What's yours? fried.app"),
+                                  preview: SharePreview("My Brain Type", image: img)) {
                             Label("Share", systemImage: "square.and.arrow.up")
                                 .font(Theme.label(14)).foregroundStyle(Theme.textPrimary)
                                 .padding(.horizontal, 16).padding(.vertical, 9)
