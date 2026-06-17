@@ -11,3 +11,8 @@ whisper.cpp
 tmp.json
 public/*.aiff
 public/vo_16k.wav
+public/vo.wav
+
+# TTS models (310MB+) and Python venv — never commit
+tts-models/
+.venv-tts/

@@ -12,17 +12,39 @@ import {
   spring,
   Easing,
 } from "remotion";
-import { createTikTokStyleCaptions, type Caption } from "@remotion/captions";
+import { type Caption } from "@remotion/captions";
 import { C, FONT, tabular, Egg, Embers, shakeAt, flashAt, Mood } from "./brand";
+
+// ── Caption pagination ────────────────────────────────────────────────────────
+// We DON'T use createTikTokStyleCaptions: with continuous TTS audio every word
+// gap is < its threshold, so it collapses the whole script onto one page. Instead
+// we chunk into tight 1–3 word phrases that break on punctuation (CapCut look).
+type Tok = { text: string; fromMs: number; toMs: number };
+type Page = { text: string; startMs: number; tokens: Tok[] };
+const toPages = (caps: Caption[]): Page[] => {
+  const pages: Page[] = [];
+  let cur: Tok[] = [];
+  const flush = () => {
+    if (!cur.length) return;
+    pages.push({ text: cur.map((t) => t.text).join(" "), startMs: cur[0].fromMs, tokens: cur });
+    cur = [];
+  };
+  for (const c of caps) {
+    cur.push({ text: c.text, fromMs: c.startMs, toMs: c.endMs });
+    if (cur.length >= 3 || /[.?!,;:…]$/.test(c.text.trim())) flush();
+  }
+  flush();
+  return pages;
+};
 
 const W = 1080;
 const H = 1920;
 const MODEL_H = 640;
 const APP_TOP = 700;
 const APP_BOTTOM = 1470; // app reveal lives between APP_TOP and here; captions below
-// frames synced to the voiceover word timings (Zoe Premium VO)
-const F = { brainStart: 225, ageLand: 268, issuesStart: 338, addicted: 396, cta: 433 };
-const IMPACTS = [268, 343, 352, 361, 370, 379];
+// frames synced to the voiceover word timings (Kokoro af_heart VO)
+const F = { brainStart: 345, ageLand: 382, issuesStart: 432, addicted: 498, cta: 560 };
+const IMPACTS = [382, 437, 446, 455, 464, 473];
 
 const Zone: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <AbsoluteFill
@@ -70,11 +92,11 @@ const ModelCam: React.FC<{ modelSrc?: string; frame: number }> = ({ modelSrc, fr
 };
 
 // Word-by-word karaoke captions synced to the voiceover.
-const Karaoke: React.FC<{ pages: ReturnType<typeof createTikTokStyleCaptions>["pages"] }> = ({ pages }) => {
+const Karaoke: React.FC<{ pages: Page[] }> = ({ pages }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const ms = (frame / fps) * 1000;
-  let page: (typeof pages)[number] | null = null;
+  let page: Page | null = null;
   for (const p of pages) if (ms >= p.startMs - 120) page = p;
   if (!page) return null;
   return (
@@ -187,15 +209,15 @@ const CTA: React.FC = () => {
   const { fps } = useVideoConfig();
   const op = interpolate(f, [0, 12], [0, 1], { extrapolateRight: "clamp" });
   const pop = spring({ frame: f, fps, config: { damping: 12 } });
-  const pulse = 1 + Math.sin(f / 7) * 0.025;
   return (
-    <AbsoluteFill style={{ background: C.void, justifyContent: "center", alignItems: "center", textAlign: "center", gap: 40, opacity: op, fontFamily: FONT }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 14, transform: `scale(${0.85 + pop * 0.15})` }}>
-        <span style={{ fontSize: 92 }}>🍳</span>
-        <span style={{ fontSize: 124, fontWeight: 800, background: `linear-gradient(90deg, ${C.glow}, ${C.ember})`, WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>fried</span>
+    <AbsoluteFill style={{ background: C.void, justifyContent: "center", alignItems: "center", textAlign: "center", gap: 26, opacity: op, fontFamily: FONT }}>
+      <div style={{ color: C.dim, fontSize: 38, fontWeight: 500, padding: "0 70px" }}>if your brain feels this fried too…</div>
+      <div style={{ display: "flex", alignItems: "center", gap: 14, transform: `scale(${0.88 + pop * 0.12})`, marginTop: 4 }}>
+        <span style={{ fontSize: 78 }}>🍳</span>
+        <span style={{ fontSize: 112, fontWeight: 800, background: `linear-gradient(90deg, ${C.glow}, ${C.ember})`, WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>fried</span>
       </div>
-      <div style={{ color: C.text, fontSize: 64, fontWeight: 800, lineHeight: 1.15, padding: "0 80px" }}>How fried is<br />YOUR brain?</div>
-      <div style={{ marginTop: 6, color: "#000", fontWeight: 800, fontSize: 42, padding: "24px 56px", borderRadius: 999, background: `linear-gradient(90deg, ${C.amber}, ${C.ember})`, transform: `scale(${pulse})`, boxShadow: `0 16px 50px ${C.ember}66` }}>Take the 60-second test →</div>
+      <div style={{ color: C.text, fontSize: 52, fontWeight: 700, lineHeight: 1.2, padding: "0 90px" }}>go find out how fried yours is.</div>
+      <div style={{ marginTop: 8, color: C.dim, fontSize: 29, fontWeight: 500 }}>free · 60 seconds · no sign-up</div>
     </AbsoluteFill>
   );
 };
@@ -204,14 +226,13 @@ export const FriedAdVO: React.FC<{ modelSrc?: string }> = ({ modelSrc }) => {
   const frame = useCurrentFrame();
   const { delayRender, continueRender, cancelRender } = useDelayRender();
   const [handle] = useState(() => delayRender("captions"));
-  const [pages, setPages] = useState<ReturnType<typeof createTikTokStyleCaptions>["pages"] | null>(null);
+  const [pages, setPages] = useState<Page[] | null>(null);
 
   const load = useCallback(async () => {
     try {
       const res = await fetch(staticFile("captions.json"));
       const caps = (await res.json()) as Caption[];
-      const { pages } = createTikTokStyleCaptions({ captions: caps, combineTokensWithinMilliseconds: 250 });
-      setPages(pages);
+      setPages(toPages(caps));
       continueRender(handle);
     } catch (e) {
       cancelRender(e);
