@@ -5,3 +5,9 @@ dist
 
 # Ignore the output video from Git but not videos you import into src/.
 out
+
+# voiceover build artifacts
+whisper.cpp
+tmp.json
+public/*.aiff
+public/vo_16k.wav
