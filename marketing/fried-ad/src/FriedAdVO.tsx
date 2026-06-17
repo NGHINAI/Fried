@@ -20,9 +20,9 @@ const H = 1920;
 const MODEL_H = 640;
 const APP_TOP = 700;
 const APP_BOTTOM = 1470; // app reveal lives between APP_TOP and here; captions below
-// frames synced to the voiceover word timings
-const F = { brainStart: 260, ageLand: 307, issuesStart: 390, addicted: 486, cta: 526 };
-const IMPACTS = [307, 398, 416, 434, 452, 470];
+// frames synced to the voiceover word timings (Zoe Premium VO)
+const F = { brainStart: 225, ageLand: 268, issuesStart: 338, addicted: 396, cta: 433 };
+const IMPACTS = [268, 343, 352, 361, 370, 379];
 
 const Zone: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <AbsoluteFill
@@ -152,8 +152,8 @@ const Issues: React.FC = () => {
       <div style={{ color: C.danger, fontSize: 46, fontWeight: 800, marginBottom: 24, transform: `scale(${0.85 + head * 0.15})` }}>5 CRITICAL ISSUES</div>
       <div style={{ display: "flex", flexDirection: "column", gap: 14, width: 640 }}>
         {ISSUES.map(([name, sev], i) => {
-          const start = 8 + i * 18;
-          const s = spring({ frame: f - start, fps, config: { damping: 8 }, durationInFrames: 16 });
+          const start = 5 + i * 9;
+          const s = spring({ frame: f - start, fps, config: { damping: 8 }, durationInFrames: 14 });
           const op = interpolate(f, [start, start + 5], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
           return (
             <div key={i} style={{ opacity: op, transform: `scale(${0.62 + Math.min(1, s) * 0.38})`, display: "flex", alignItems: "center", justifyContent: "space-between", background: `${C.danger}1f`, border: `1px solid ${C.danger}66`, borderRadius: 16, padding: "15px 26px" }}>
