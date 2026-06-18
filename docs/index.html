@@ -15,6 +15,12 @@
   h1 { font-size:64px; font-weight:800; background:linear-gradient(180deg,var(--amber),var(--ember)); -webkit-background-clip:text; background-clip:text; color:transparent; letter-spacing:-1px; margin:.1em 0; }
   .tag { font-size:20px; color:var(--dim); margin-bottom:32px; }
   .cta { display:inline-block; background:linear-gradient(90deg,var(--amber),var(--ember)); color:#000; font-weight:700; font-size:18px; padding:16px 34px; border-radius:999px; text-decoration:none; box-shadow:0 10px 30px rgba(255,77,46,.3); }
+  .waitlist { display:flex; gap:10px; max-width:460px; margin:0 auto; flex-wrap:wrap; justify-content:center; }
+  .waitlist input { flex:1 1 230px; min-width:0; background:var(--card); border:1px solid var(--line); color:var(--text); font-size:17px; padding:15px 18px; border-radius:999px; outline:none; }
+  .waitlist input:focus { border-color:var(--amber); }
+  .waitlist button { background:linear-gradient(90deg,var(--amber),var(--ember)); color:#000; font-weight:700; font-size:17px; padding:15px 28px; border-radius:999px; border:0; cursor:pointer; box-shadow:0 10px 30px rgba(255,77,46,.3); }
+  .micro { font-size:14px; color:var(--dim); margin-top:16px; }
+  .micro a { color:var(--amber); text-decoration:none; font-weight:600; }
   .features { display:grid; gap:14px; margin:48px 0; text-align:left; }
   .card { background:var(--card); border:1px solid var(--line); border-radius:20px; padding:22px 24px; }
   .card h3 { font-size:18px; margin-bottom:4px; }
@@ -28,8 +34,14 @@
   <div class="wrap">
     <div class="egg">🍳</div>
     <h1>fried</h1>
-    <p class="tag">How fried is your brain? Find out in 60 seconds.</p>
-    <a class="cta" href="#">Download on the App&nbsp;Store</a>
+    <p class="tag">How fried is your brain? <strong>Coming soon to the App&nbsp;Store.</strong><br/>Get early access — and find out before everyone else does.</p>
+
+    <!-- WAITLIST: create a free form at formspree.io (2 min) and paste its ID below, replacing REPLACE_WITH_FORM_ID. Until then this won't store emails. -->
+    <form class="waitlist" action="https://formspree.io/f/REPLACE_WITH_FORM_ID" method="POST">
+      <input type="email" name="email" required placeholder="your email" aria-label="Your email" />
+      <button type="submit">Get early access</button>
+    </form>
+    <p class="micro">🔥 Be first when it drops · or <a href="https://www.tiktok.com/@getfried" target="_blank" rel="noopener">follow @getfried on TikTok</a></p>
 
     <div class="features">
       <div class="card"><h3>🔥 Your Fried Score</h3><p>A 60-second vibe check — quiz + a lightning reaction game — gives you a score from Crisp Mind to Deep Fried, with a roast worth screenshotting.</p></div>
