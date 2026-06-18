@@ -42,9 +42,12 @@ const H = 1920;
 const MODEL_H = 640;
 const APP_TOP = 700;
 const APP_BOTTOM = 1470; // app reveal lives between APP_TOP and here; captions below
-// frames synced to the voiceover word timings (Kokoro af_heart VO)
-const F = { brainStart: 345, ageLand: 382, issuesStart: 432, addicted: 498, cta: 560 };
-const IMPACTS = [382, 437, 446, 455, 464, 473];
+// frames synced to the voiceover word timings (Kokoro af_heart VO).
+// DEFAULTS = the confession hero; variants override via props (see Root.tsx).
+type FType = { brainStart: number; ageLand: number; issuesStart: number; addicted: number; cta: number };
+const DEFAULT_F: FType = { brainStart: 345, ageLand: 382, issuesStart: 432, addicted: 498, cta: 560 };
+const DEFAULT_IMPACTS = [382, 437, 446, 455, 464, 473];
+const DEFAULT_POV = "POV: checking how fried my brain is";
 
 const Zone: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <AbsoluteFill
@@ -58,7 +61,7 @@ const Zone: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   </AbsoluteFill>
 );
 
-const ModelCam: React.FC<{ modelSrc?: string; frame: number }> = ({ modelSrc, frame }) => {
+const ModelCam: React.FC<{ modelSrc?: string; frame: number; F: FType; pov: string }> = ({ modelSrc, frame, F, pov }) => {
   const mood: Mood = frame < F.brainStart ? "curious" : frame < F.issuesStart ? "shocked" : frame < F.cta ? "worried" : "fried";
   const zoom = 1 + interpolate(frame, [0, F.cta], [0, 0.08], { extrapolateRight: "clamp" });
   const bob = Math.sin(frame / 22) * 6;
@@ -84,7 +87,7 @@ const ModelCam: React.FC<{ modelSrc?: string; frame: number }> = ({ modelSrc, fr
         0:{String(Math.min(19, Math.floor(frame / 30))).padStart(2, "0")}
       </div>
       <div style={{ position: "absolute", top: 70, left: 0, right: 0, textAlign: "center", color: C.text, fontSize: 27, fontWeight: 700, fontFamily: FONT, opacity: 0.5 }}>
-        POV: checking how fried my brain is
+        {pov}
       </div>
       <AbsoluteFill style={{ boxShadow: "inset 0 0 110px rgba(0,0,0,0.55)", pointerEvents: "none" }} />
     </div>
@@ -141,7 +144,7 @@ const Scan: React.FC = () => {
   );
 };
 
-const BrainAge: React.FC = () => {
+const BrainAge: React.FC<{ F: FType }> = ({ F }) => {
   const f = useCurrentFrame();
   const { fps } = useVideoConfig();
   const age = Math.round(interpolate(f, [8, F.ageLand - F.brainStart], [19, 47], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.out(Easing.cubic) }));
@@ -222,7 +225,21 @@ const CTA: React.FC = () => {
   );
 };
 
-export const FriedAdVO: React.FC<{ modelSrc?: string }> = ({ modelSrc }) => {
+export const FriedAdVO: React.FC<{
+  modelSrc?: string;
+  voSrc?: string;
+  captionsSrc?: string;
+  pov?: string;
+  F?: FType;
+  impacts?: number[];
+}> = ({
+  modelSrc,
+  voSrc = "vo.mp3",
+  captionsSrc = "captions.json",
+  pov = DEFAULT_POV,
+  F = DEFAULT_F,
+  impacts = DEFAULT_IMPACTS,
+}) => {
   const frame = useCurrentFrame();
   const { delayRender, continueRender, cancelRender } = useDelayRender();
   const [handle] = useState(() => delayRender("captions"));
@@ -230,24 +247,24 @@ export const FriedAdVO: React.FC<{ modelSrc?: string }> = ({ modelSrc }) => {
 
   const load = useCallback(async () => {
     try {
-      const res = await fetch(staticFile("captions.json"));
+      const res = await fetch(staticFile(captionsSrc));
       const caps = (await res.json()) as Caption[];
       setPages(toPages(caps));
       continueRender(handle);
     } catch (e) {
       cancelRender(e);
     }
-  }, [continueRender, cancelRender, handle]);
+  }, [continueRender, cancelRender, handle, captionsSrc]);
   useEffect(() => { load(); }, [load]);
 
-  const sh = shakeAt(frame, IMPACTS);
-  const flash = flashAt(frame, IMPACTS);
+  const sh = shakeAt(frame, impacts);
+  const flash = flashAt(frame, impacts);
 
   return (
     <AbsoluteFill style={{ backgroundColor: C.void, fontFamily: FONT }}>
-      <Audio src={staticFile("vo.mp3")} />
+      <Audio src={staticFile(voSrc)} />
       <Sequence from={F.brainStart - 6}><Audio src={staticFile("whoosh.wav")} volume={0.5} /></Sequence>
-      {IMPACTS.map((f, i) => (
+      {impacts.map((f, i) => (
         <Sequence key={i} from={f - 1}><Audio src={staticFile("thud.wav")} volume={0.55} /></Sequence>
       ))}
 
@@ -256,10 +273,10 @@ export const FriedAdVO: React.FC<{ modelSrc?: string }> = ({ modelSrc }) => {
           <div style={{ position: "absolute", inset: 0, background: `radial-gradient(60% 50% at 50% 36%, ${C.ember}1f, transparent 70%)` }} />
         </AbsoluteFill>
         <Embers frame={frame} />
-        <ModelCam modelSrc={modelSrc} frame={frame} />
+        <ModelCam modelSrc={modelSrc} frame={frame} F={F} pov={pov} />
 
         <Sequence durationInFrames={F.brainStart} layout="none"><Scan /></Sequence>
-        <Sequence from={F.brainStart} durationInFrames={F.issuesStart - F.brainStart} layout="none"><BrainAge /></Sequence>
+        <Sequence from={F.brainStart} durationInFrames={F.issuesStart - F.brainStart} layout="none"><BrainAge F={F} /></Sequence>
         <Sequence from={F.issuesStart} durationInFrames={F.addicted - F.issuesStart} layout="none"><Issues /></Sequence>
         <Sequence from={F.addicted} durationInFrames={F.cta - F.addicted} layout="none"><Addicted /></Sequence>
 

@@ -1,0 +1,240 @@
+[
+  {
+    "text": "I",
+    "startMs": 0,
+    "endMs": 111,
+    "timestampMs": 55,
+    "confidence": 1
+  },
+  {
+    "text": "took",
+    "startMs": 111,
+    "endMs": 387,
+    "timestampMs": 249,
+    "confidence": 1
+  },
+  {
+    "text": "a",
+    "startMs": 387,
+    "endMs": 498,
+    "timestampMs": 443,
+    "confidence": 1
+  },
+  {
+    "text": "brain",
+    "startMs": 498,
+    "endMs": 830,
+    "timestampMs": 664,
+    "confidence": 1
+  },
+  {
+    "text": "rot",
+    "startMs": 830,
+    "endMs": 1051,
+    "timestampMs": 941,
+    "confidence": 1
+  },
+  {
+    "text": "test",
+    "startMs": 1051,
+    "endMs": 1328,
+    "timestampMs": 1190,
+    "confidence": 1
+  },
+  {
+    "text": "for",
+    "startMs": 1328,
+    "endMs": 1549,
+    "timestampMs": 1439,
+    "confidence": 1
+  },
+  {
+    "text": "fun.",
+    "startMs": 1549,
+    "endMs": 1771,
+    "timestampMs": 1660,
+    "confidence": 1
+  },
+  {
+    "text": "My",
+    "startMs": 1931,
+    "endMs": 2162,
+    "timestampMs": 2046,
+    "confidence": 1
+  },
+  {
+    "text": "brain",
+    "startMs": 2162,
+    "endMs": 2625,
+    "timestampMs": 2393,
+    "confidence": 1
+  },
+  {
+    "text": "age",
+    "startMs": 2625,
+    "endMs": 2933,
+    "timestampMs": 2779,
+    "confidence": 1
+  },
+  {
+    "text": "came",
+    "startMs": 2933,
+    "endMs": 3319,
+    "timestampMs": 3126,
+    "confidence": 1
+  },
+  {
+    "text": "back",
+    "startMs": 3319,
+    "endMs": 3705,
+    "timestampMs": 3512,
+    "confidence": 1
+  },
+  {
+    "text": "47.",
+    "startMs": 3705,
+    "endMs": 3936,
+    "timestampMs": 3820,
+    "confidence": 1
+  },
+  {
+    "text": "I'm",
+    "startMs": 4096,
+    "endMs": 4544,
+    "timestampMs": 4320,
+    "confidence": 1
+  },
+  {
+    "text": "19.",
+    "startMs": 4544,
+    "endMs": 4992,
+    "timestampMs": 4768,
+    "confidence": 1
+  },
+  {
+    "text": "It",
+    "startMs": 5152,
+    "endMs": 5312,
+    "timestampMs": 5232,
+    "confidence": 1
+  },
+  {
+    "text": "found",
+    "startMs": 5312,
+    "endMs": 5632,
+    "timestampMs": 5472,
+    "confidence": 1
+  },
+  {
+    "text": "5",
+    "startMs": 5632,
+    "endMs": 5739,
+    "timestampMs": 5685,
+    "confidence": 1
+  },
+  {
+    "text": "things",
+    "startMs": 5739,
+    "endMs": 6112,
+    "timestampMs": 5925,
+    "confidence": 1
+  },
+  {
+    "text": "wrong",
+    "startMs": 6112,
+    "endMs": 6432,
+    "timestampMs": 6272,
+    "confidence": 1
+  },
+  {
+    "text": "with",
+    "startMs": 6432,
+    "endMs": 6699,
+    "timestampMs": 6565,
+    "confidence": 1
+  },
+  {
+    "text": "me.",
+    "startMs": 6699,
+    "endMs": 6859,
+    "timestampMs": 6779,
+    "confidence": 1
+  },
+  {
+    "text": "And",
+    "startMs": 7019,
+    "endMs": 7271,
+    "timestampMs": 7145,
+    "confidence": 1
+  },
+  {
+    "text": "I'm",
+    "startMs": 7271,
+    "endMs": 7461,
+    "timestampMs": 7366,
+    "confidence": 1
+  },
+  {
+    "text": "more",
+    "startMs": 7461,
+    "endMs": 7777,
+    "timestampMs": 7619,
+    "confidence": 1
+  },
+  {
+    "text": "fried",
+    "startMs": 7777,
+    "endMs": 8156,
+    "timestampMs": 7966,
+    "confidence": 1
+  },
+  {
+    "text": "than",
+    "startMs": 8156,
+    "endMs": 8471,
+    "timestampMs": 8314,
+    "confidence": 1
+  },
+  {
+    "text": "92",
+    "startMs": 8471,
+    "endMs": 8661,
+    "timestampMs": 8566,
+    "confidence": 1
+  },
+  {
+    "text": "percent",
+    "startMs": 8661,
+    "endMs": 9166,
+    "timestampMs": 8914,
+    "confidence": 1
+  },
+  {
+    "text": "of",
+    "startMs": 9166,
+    "endMs": 9356,
+    "timestampMs": 9261,
+    "confidence": 1
+  },
+  {
+    "text": "people",
+    "startMs": 9356,
+    "endMs": 9798,
+    "timestampMs": 9577,
+    "confidence": 1
+  },
+  {
+    "text": "my",
+    "startMs": 9798,
+    "endMs": 9987,
+    "timestampMs": 9893,
+    "confidence": 1
+  },
+  {
+    "text": "age.",
+    "startMs": 9987,
+    "endMs": 10240,
+    "timestampMs": 10114,
+    "confidence": 1
+  }
+]

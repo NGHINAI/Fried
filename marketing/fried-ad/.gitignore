@@ -10,8 +10,10 @@ out
 whisper.cpp
 tmp.json
 public/*.aiff
-public/vo_16k.wav
-public/vo.wav
+# ignore all VO/intermediate wavs (vo.wav, s1.wav, vo_16k.wav…), keep the SFX
+public/*.wav
+!public/thud.wav
+!public/whoosh.wav
 
 # TTS models (310MB+) and Python venv — never commit
 tts-models/
